@@ -1,0 +1,29 @@
+{
+  "slug": "improve-hero-dark-mode-opacity",
+  "title": "Add 0.75 opacity to hero avatar image on dark theme",
+  "type": "improvement",
+  "created": "2026-04-12",
+  "status": "complete",
+  "context": "The bright hero profile image creates visual contrast in dark mode. Add 0.75 opacity to the .hero__avatar image element only (not page-wide) to reduce brightness while keeping it visible.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Add 0.75 opacity to .hero__avatar in dark theme",
+      "status": "complete",
+      "acceptance_criteria": [
+        "CSS rule targets only the .hero__avatar element via :global([data-theme='dark']) &__avatar { opacity: 0.75; }",
+        "Avatar image is fully opaque (opacity: 1) on light theme",
+        "Avatar image has 0.75 opacity on dark theme via scoped CSS rule",
+        "No other page elements are affected by the opacity rule",
+        "CSS transition includes opacity for smooth theme switching",
+        "Unit test verifies .hero__avatar element has correct class and light mode baseline",
+        "npx vitest run src/components/__tests__/HeroSection.spec.ts, npm run type-check, and npm run build-only all pass"
+      ],
+      "files": [
+        "src/components/HeroSection.vue",
+        "src/components/__tests__/HeroSection.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

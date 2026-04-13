@@ -1,0 +1,38 @@
+{
+  "slug": "feat-contact-form",
+  "title": "Contact form with validation and spam prevention",
+  "type": "feature",
+  "created": "2026-04-11",
+  "status": "complete",
+  "context": "The existing contact section is a static placeholder CTA with a mailto link. Replace it with a real contact form that submits to Formspree, validates inputs client-side, and uses a honeypot field plus a 2-second time gate to prevent bot submissions.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Build ContactForm component and replace placeholder section",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Form renders Name, Email, and Message fields with visible labels",
+        "Submitting with any empty field shows a per-field validation error",
+        "Submitting with an invalid email format shows an email validation error",
+        "A hidden honeypot field is present in the DOM and any submission with it filled is silently rejected client-side",
+        "Submissions within 2 seconds of page load are silently rejected (time gate)",
+        "Valid submission POSTs to the Formspree endpoint (VITE_FORMSPREE_ENDPOINT env var)",
+        "A success state is shown after a 200 response from Formspree",
+        "An error state is shown after a non-200 response from Formspree",
+        "A loading/disabled state prevents double-submission while the request is in flight",
+        "Component uses existing design tokens (--color-*, --radius-*, --shadow-*)",
+        "Form is keyboard accessible: all fields are focusable and labelled, submit is reachable by Tab",
+        "ARIA attributes: role=alert on error/success messages, aria-invalid on invalid fields",
+        "Responsive: single-column layout on mobile, comfortable padding on desktop",
+        "App.vue placeholder contact-cta section is replaced with the ContactForm component",
+        "npm run type-check and npm run build-only both pass"
+      ],
+      "files": [
+        "src/components/ContactForm.vue",
+        "src/App.vue",
+        ".env.example"
+      ],
+      "depends_on": []
+    }
+  ]
+}

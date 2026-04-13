@@ -1,0 +1,26 @@
+{
+  "project": "seanjones.io portfolio",
+  "description": "Portfolio website showcasing projects, skills, and contact information for Sean Jones",
+  "features": [
+    {
+        "name": "Home Page",
+        "description": "A landing page that introduces visitors to Sean Jones and provides an overview of the portfolio."
+        },
+        {
+        "name": "Projects Section",
+        "description": "A section that highlights various projects Sean has worked on, including descriptions, technologies used, and links to live demos or repositories."
+        },
+        {
+        "name": "Skills Section",
+        "description": "A section that lists Sean's technical skills, programming languages, frameworks, and tools."
+        },
+        {
+        "name": "Contact Form",
+        "description": "A form that allows visitors to get in touch with Sean for inquiries or collaboration opportunities."
+        },
+        {
+        "name": "Responsive Design",
+        "description": "The website will be designed to be responsive and accessible on various devices, including desktops, tablets, and smartphones."
+        }
+  ]
+}
