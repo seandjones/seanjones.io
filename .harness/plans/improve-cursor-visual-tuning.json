@@ -1,0 +1,29 @@
+{
+  "slug": "improve-cursor-visual-tuning",
+  "title": "Tune cursor follower visual style",
+  "type": "improvement",
+  "created": "2026-04-13",
+  "status": "complete",
+  "context": "Improve cursor follower polish by making the trail a bit slower and softer, increasing blur/size slightly, and improving visibility in light mode while preserving dark mode readability.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Tune cursor follower size, blur, and theme contrast",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Cursor follower visual size is increased slightly",
+        "Cursor follower blur/glow is increased slightly",
+        "Trail feel is tuned by slowing transform animation for a softer follow",
+        "Light theme follower uses explicit stronger visibility declarations (background 68%, blur 1.5px, larger glow)",
+        "Dark theme follower uses explicit balanced visibility declarations (background 50%, blur 1.3px, controlled glow)",
+        "Focused tests assert the updated style declarations",
+        "npx vitest run src/components/__tests__/CursorFollower.spec.ts src/__tests__/App.spec.ts, npm run type-check, and npm run build-only all pass"
+      ],
+      "files": [
+        "src/components/CursorFollower.vue",
+        "src/components/__tests__/CursorFollower.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

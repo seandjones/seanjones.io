@@ -1,0 +1,31 @@
+{
+  "slug": "feat-cursor-follow-animation",
+  "title": "Add cursor follow animation",
+  "type": "feature",
+  "created": "2026-04-13",
+  "status": "complete",
+  "context": "Add a subtle cursor-follow visual effect to increase perceived polish while preserving performance and accessibility.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Implement and mount cursor follower component",
+      "status": "complete",
+      "acceptance_criteria": [
+        "A dedicated CursorFollower component renders a decorative follower element",
+        "Follower position updates on pointer movement using transform-based animation",
+        "Follower is disabled for coarse pointers and reduced-motion users",
+        "Follower does not block interactions (pointer-events: none and appropriate z-index)",
+        "App integrates CursorFollower without affecting existing sections",
+        "Focused unit tests cover rendering and pointer movement behavior",
+        "npx vitest run src/components/__tests__/CursorFollower.spec.ts src/__tests__/App.spec.ts, npm run type-check, and npm run build-only all pass"
+      ],
+      "files": [
+        "src/components/CursorFollower.vue",
+        "src/App.vue",
+        "src/components/__tests__/CursorFollower.spec.ts",
+        "src/__tests__/App.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "slug": "add-work-history",
+  "title": "Add work history feature",
+  "type": "feature",
+  "created": "2026-04-10",
+  "status": "planned",
+  "context": "Why this work is needed",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Add work history feature",
+      "status": "pending",
+      "acceptance_criteria": ["Work history is displayed correctly", "Work history displayed in timeline format", "Work history is responsive", "Work history is accessible", "Work history is tested"],
+      "files": ["src/components/TableViewer.tsx"],
+      "depends_on": []
+    }
+  ]
+}

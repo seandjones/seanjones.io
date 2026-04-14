@@ -1,0 +1,26 @@
+{
+  "slug": "feat-ai-engineering-skill-tile",
+  "title": "Add AI Engineering skill tile",
+  "type": "feature",
+  "created": "2026-04-12",
+  "status": "complete",
+  "context": "The user requested another tile in SkillsSection for AI engineering to better represent modern engineering capabilities and leadership in AI-driven product work.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Add AI Engineering card to SkillsSection",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Skills section renders an additional tile titled AI Engineering",
+        "AI Engineering tile includes a distinct icon and preserves the current four skills (Prompt Engineering, Harness Engineering, AI Product Strategy, Agentic Workflows)",
+        "New tile uses existing SkillGroup structure and styling without CSS regressions",
+        "Type check and build succeed after the change"
+      ],
+      "files": [
+        "src/components/SkillsSection.vue",
+        "src/components/__tests__/SkillsSection.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

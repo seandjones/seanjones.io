@@ -1,0 +1,30 @@
+{
+  "slug": "feat-profile-photo-and-brand-logo",
+  "title": "Use real profile photo and brand logo",
+  "type": "feature",
+  "created": "2026-04-12",
+  "status": "complete",
+  "context": "Replace placeholder identity visuals with real assets by using public/profile.webp in the hero and public/favicon.png as the navbar brand mark.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Wire profile image and navbar favicon logo",
+      "status": "complete",
+      "acceptance_criteria": [
+        "HeroSection renders a real profile image sourced from /profile.webp instead of the placeholder SVG initials",
+        "Profile image keeps the existing hero avatar styling hook (`hero__avatar`) and removes the old placeholder SVG/initials markup",
+        "Navbar brand mark uses /favicon.png as an image asset instead of text initials",
+        "Accessibility is preserved: decorative navbar logo remains hidden from screen readers and hero image has descriptive alt text",
+        "Focused tests cover hero profile image and navbar brand logo rendering",
+        "npx vitest run src/components/__tests__/HeroSection.spec.ts src/__tests__/App.spec.ts, npm run type-check, and npm run build-only all pass"
+      ],
+      "files": [
+        "src/components/HeroSection.vue",
+        "src/App.vue",
+        "src/components/__tests__/HeroSection.spec.ts",
+        "src/__tests__/App.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

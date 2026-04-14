@@ -1,0 +1,22 @@
+{
+  "slug": "chore-init-git-main",
+  "title": "Initialize git repository on main branch",
+  "type": "chore",
+  "created": "2026-04-13",
+  "status": "complete",
+  "context": "The user requested initializing git for the workspace and ensuring the default/current branch is main.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Initialize repository and set branch to main",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Workspace contains a git repository after the change",
+        "The current branch name is main",
+        "Git status runs successfully in the workspace root"
+      ],
+      "files": [],
+      "depends_on": []
+    }
+  ]
+}
