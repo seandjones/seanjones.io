@@ -12,6 +12,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      base: '/seanjones.io/',
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
