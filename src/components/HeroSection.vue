@@ -26,7 +26,7 @@
 
       <div class="hero__cta">
         <a href="#skills" class="btn btn--primary">View Skills</a>
-        <a href="#work" class="btn btn--primary">What I'm up to</a>
+        <a href="#work" class="btn btn--primary">Work</a>
         <a href="#contact" class="btn btn--ghost">Get in Touch</a>
       </div>
     </div>

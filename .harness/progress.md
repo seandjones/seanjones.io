@@ -136,3 +136,12 @@
 - Confirmed the current branch name is `main`.
 - Verified git status executes successfully in the workspace root.
 - Evaluator verdict: PASS.
+
+## 2026-04-13 - fix-github-pages-vite-base: Task 1 - Move Vite base to proper top-level config for GitHub Pages
+
+- Identified the root cause in `vite.config.ts`: `base` was incorrectly placed inside `resolve.alias`, so production builds emitted root-relative asset URLs.
+- Fixed the config by moving `base` to the top level and using `/seanjones.io.ai/` for production builds while keeping `/` for local development.
+- Preserved the `@` src alias.
+- Added `src/__tests__/vite.config.spec.ts` to assert the production base path and ensure `base` is no longer misused as an alias.
+- Verified with `npx vitest run src/__tests__/vite.config.spec.ts` and `npm run build`; built output now references `/seanjones.io.ai/assets/...` correctly.
+- Evaluator verdict: PASS.

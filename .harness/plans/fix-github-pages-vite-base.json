@@ -1,0 +1,26 @@
+{
+  "slug": "fix-github-pages-vite-base",
+  "title": "Fix GitHub Pages Vite base config",
+  "type": "bug",
+  "created": "2026-04-13",
+  "status": "complete",
+  "context": "GitHub Pages deployment is failing because the Vite config incorrectly places `base` under `resolve.alias`, causing production assets to build with root-relative paths instead of the repo path.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Move Vite base to proper top-level config for GitHub Pages",
+      "status": "complete",
+      "acceptance_criteria": [
+        "vite.config.ts uses a top-level `base` option instead of an alias entry",
+        "The base path matches the GitHub Pages repo path `/seanjones.io.ai/` for production builds",
+        "The alias config still preserves `@` for src imports",
+        "Built output references assets under `/seanjones.io.ai/` instead of `/assets/` at the site root",
+        "npm run build completes successfully"
+      ],
+      "files": [
+        "vite.config.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

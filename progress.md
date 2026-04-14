@@ -162,6 +162,23 @@
 
 ---
 
+## 2026-04-13 — GitHub Pages config fix
+
+### Completed
+- Fixed the Vite configuration for GitHub Pages deployment.
+- Root cause: `base` was incorrectly placed under `resolve.alias`, so assets were built with root paths like `/assets/...`.
+- Updated [vite.config.ts](vite.config.ts) to use a top-level `base` setting:
+  - production: `/seanjones.io.ai/`
+  - development: `/`
+- Preserved the `@` alias for source imports.
+- Added focused config coverage in [src/__tests__/vite.config.spec.ts](src/__tests__/vite.config.spec.ts).
+- Verified the built output now points to:
+  - `/seanjones.io.ai/assets/...`
+  - `/seanjones.io.ai/favicon.png`
+- Verification passed with `npm run build`.
+
+---
+
 ## 2026-04-12 — Dark mode hero image opacity
 
 ### Completed

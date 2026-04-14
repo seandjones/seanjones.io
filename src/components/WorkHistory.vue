@@ -117,8 +117,10 @@ const jobs: Job[] = [
     description:
       "Built MVC-based web applications using C# and gained foundational experience in full-stack development and software architecture.",
     contributions: [
-      "Built MVC-based web applications using C#",
+      "Built MVC-based web applications using C#, SQL Server, IIS",
       "Gained foundational experience in full-stack development and software architecture",
+      "Working with designers and project managers to deliver client projects on time and within scope using SCSS/SASS, JavaScript, and HTML",
+      "Converting designs and wireframes into high-quality code across multiple projects and clients",
     ],
   },
 ];
