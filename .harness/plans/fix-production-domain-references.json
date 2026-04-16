@@ -1,0 +1,28 @@
+{
+  "slug": "fix-production-domain-references",
+  "title": "Replace workspace folder domain references with real production domain",
+  "type": "bug",
+  "created": "2026-04-15",
+  "status": "complete",
+  "context": "The site and metadata incorrectly reference the workspace folder name seanjones.io.ai. The real production domain is seanjones.io and all public-facing references should use that domain instead.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Update public domain references to seanjones.io",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Canonical and social metadata use https://seanjones.io",
+        "robots.txt and sitemap.xml reference https://seanjones.io",
+        "Tests are updated to validate the correct production domain",
+        "Build and relevant tests pass after the changes"
+      ],
+      "files": [
+        "index.html",
+        "public/robots.txt",
+        "public/sitemap.xml",
+        "src/__tests__/site-metadata.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

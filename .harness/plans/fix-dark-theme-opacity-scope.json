@@ -1,0 +1,26 @@
+{
+  "slug": "fix-dark-theme-opacity-scope",
+  "title": "Restrict dark-theme opacity to hero avatar only",
+  "type": "bug",
+  "created": "2026-04-15",
+  "status": "completed",
+  "context": "A regression concern was raised that dark-theme opacity may be affecting the entire page. The intended behavior is for opacity to apply only to the hero avatar image, not the whole dark theme container.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Make avatar-only opacity rule explicit and regression-safe",
+      "status": "completed",
+      "acceptance_criteria": [
+        "Hero avatar opacity remains targeted only to the avatar image in dark theme",
+        "No page-wide dark-theme opacity selector is present in the hero styles",
+        "Relevant HeroSection tests pass after the change",
+        "Type-check passes after the change"
+      ],
+      "files": [
+        "src/components/HeroSection.vue",
+        "src/components/__tests__/HeroSection.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

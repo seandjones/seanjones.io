@@ -175,7 +175,7 @@ describe('ContactForm — submission', () => {
   })
 
   it('shows a configuration error when VITE_FORMSPREE_ENDPOINT is not set', async () => {
-    vi.unstubAllEnvs()
+    vi.stubEnv('VITE_FORMSPREE_ENDPOINT', '')
     const wrapper = mount(ContactForm)
     vi.advanceTimersByTime(3000)
     await fillValidFields(wrapper)

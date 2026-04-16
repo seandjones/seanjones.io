@@ -145,3 +145,27 @@
 - Added `src/__tests__/vite.config.spec.ts` to assert the production base path and ensure `base` is no longer misused as an alias.
 - Verified with `npx vitest run src/__tests__/vite.config.spec.ts` and `npm run build`; built output now references `/seanjones.io.ai/assets/...` correctly.
 - Evaluator verdict: PASS.
+
+## 2026-04-15 - improve-lighthouse-optimization: Task 1 - Audit and optimize Lighthouse-related quality
+
+- Ran a real local Lighthouse audit against the production preview and established the baseline: Performance 84, Accessibility 96, Best Practices 100, SEO 92.
+- Fixed the high-impact issues identified by the audit:
+  - optimized the hero image with properly sized 220px and 440px WebP variants and added `srcset`, `sizes`, dimensions, and high fetch priority;
+  - limited `vite-plugin-vue-devtools` to development only to avoid unnecessary production overhead;
+  - corrected invalid ARIA usage in the work history timeline;
+  - improved contrast tokens for dark theme readability and refined button/on-accent colors;
+  - added canonical, robots, Open Graph, Twitter metadata, plus `robots.txt` and `sitemap.xml`.
+- Added focused verification coverage in `src/__tests__/site-metadata.spec.ts` and tightened config/image assertions in existing tests.
+- Verification evidence:
+  - `npm test` → 33/33 tests passed
+  - `npm run build` → passed
+  - Lighthouse final scores → Performance 100, Accessibility 100, Best Practices 100, SEO 100
+- Evaluator verdict: PASS.
+
+## 2026-04-15 - fix-production-domain-references: Task 1 - Update public domain references to seanjones.io
+
+- Corrected all public-facing metadata and crawler references to use the real production domain `https://seanjones.io` instead of the workspace folder name.
+- Updated `index.html`, `public/robots.txt`, and `public/sitemap.xml`.
+- Strengthened `src/__tests__/site-metadata.spec.ts` to validate the correct domain and explicitly reject stale `seanjones.io.ai` references.
+- Verification passed: relevant metadata tests succeeded and the production build completed successfully.
+- Evaluator verdict: PASS.

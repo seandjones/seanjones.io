@@ -35,7 +35,8 @@ describe('CursorFollower', () => {
 
     expect(follower.exists()).toBe(true)
     expect(cursorFollowerSource).toContain('pointer-events: none;')
-    expect(cursorFollowerSource).toContain('z-index: 90;')
+    expect(cursorFollowerSource).toContain('z-index: 0;')
+    expect(cursorFollowerSource).toContain('opacity: 0.72;')
     expect(cursorFollowerSource).toContain('width: 24px;')
     expect(cursorFollowerSource).toContain('height: 24px;')
     expect(cursorFollowerSource).toContain('transform 0.16s cubic-bezier(0.19, 1, 0.22, 1)')

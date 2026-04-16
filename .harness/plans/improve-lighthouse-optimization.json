@@ -1,0 +1,29 @@
+{
+  "slug": "improve-lighthouse-optimization",
+  "title": "Optimize Lighthouse quality and loading",
+  "type": "improvement",
+  "created": "2026-04-15",
+  "status": "complete",
+  "context": "The user wants the site verified and tuned for viewing quality and loading performance, with the goal of achieving excellent Lighthouse results across performance, accessibility, best practices, and SEO.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Audit and optimize Lighthouse-related quality",
+      "status": "complete",
+      "acceptance_criteria": [
+        "The site builds successfully after optimization changes",
+        "High-impact improvements are applied for performance, accessibility, best practices, and SEO",
+        "Critical rendering path and image loading are optimized where applicable",
+        "Metadata and navigation/accessibility quality are improved where applicable",
+        "Verification commands and audit evidence are recorded before completion"
+      ],
+      "files": [
+        "index.html",
+        "src/App.vue",
+        "src/components/HeroSection.vue",
+        "src/assets/main.scss"
+      ],
+      "depends_on": []
+    }
+  ]
+}

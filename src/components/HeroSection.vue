@@ -4,9 +4,14 @@
     <div class="hero__image-wrap">
       <img
         class="hero__avatar"
-        src="/profile.webp"
+        src="/profile-440.webp"
+        srcset="/profile-220.webp 220w, /profile-440.webp 440w"
+        sizes="(min-width: 768px) 220px, 160px"
+        width="220"
+        height="220"
         alt="Portrait of Sean Jones"
         loading="eager"
+        fetchpriority="high"
         decoding="async"
       />
     </div>
@@ -76,15 +81,11 @@
     border: 2px solid var(--color-border);
     box-shadow: var(--shadow-hero);
     transition: box-shadow var(--transition-theme), border-color var(--transition-theme), opacity var(--transition-theme);
-
+    opacity: 0.75;
     @media (min-width: 768px) {
       width: 220px;
       height: 220px;
     }
-  }
-
-  &__avatar {
-    opacity: 0.75;
   }
 
   &__content {
@@ -159,12 +160,12 @@
 
   &--primary {
     background: var(--color-accent);
-    color: #fff;
+    color: var(--color-on-accent);
     border: 1.5px solid transparent;
 
     &:hover {
       background: var(--color-accent-hover);
-      color: #fff;
+      color: var(--color-on-accent);
       box-shadow: 0 4px 16px rgba(0, 113, 227, 0.35);
     }
   }

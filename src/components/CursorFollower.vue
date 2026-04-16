@@ -67,13 +67,13 @@ onUnmounted(() => {
   height: 24px;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 90;
+  z-index: 0;
+  opacity: 0.72;
   background: color-mix(in srgb, var(--color-accent) 52%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-accent) 72%, white 28%);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent), 0 0 24px color-mix(in srgb, var(--color-accent) 40%, transparent);
   transform: translate3d(-9999px, -9999px, 0);
-  transition: transform 0.16s cubic-bezier(0.19, 1, 0.22, 1), background var(--transition-theme), border-color var(--transition-theme), box-shadow var(--transition-theme);
-  mix-blend-mode: plus-lighter;
+  transition: transform 0.16s cubic-bezier(0.19, 1, 0.22, 1), background var(--transition-theme), border-color var(--transition-theme), box-shadow var(--transition-theme), opacity var(--transition-theme);
 }
 
 :global([data-theme='light']) .cursor-follower {

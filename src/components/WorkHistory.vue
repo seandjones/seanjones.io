@@ -10,12 +10,11 @@
         </p>
       </div>
 
-      <div class="timeline" role="list">
+      <div class="timeline">
         <article
           v-for="(job, index) in jobs"
           :key="index"
           class="timeline__item"
-          role="listitem"
         >
           <!-- Line + dot -->
           <div class="timeline__track" aria-hidden="true">

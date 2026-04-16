@@ -179,19 +179,66 @@
 
 ---
 
+## 2026-04-15 — Lighthouse optimization pass
+
+### Completed
+- Performed a real production-style Lighthouse audit and optimized the site for viewing quality and load performance.
+- Reduced hero image payload dramatically with responsive WebP variants:
+  - `public/profile-220.webp`
+  - `public/profile-440.webp`
+- Updated the hero image to use responsive delivery, explicit dimensions, and high fetch priority for better LCP.
+- Limited Vue devtools injection to development only in `vite.config.ts` to keep the production bundle lean.
+- Fixed accessibility/SEO issues:
+  - removed invalid timeline ARIA role usage
+  - improved dark-theme contrast tokens and button readability
+  - added canonical, robots, Open Graph, and Twitter metadata
+  - added `public/robots.txt` and `public/sitemap.xml`
+- Full verification passed:
+  - `npm test` → 33/33 passing
+  - `npm run build` → passing
+- Lighthouse audit result:
+  - Performance: 100
+  - Accessibility: 100
+  - Best Practices: 100
+  - SEO: 100
+
+---
+
+## 2026-04-15 — Production domain correction
+
+### Completed
+- Replaced public-facing references to the workspace folder name with the real production domain `https://seanjones.io`.
+- Updated canonical, Open Graph, and Twitter metadata in [index.html](index.html).
+- Updated crawler discovery files:
+  - [public/robots.txt](public/robots.txt)
+  - [public/sitemap.xml](public/sitemap.xml)
+- Strengthened metadata tests to ensure stale `seanjones.io.ai` references do not regress.
+- Verification passed with the relevant test suite and production build.
+
+---
+
 ## 2026-04-12 — Dark mode hero image opacity
 
 ### Completed
 - Added CSS rule to reduce hero image brightness in dark mode:
-  - `:global([data-theme='dark']) &__avatar { opacity: 0.75; }`
-  - Rule targets **only** the `.hero__avatar` image element (no page-wide effects)
+  - Explicit selector now targets only the hero avatar image in dark theme
+  - No page-wide dark-theme opacity effect is applied
 - Avatar image is fully opaque (1.0) on light theme, reduced to 0.75 opacity on dark theme
 - Updated CSS transition to smooth opacity changes between themes
-- Added focused unit test in `src/components/__tests__/HeroSection.spec.ts`:
+- Added focused unit test coverage in HeroSection to prevent regressions:
   - Verifies light mode opacity baseline (1.0)
-  - Verifies dark mode opacity (0.75) via injected CSS rule test
-  - Confirms avatar element structure integrity
+  - Confirms the dark-theme selector targets only the avatar image
+  - Guards against a page-wide dark opacity rule being reintroduced
 - Verification passes:
-  - `npx vitest run src/components/__tests__/HeroSection.spec.ts`
-  - `npm run type-check`
-  - `npm run build-only`
+  - HeroSection test suite ✓
+  - Type-check ✓
+  - Build-only ✓
+
+---
+
+## 2026-04-15 — Dark theme opacity regression safeguard
+
+### Completed
+- Tightened the dark-mode selector so opacity explicitly applies only to the hero avatar image.
+- Added a regression assertion to prevent a page-wide dark-theme opacity rule from returning.
+- Verified with the HeroSection test suite and a clean type-check.
