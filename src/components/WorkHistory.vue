@@ -110,8 +110,8 @@ const jobs: Job[] = [
   },
   {
     role: "Web Developer Intern",
-    company: "The Alchemedia Project",
-    company_link: "https://www.thealchemediaproject.com",
+    company: "Marlin Connections",
+    company_link: "https://www.marlinconnections.net/",
     period: "2010 – 2011",
     description:
       "Built MVC-based web applications using C# and gained foundational experience in full-stack development and software architecture.",
