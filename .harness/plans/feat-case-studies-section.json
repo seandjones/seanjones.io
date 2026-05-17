@@ -1,0 +1,28 @@
+{
+  "slug": "feat-case-studies-section",
+  "title": "Implement case studies projects section",
+  "type": "feature",
+  "created": "2026-05-13",
+  "status": "complete",
+  "context": "Add a new single-page Case Studies/Projects section with placeholder content and a flexible structure so any number of tiles and list elements can be added without code shape changes. Keep implementation route-ready for future extraction.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Build reusable projects section and wire into app",
+      "status": "complete",
+      "acceptance_criteria": [
+        "A new projects section is rendered on the single-page app with clear section heading and id anchor for navigation.",
+        "Each project tile includes an image, title, and description area with a list of bullet items.",
+        "Project tiles are rendered from structured data arrays so there is no hard-coded limit on number of projects or bullet items.",
+        "Section uses placeholder content/images only and remains fully responsive in current theme system.",
+        "Existing verification command passes after the change."
+      ],
+      "files": [
+        "src/components/ProjectsSection.vue",
+        "src/App.vue",
+        "src/components/__tests__/ProjectsSection.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

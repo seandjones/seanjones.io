@@ -1,0 +1,26 @@
+{
+  "slug": "feat-hero-case-studies-link",
+  "title": "Add case studies CTA to hero section",
+  "type": "feature",
+  "created": "2026-05-13",
+  "status": "complete",
+  "context": "Update the hero call-to-action group so users can directly jump to the new case studies section in the single-page layout.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Add hero link to case studies section",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Hero CTA includes a visible link to the case studies section with href #projects.",
+        "Existing hero CTA links remain present and functional.",
+        "Hero section tests are updated to assert the case studies link.",
+        "Project verification command passes after the change."
+      ],
+      "files": [
+        "src/components/HeroSection.vue",
+        "src/components/__tests__/HeroSection.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

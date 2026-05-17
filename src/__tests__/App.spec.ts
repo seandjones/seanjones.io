@@ -35,6 +35,7 @@ describe('App navbar branding', () => {
     expect(wrapper.find('.cursor-follower').exists()).toBe(true)
     expect(wrapper.find('section.hero').exists()).toBe(true)
     expect(wrapper.find('section#skills').exists()).toBe(true)
+    expect(wrapper.find('section#projects').exists()).toBe(true)
     expect(wrapper.find('section#work').exists()).toBe(true)
     expect(wrapper.find('section#contact').exists()).toBe(true)
   })

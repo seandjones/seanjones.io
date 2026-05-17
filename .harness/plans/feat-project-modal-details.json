@@ -1,0 +1,28 @@
+{
+  "slug": "feat-project-modal-details",
+  "title": "Move case study details into modal dialogs",
+  "type": "feature",
+  "created": "2026-05-14",
+  "status": "complete",
+  "context": "Replace inline project detail lists with click-driven modal dialogs so tiles show image/title/description only on load, and full details appear on demand with minimal grow animation.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Implement modal-based case study details",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Projects tiles initially show only image, title, and description; inline detail lists are not rendered in the grid.",
+        "Each tile has a button that opens a modal for that project.",
+        "Modal displays full case study details list for the selected project and can be dismissed with close button, overlay click, and Escape key.",
+        "Modal includes a minimal grow-in animation when opened.",
+        "Projects section tests are updated to verify new tile and modal behavior.",
+        "Project verification command passes after the change."
+      ],
+      "files": [
+        "src/components/ProjectsSection.vue",
+        "src/components/__tests__/ProjectsSection.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

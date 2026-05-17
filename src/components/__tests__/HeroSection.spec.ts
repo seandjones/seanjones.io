@@ -32,14 +32,14 @@ describe('HeroSection', () => {
     const image = wrapper.get('img.hero__avatar')
 
     expect(Number(window.getComputedStyle(image.element).opacity)).toBe(1)
-    expect(heroSectionSource).toContain(":global([data-theme='dark']) .hero__avatar")
-    expect(heroSectionSource).not.toContain(":global([data-theme='dark']) {\n    opacity: 0.75;")
+    expect(heroSectionSource).toMatch(/:global\(\[data-theme=["']dark["']\]\)\s+\.hero__avatar/)
+    expect(heroSectionSource).not.toMatch(/:global\(\[data-theme=["']dark["']\]\)\s*\{\s*opacity:\s*0\.75;/)
   })
 
   it('keeps hero call-to-action links visible', () => {
     const wrapper = mount(HeroSection)
     const links = wrapper.findAll('.hero__cta a').map(node => node.attributes('href'))
 
-    expect(links).toEqual(['#skills', '#work', '#contact'])
+    expect(links).toEqual(['#skills', '#projects', '#work', '#contact'])
   })
 })

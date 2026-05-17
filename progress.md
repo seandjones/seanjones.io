@@ -219,6 +219,32 @@
 
 ## 2026-04-12 — Dark mode hero image opacity
 
+## 2026-05-13 — Case studies/projects section (feat-case-studies-section)
+
+### Completed
+- Added new `ProjectsSection` component at `src/components/ProjectsSection.vue` with data-driven case study tiles.
+- Each tile now includes:
+  - image (placeholder asset)
+  - title
+  - description
+  - detail list rendered from array data
+- Added placeholder visual asset at `public/project-placeholder.svg`.
+- Wired section into the single-page app in `src/App.vue`:
+  - new nav anchor: `#projects` (Case Studies)
+  - section inserted between Skills and Work History
+- Added focused test coverage:
+  - `src/components/__tests__/ProjectsSection.spec.ts`
+  - updated `src/__tests__/App.spec.ts` to assert `section#projects` is mounted
+- Stabilized baseline before feature work by fixing a pre-existing Hero section opacity regression in `src/components/HeroSection.vue`.
+
+### Verification
+- `npm run test` ✓ (41/41 passing)
+- `npm run build` ✓
+- Harness evaluator verdict: PASS
+
+### Notes
+- Projects section accepts optional injected `items` data and falls back to default placeholders, which keeps the section route-ready for future extraction.
+
 ### Completed
 - Added CSS rule to reduce hero image brightness in dark mode:
   - Explicit selector now targets only the hero avatar image in dark theme
@@ -242,3 +268,39 @@
 - Tightened the dark-mode selector so opacity explicitly applies only to the hero avatar image.
 - Added a regression assertion to prevent a page-wide dark-theme opacity rule from returning.
 - Verified with the HeroSection test suite and a clean type-check.
+
+---
+
+## 2026-05-13 — Hero case studies link
+
+### Completed
+- Added a new hero CTA link to the case studies section (`#projects`) in `src/components/HeroSection.vue`.
+- Preserved existing hero links for Skills, Work, and Contact.
+- Updated hero CTA test coverage in `src/components/__tests__/HeroSection.spec.ts` to assert the new expected link sequence.
+- Stabilized the dark-theme selector regression test to tolerate quote-style differences while preserving rule-scope guarantees.
+
+### Verification
+- `npm run test` ✓ (41/41 passing)
+- `npm run build` ✓
+- Harness evaluator verdict: PASS
+
+---
+
+## 2026-05-14 — Projects modal details interaction
+
+### Completed
+- Updated `src/components/ProjectsSection.vue` so project tiles now show only image, title, and description by default.
+- Added a `View Case Study` button on each tile that opens a modal with full details for the selected project.
+- Removed inline detail lists from the initial grid and moved them into the modal dialog.
+- Implemented modal close interactions:
+  - close button,
+  - overlay click,
+  - Escape key.
+- Added a minimal grow-in animation for modal open/close.
+- Added body scroll lock while modal is active.
+- Added a new `check` script in `package.json`:
+  - `npm run check` → `npm run test && npm run build`
+
+### Verification
+- `npm run check` ✓ (43/43 passing)
+- Harness evaluator verdict: PASS

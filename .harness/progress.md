@@ -169,3 +169,49 @@
 - Strengthened `src/__tests__/site-metadata.spec.ts` to validate the correct domain and explicitly reject stale `seanjones.io.ai` references.
 - Verification passed: relevant metadata tests succeeded and the production build completed successfully.
 - Evaluator verdict: PASS.
+
+## 2026-04-24 - feat-cursor-meteor-trail: Task 1 (revision) - SVG connected stroke meteor trail
+
+- Replaced individual `.cursor-trail` dot divs with a full-screen `<svg>` overlay containing 12 `<line>` segments (`.cursor-trail-segment`).
+- Each segment connects consecutive entries in `posHistory` — `x1/y1 = posHistory[i]`, `x2/y2 = posHistory[i+1]` — so the trail is a single connected polyline.
+- Opacity tapers from `0.70` (head) to `0.00` (tail); `stroke-width` tapers from `12px` to `0.5px`; `stroke-linecap: round` softens joins.
+- Fixed `width: 100%` (not `100vw`) on the SVG overlay to avoid horizontal overflow on scrollbar platforms.
+- Added 2 new tests: segment-connectivity (adjacent segments share endpoints) and updated all trail tests to the SVG API.
+- Verification: 10/10 tests passed, `npm run type-check` ✓, `npm run build-only` ✓.
+- Evaluator verdict: PASS.
+
+## 2026-05-13 - feat-case-studies-section: Task 1 - Build reusable projects section and wire into app
+
+- Implemented `src/components/ProjectsSection.vue` as a data-driven case studies section with project tiles that include image, title, description, and bullet-list details.
+- Added placeholder image asset `public/project-placeholder.svg` and placeholder content for all project entries.
+- Wired section into `src/App.vue` with a new `#projects` nav anchor and inserted the section into the single-page flow between skills and work history.
+- Added and strengthened tests in `src/components/__tests__/ProjectsSection.spec.ts` (structure, accessibility attributes, exact counts, placeholder content, empty-data behavior) and updated `src/__tests__/App.spec.ts` to assert section mount.
+- Fixed a pre-existing baseline regression in `src/components/HeroSection.vue` (avatar opacity scoped to dark theme), then re-ran full verification.
+- Verification: `npm run test` ✓ (41/41), `npm run build` ✓.
+- Evaluator verdict: PASS after one retry cycle (initial FAIL due test quality; resolved by strengthening assertions and adding edge-case coverage).
+- What to work on next: decide whether to extract projects data into a standalone content file/API and prepare route split for `/projects`.
+
+## 2026-05-13 - feat-hero-case-studies-link: Task 1 - Add hero link to case studies section
+
+- Updated hero CTA links in `src/components/HeroSection.vue` to include a new primary link to `#projects` labeled "Case Studies".
+- Preserved all existing hero CTA anchors (`#skills`, `#work`, `#contact`) and ordering with the new case studies link inserted after skills.
+- Updated `src/components/__tests__/HeroSection.spec.ts` CTA assertion to require `['#skills', '#projects', '#work', '#contact']`.
+- Hardened dark-theme opacity selector test in `HeroSection.spec.ts` to accept either single-quote or double-quote CSS selector formatting and keep the targeted-selector regression guard stable.
+- Verification: `npm run test` ✓ (41/41), `npm run build` ✓.
+- Evaluator verdict: PASS.
+
+## 2026-05-14 - feat-project-modal-details: Task 1 - Implement modal-based case study details
+
+- Refactored `src/components/ProjectsSection.vue` so project tiles now render only image, title, and short description on initial load.
+- Removed inline detail lists from the grid and added per-tile `View Case Study` buttons to open a details modal.
+- Implemented a modal dialog with full case-study details for the selected project, including close button, overlay-dismiss, and Escape-key handling.
+- Added minimal grow animation for modal open/close using transition classes and scale transform.
+- Added body scroll locking while modal is open and restored scroll on close/unmount.
+- Updated `src/components/__tests__/ProjectsSection.spec.ts` with modal-centric behavior checks:
+  - tile summary + trigger rendering,
+  - selected-project modal content assertions,
+  - close interactions (button, overlay, Escape),
+  - grow animation style guard.
+- Added `check` script to `package.json` (`npm run test && npm run build`) to standardize harness verification.
+- Verification: `npm run check` ✓ (43/43 tests, build/type-check passing).
+- Evaluator verdict: PASS (after one retry that tightened test specificity and verification command consistency).

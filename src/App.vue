@@ -12,6 +12,7 @@
 
         <nav class="navbar__nav" aria-label="Site navigation">
           <a href="#skills" class="navbar__link">Skills</a>
+          <a href="#projects" class="navbar__link">Case Studies</a>
           <a href="#work" class="navbar__link">Experience</a>
           <a href="#contact" class="navbar__link">Contact</a>
         </nav>
@@ -24,6 +25,7 @@
     <main id="main-content">
       <HeroSection />
       <SkillsSection />
+      <ProjectsSection />
       <WorkHistory />
       <ContactForm />
     </main>
@@ -56,6 +58,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import ThemeToggle from "./components/ThemeToggle.vue";
 import HeroSection from "./components/HeroSection.vue";
 import SkillsSection from "./components/SkillsSection.vue";
+import ProjectsSection from "./components/ProjectsSection.vue";
 import WorkHistory from "./components/WorkHistory.vue";
 import ContactForm from "./components/ContactForm.vue";
 import CursorFollower from "./components/CursorFollower.vue";
@@ -127,7 +130,7 @@ const socialLinks = [
   isolation: isolate;
 }
 
-.app > *:not(.cursor-follower) {
+.app > *:not(.cursor-follower), .app > *:not(.cursor-trail-svg) {
   position: relative;
   z-index: 1;
 }

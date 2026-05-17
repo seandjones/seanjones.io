@@ -25,12 +25,13 @@
       </p>
       <p class="hero__bio">
         Engineering leader with a passion for building high-performance, scalable
-        products. I bridge technical depth with strategic vision — mentoring teams, driving
-        architecture decisions, and shipping experiences users love.
+        products. I bridge technical depth with strategic vision — mentoring teams,
+        driving architecture decisions, and shipping experiences users love.
       </p>
 
       <div class="hero__cta">
         <a href="#skills" class="btn btn--primary">View Skills</a>
+        <a href="#projects" class="btn btn--primary">Case Studies</a>
         <a href="#work" class="btn btn--primary">Work</a>
         <a href="#contact" class="btn btn--ghost">Get in Touch</a>
       </div>
@@ -80,8 +81,9 @@
     object-position: center;
     border: 2px solid var(--color-border);
     box-shadow: var(--shadow-hero);
-    transition: box-shadow var(--transition-theme), border-color var(--transition-theme), opacity var(--transition-theme);
-    opacity: 0.75;
+    transition: box-shadow var(--transition-theme), border-color var(--transition-theme),
+      opacity var(--transition-theme);
+    opacity: 1;
     @media (min-width: 768px) {
       width: 220px;
       height: 220px;
@@ -140,6 +142,10 @@
       justify-content: flex-start;
     }
   }
+}
+
+:global([data-theme="dark"]) .hero__avatar {
+  opacity: 0.75;
 }
 
 // ─── Buttons ──────────────────────────────────────────────────────────────────

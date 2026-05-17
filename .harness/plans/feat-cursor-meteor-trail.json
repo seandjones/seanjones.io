@@ -1,0 +1,31 @@
+{
+  "slug": "feat-cursor-meteor-trail",
+  "title": "Add meteor trail animation to cursor follower",
+  "type": "feature",
+  "created": "2026-04-24",
+  "status": "complete",
+  "context": "Enhance the cursor follower with a meteor-style trailing animation. A history buffer of recent cursor positions drives N trail dots that shrink and fade the further they are from the cursor head, creating a comet/meteor visual effect.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Implement meteor trail dots in CursorFollower",
+      "status": "complete",
+      "acceptance_criteria": [
+        "12 .cursor-trail-segment SVG line elements render inside .cursor-trail-svg when enabled",
+        "Each segment has progressively decreasing opacity (0.70 at head, 0.00 at tail) and stroke-width (12px at head, 0.5px at tail)",
+        "Trail segments connect sequential cursor positions: segment i x1/y1 equals posHistory[i] and x2/y2 equals posHistory[i+1]",
+        "Trail segments have no CSS transition — they update directly via setAttribute each RAF",
+        "Trail segments are hidden (inside v-if='enabled') and not rendered for reduced-motion / coarse pointer users",
+        "All existing CursorFollower.spec.ts tests continue to pass",
+        "New spec tests confirm 12 .cursor-trail-segment elements render, opacity/stroke-width gradient, and segment connectivity",
+        "npx vitest run src/components/__tests__/CursorFollower.spec.ts passes",
+        "npm run type-check and npm run build-only pass"
+      ],
+      "files": [
+        "src/components/CursorFollower.vue",
+        "src/components/__tests__/CursorFollower.spec.ts"
+      ],
+      "depends_on": []
+    }
+  ]
+}

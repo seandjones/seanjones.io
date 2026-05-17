@@ -46,3 +46,9 @@ npm run build
 ```sh
 npm run lint
 ```
+
+### Deploy with [gh-pages](https://docs.github.com/en/pages)
+
+```sh
+npm run deploy
+```
