@@ -1,5 +1,5 @@
 <template>
-  <section class="hero" aria-label="Introduction">
+  <section class="hero" aria-label="Introduction. Sean Jones, Director of Engineering at Price.com">
     <!-- Profile image -->
     <div class="hero__image-wrap">
       <img
@@ -18,21 +18,19 @@
 
     <!-- Identity -->
     <div class="hero__content">
+      <p class="hero__eyebrow">Director of Engineering</p>
       <h1 class="hero__name">Sean Jones</h1>
       <p class="hero__title">
-        Director of Engineering
-        <span class="hero__company">@ price.com</span>
+        Building at price.com
+        <span class="hero__company">since 2016</span>
       </p>
       <p class="hero__bio">
-        Engineering leader with a passion for building high-performance, scalable
-        products. I bridge technical depth with strategic vision — mentoring teams,
-        driving architecture decisions, and shipping experiences users love.
+        Twelve years of full-stack depth. I own platforms, lead teams, make architecture calls,
+        and ship experiences users actually notice, all in the same week.
       </p>
 
       <div class="hero__cta">
-        <a href="#skills" class="btn btn--primary">View Skills</a>
         <a href="#projects" class="btn btn--primary">Case Studies</a>
-        <a href="#work" class="btn btn--primary">Work</a>
         <a href="#contact" class="btn btn--ghost">Get in Touch</a>
       </div>
     </div>
@@ -40,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-// No props needed — static hero section
+// No props needed; static hero section
 </script>
 
 <style lang="scss" scoped>
@@ -54,14 +52,18 @@
   padding: 7rem 1.5rem 4rem;
   text-align: center;
   position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 80% 16%, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 46%),
+    radial-gradient(circle at 20% 86%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 52%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 4%, transparent) 0%, transparent 30%);
 
   @media (min-width: 768px) {
     flex-direction: row;
     text-align: left;
     gap: 4rem;
-    padding: 6rem 4rem 4rem;
-    max-width: 1100px;
-    margin: 0 auto;
+    padding: 6rem clamp(2.5rem, 7vw, 8rem) 4rem;
+    width: 100%;
   }
 
   @media (min-width: 1100px) {
@@ -91,7 +93,7 @@
   }
 
   &__content {
-    max-width: 560px;
+    max-width: 620px;
   }
 
   &__eyebrow {
@@ -104,17 +106,17 @@
   }
 
   &__name {
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-size: clamp(2.5rem, 7vw, 5.2rem);
     font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
     color: var(--color-text-primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
   }
 
   &__title {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
-    font-weight: 500;
+    font-size: clamp(1.02rem, 2.3vw, 1.38rem);
+    font-weight: 600;
     color: var(--color-text-secondary);
     margin-bottom: 1.25rem;
   }
@@ -134,8 +136,9 @@
 
   &__cta {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.9rem;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
 
     @media (min-width: 768px) {
@@ -154,7 +157,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.625rem 1.5rem;
+  padding: 0.7rem 1.55rem;
   border-radius: var(--radius-pill);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -168,11 +171,17 @@
     background: var(--color-accent);
     color: var(--color-on-accent);
     border: 1.5px solid transparent;
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--color-accent) 22%, transparent);
 
     &:hover {
       background: var(--color-accent-hover);
       color: var(--color-on-accent);
-      box-shadow: 0 4px 16px rgba(0, 113, 227, 0.35);
+      box-shadow: var(--shadow-accent-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring), var(--shadow-accent-hover);
     }
   }
 
@@ -183,6 +192,11 @@
 
     &:hover {
       background: var(--color-pill-bg);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
     }
   }
 }

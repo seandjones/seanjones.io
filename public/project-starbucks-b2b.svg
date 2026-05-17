@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="B2B ecommerce analytics and catalog interface mockup">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e2c28"/>
+      <stop offset="100%" stop-color="#1b4e47"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="84" y="72" width="1032" height="531" rx="22" fill="#102c29"/>
+  <rect x="118" y="108" width="968" height="52" rx="12" fill="#153a36"/>
+  <rect x="118" y="188" width="302" height="381" rx="16" fill="#163f3a"/>
+  <rect x="442" y="188" width="302" height="180" rx="16" fill="#163f3a"/>
+  <rect x="766" y="188" width="320" height="180" rx="16" fill="#163f3a"/>
+  <rect x="442" y="389" width="644" height="180" rx="16" fill="#163f3a"/>
+  <rect x="470" y="226" width="120" height="20" rx="8" fill="#58c8b9"/>
+  <rect x="470" y="264" width="230" height="16" rx="8" fill="#2d746d"/>
+  <rect x="470" y="296" width="190" height="16" rx="8" fill="#2d746d"/>
+  <circle cx="896" cy="270" r="58" fill="#58c8b9" opacity="0.9"/>
+</svg>

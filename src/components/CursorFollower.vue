@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 
-const TRAIL_COUNT = 12
+const TRAIL_COUNT = 10
 
 const enabled = ref(false)
 const followerRef = ref<HTMLElement | null>(null)
@@ -83,8 +83,9 @@ function onPointerMove(event: PointerEvent) {
 onMounted(() => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const isSmallerViewport = window.matchMedia('(max-width: 1024px)').matches
 
-  enabled.value = !prefersReducedMotion && !hasCoarsePointer
+  enabled.value = !prefersReducedMotion && !hasCoarsePointer && !isSmallerViewport
 
   if (!enabled.value) {
     return
@@ -112,25 +113,25 @@ onUnmounted(() => {
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.72;
-  background: color-mix(in srgb, var(--color-accent) 52%, transparent);
+  opacity: 0.64;
+  background: color-mix(in srgb, var(--color-accent) 46%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-accent) 72%, white 28%);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent), 0 0 24px color-mix(in srgb, var(--color-accent) 40%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 28%, transparent), 0 0 12px color-mix(in srgb, var(--color-accent) 25%, transparent);
   transform: translate3d(-9999px, -9999px, 0);
   transition: transform 0.16s cubic-bezier(0.19, 1, 0.22, 1), background var(--transition-theme), border-color var(--transition-theme), box-shadow var(--transition-theme), opacity var(--transition-theme);
   display: none;
 }
 
 :global([data-theme='light']) .cursor-follower {
-  background: color-mix(in srgb, var(--color-accent) 68%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 60%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-accent) 85%, black 15%);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 58%, transparent), 0 0 30px color-mix(in srgb, var(--color-accent) 52%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 38%, transparent), 0 0 14px color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
 :global([data-theme='dark']) .cursor-follower {
-  background: color-mix(in srgb, var(--color-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 42%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-accent) 78%, white 22%);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 36%, transparent), 0 0 26px color-mix(in srgb, var(--color-accent) 42%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 26%, transparent), 0 0 12px color-mix(in srgb, var(--color-accent) 28%, transparent);
 }
 
 .cursor-trail-svg {

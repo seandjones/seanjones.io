@@ -1,10 +1,9 @@
 <template>
-  <section id="work" class="work" aria-labelledby="work-heading">
+  <section id="work" class="work" aria-labelledby="work-heading" role="region" aria-describedby="work-description">
     <div class="work__container">
       <div class="work__header">
-        <p class="work__eyebrow">Where I've been</p>
         <h2 id="work-heading" class="work__heading">Work History</h2>
-        <p class="work__subheading">
+        <p id="work-description" class="work__subheading">
           Over 15 years building products at the intersection of engineering leadership
           and hands-on development.
         </p>
@@ -15,6 +14,7 @@
           v-for="(job, index) in jobs"
           :key="index"
           class="timeline__item"
+          :class="{ 'timeline__item--current': index === 0 }"
         >
           <!-- Line + dot -->
           <div class="timeline__track" aria-hidden="true">
@@ -26,14 +26,18 @@
           <div class="timeline__card">
             <div class="timeline__meta">
               <span class="timeline__period">{{ job.period }}</span>
+              <span v-if="index === 0" class="timeline__badge">Current</span>
             </div>
             <h3 class="timeline__role">{{ job.role }}</h3>
-            <p v-if="job.company_link">
-              <a :href="job.company_link" target="_blank" rel="noopener noreferrer">{{
-                job.company
-              }}</a>
+            <p v-if="job.company_link" class="timeline__company">
+              <a
+                class="timeline__company-link"
+                :href="job.company_link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >{{ job.company }}</a>
             </p>
-            <p v-else>{{ job.company }}</p>
+            <p v-else class="timeline__company">{{ job.company }}</p>
             <p class="timeline__description">{{ job.description }}</p>
             <ul
               class="timeline__contributions"
@@ -118,8 +122,8 @@ const jobs: Job[] = [
     contributions: [
       "Built MVC-based web applications using C#, SQL Server, IIS",
       "Gained foundational experience in full-stack development and software architecture",
-      "Working with designers and project managers to deliver client projects on time and within scope using SCSS/SASS, JavaScript, and HTML",
-      "Converting designs and wireframes into high-quality code across multiple projects and clients",
+      "Worked with designers and project managers to deliver client projects on time using SCSS/SASS, JavaScript, and HTML",
+      "Converted designs and wireframes into high-quality code across multiple projects and clients",
     ],
   },
 ];
@@ -143,15 +147,6 @@ const jobs: Job[] = [
   &__header {
     text-align: center;
     margin-bottom: 4rem;
-  }
-
-  &__eyebrow {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: 0.5rem;
   }
 
   &__heading {
@@ -246,15 +241,34 @@ const jobs: Job[] = [
     }
 
     &:hover {
-      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-
-      [data-theme="dark"] & {
-        box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
-      }
+      box-shadow: var(--shadow-card-hover);
     }
   }
 
+  // Current role card gets accent left border
+  &__item--current &__card {
+    border-color: color-mix(in srgb, var(--color-accent) 44%, var(--color-border));
+    background: linear-gradient(
+      138deg,
+      color-mix(in srgb, var(--color-accent) 9%, var(--color-bg-card)) 0%,
+      var(--color-bg-card) 42%
+    );
+    box-shadow:
+      0 16px 38px color-mix(in srgb, var(--color-accent) 17%, transparent),
+      var(--shadow-card);
+  }
+
+  &__item--current &__dot {
+    box-shadow:
+      0 0 0 2px var(--color-accent),
+      0 0 0 7px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+
   &__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
     margin-bottom: 0.5rem;
   }
 
@@ -264,6 +278,23 @@ const jobs: Job[] = [
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-accent);
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.5rem;
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+    transition: background var(--transition-theme), border-color var(--transition-theme);
   }
 
   &__role {
@@ -284,6 +315,27 @@ const jobs: Job[] = [
     font-weight: 500;
     color: var(--color-text-secondary);
     margin-bottom: 0.875rem;
+  }
+
+  &__company-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+    text-underline-offset: 0.2em;
+
+    &:hover {
+      color: var(--color-text-primary);
+      text-decoration-color: var(--color-accent);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 3px;
+    }
   }
 
   &__description {

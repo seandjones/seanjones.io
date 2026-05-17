@@ -1,11 +1,53 @@
 <template>
   <div :data-theme="theme" class="app">
-    <CursorFollower />
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content. Press ? for keyboard shortcuts">Skip to main content</a>
+
+    <!-- ─── Keyboard Help Modal ─────────────────────────────────────── -->
+    <transition name="help-modal">
+      <div
+        v-if="showKeyboardHelp"
+        class="keyboard-help-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="keyboard-help-title"
+        @click.self="showKeyboardHelp = false"
+      >
+        <div class="keyboard-help-panel">
+          <button
+            type="button"
+            class="keyboard-help__close"
+            aria-label="Close keyboard help"
+            @click="showKeyboardHelp = false"
+          >
+            ✕
+          </button>
+          <h2 id="keyboard-help-title" class="keyboard-help__title">Keyboard Shortcuts</h2>
+          <div class="keyboard-help__content">
+            <div class="keyboard-help__group">
+              <p class="keyboard-help__group-title">Navigation</p>
+              <ul class="keyboard-help__list" aria-label="Navigation shortcuts">
+                <li><kbd>g</kbd><span>Go to Case Studies</span></li>
+                <li><kbd>s</kbd><span>Go to Skills</span></li>
+                <li><kbd>w</kbd><span>Go to Work History</span></li>
+                <li><kbd>c</kbd><span>Go to Contact</span></li>
+                <li><kbd>h</kbd><span>Go to Home (Hero)</span></li>
+              </ul>
+            </div>
+            <div class="keyboard-help__group">
+              <p class="keyboard-help__group-title">Other</p>
+              <ul class="keyboard-help__list" aria-label="Other shortcuts">
+                <li><kbd>?</kbd><span>Show this help</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- ─── Navigation ─────────────────────────────────────────────────── -->
     <header class="navbar" :class="{ 'navbar--scrolled': scrolled }" role="banner">
       <div class="navbar__inner">
-        <a href="#" class="navbar__brand" aria-label="Sean Jones — home">
+        <a href="#" class="navbar__brand" aria-label="Sean Jones, home">
           <img class="navbar__brand-mark" src="/favicon.png" alt="" aria-hidden="true" />
           <span class="navbar__brand-name">Sean Jones</span>
         </a>
@@ -61,7 +103,6 @@ import SkillsSection from "./components/SkillsSection.vue";
 import ProjectsSection from "./components/ProjectsSection.vue";
 import WorkHistory from "./components/WorkHistory.vue";
 import ContactForm from "./components/ContactForm.vue";
-import CursorFollower from "./components/CursorFollower.vue";
 
 // ─── Theme ───────────────────────────────────────────────────────────────────
 
@@ -100,6 +141,55 @@ onUnmounted(() => {
   window.removeEventListener("scroll", onScroll);
 });
 
+// ─── Keyboard Shortcuts ──────────────────────────────────────────────────────
+
+const showKeyboardHelp = ref(false);
+
+function handleKeydown(event: KeyboardEvent) {
+  // Ignore if user is typing in an input or textarea
+  if (
+    event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement
+  ) {
+    return;
+  }
+
+  const key = event.key.toLowerCase();
+  const routes: Record<string, string> = {
+    g: "#projects",
+    s: "#skills",
+    w: "#work",
+    c: "#contact",
+    h: "#",
+  };
+
+  if (key === "?") {
+    event.preventDefault();
+    showKeyboardHelp.value = !showKeyboardHelp.value;
+    return;
+  }
+
+  if (key in routes) {
+    event.preventDefault();
+    const target = routes[key] as string;
+    if (target === "#") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      const element = document.querySelector(target);
+      element?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    showKeyboardHelp.value = false;
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", handleKeydown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeydown);
+});
+
 // ─── Static data ─────────────────────────────────────────────────────────────
 
 const currentYear = new Date().getFullYear();
@@ -130,9 +220,30 @@ const socialLinks = [
   isolation: isolate;
 }
 
-.app > *:not(.cursor-follower), .app > *:not(.cursor-trail-svg) {
+.app > :not(.skip-link) {
   position: relative;
   z-index: 1;
+}
+
+.skip-link {
+  position: fixed;
+  left: 0.75rem;
+  top: 0.5rem;
+  z-index: 200;
+  display: inline-flex;
+  width: max-content;
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  transform: translateY(-140%);
+  transition: transform var(--transition-base);
+
+  &:focus-visible {
+    transform: translateY(0);
+    box-shadow: var(--focus-ring);
+  }
 }
 
 // ─── Navbar ───────────────────────────────────────────────────────────────────
@@ -157,10 +268,17 @@ const socialLinks = [
 
   &--scrolled {
     background: color-mix(in srgb, var(--color-bg) 85%, transparent);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(125%) blur(8px);
+    -webkit-backdrop-filter: saturate(125%) blur(8px);
     border-bottom-color: var(--color-border);
     box-shadow: 0 1px 0 var(--color-border);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &--scrolled {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
   }
 
   &__inner {
@@ -173,9 +291,13 @@ const socialLinks = [
   }
 
   &__brand {
+    min-height: 44px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 999px;
     text-decoration: none;
     color: var(--color-text-primary);
     transition: color var(--transition-theme);
@@ -198,7 +320,10 @@ const socialLinks = [
     object-fit: cover;
     border: 1px solid var(--color-border);
     flex-shrink: 0;
-    mix-blend-mode: multiply;
+
+    :global([data-theme='light']) & {
+      mix-blend-mode: multiply;
+    }
   }
 
   &__brand-name {
@@ -219,7 +344,11 @@ const socialLinks = [
   }
 
   &__link {
-    padding: 0.4rem 0.75rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.9rem;
     border-radius: 100px;
     font-size: 0.875rem;
     font-weight: 500;
@@ -230,6 +359,11 @@ const socialLinks = [
     &:hover {
       color: var(--color-text-primary);
       background: var(--color-toggle-bg);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
     }
   }
 }
@@ -258,7 +392,12 @@ const socialLinks = [
     &:hover {
       background: var(--color-accent-hover);
       color: var(--color-on-accent);
-      box-shadow: 0 4px 16px rgba(0, 113, 227, 0.35);
+      box-shadow: var(--shadow-accent-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring), var(--shadow-accent-hover);
     }
   }
 
@@ -270,6 +409,11 @@ const socialLinks = [
     &:hover {
       background: var(--color-pill-bg);
       color: var(--color-accent);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
     }
   }
 }
@@ -307,8 +451,8 @@ const socialLinks = [
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
     border-radius: 8px;
     color: var(--color-text-secondary);
     transition: color var(--transition-base), background var(--transition-base);
@@ -318,6 +462,145 @@ const socialLinks = [
       color: var(--color-text-primary);
       background: var(--color-toggle-bg);
     }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+  }
+}
+
+// ─── Keyboard Help Modal ──────────────────────────────────────────────────────
+
+.keyboard-help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.keyboard-help-panel {
+  position: relative;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  max-width: 380px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-modal);
+}
+
+.keyboard-help__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-base);
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.keyboard-help__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-primary);
+}
+
+.keyboard-help__group {
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.keyboard-help__group-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.keyboard-help__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--color-text-primary);
+
+    kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 28px;
+      padding: 0 0.5rem;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+    }
+
+    span {
+      flex: 1;
+    }
+  }
+}
+
+// ─── Transitions ──────────────────────────────────────────────────────────────
+
+.help-modal-enter-active,
+.help-modal-leave-active {
+  transition: opacity var(--transition-base);
+
+  .keyboard-help-panel {
+    transition: transform var(--transition-base), opacity var(--transition-base);
+  }
+}
+
+.help-modal-enter-from,
+.help-modal-leave-to {
+  opacity: 0;
+
+  .keyboard-help-panel {
+    transform: scale(0.95);
+    opacity: 0;
   }
 }
 </style>

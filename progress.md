@@ -304,3 +304,68 @@
 ### Verification
 - `npm run check` ✓ (43/43 passing)
 - Harness evaluator verdict: PASS
+
+## 2026-05-17 — Impeccable audit remediation pass (all recommended actions)
+
+### Completed
+- Implemented modal accessibility hardening in `ProjectsSection`:
+  - focus enters modal on open
+  - keyboard focus is trapped in the dialog while open
+  - focus returns to the trigger when closed
+  - Escape and overlay click dismissal preserved
+- Added app-level skip navigation for keyboard users:
+  - new skip link targeting `#main-content`
+- Improved interactive touch targets and keyboard states:
+  - nav links increased to 44px minimum touch height
+  - theme toggle touch area increased to 44x44 minimum
+  - footer social links increased to 44x44
+  - consistent `:focus-visible` ring added across nav, modal actions, toggle, footer links, and form inputs
+- Tightened token-first theming and removed component-level hardcoded shadow literals:
+  - introduced shared tokens in `src/assets/main.scss` for hover/accent/modal/toggle shadows and focus ring
+  - switched component hover/modals/button shadows to shared tokens
+  - replaced pure black/white accent-on colors with themed values
+- Reduced persistent visual effect cost:
+  - navbar blur/saturation reduced when scrolled
+  - cursor follower glow intensity reduced in both themes
+- Clarified Projects section copy to production-ready language (removed placeholder messaging).
+- Reduced repetitive grid rhythm in Skills:
+  - introduced featured card spans at larger breakpoints for a less uniform layout cadence.
+- Updated and expanded tests:
+  - added app skip-link assertion
+  - added projects modal focus lifecycle regression test
+  - updated cursor follower style expectations for tuned glow
+
+### Verification
+- `npm run check` ✓
+  - tests: 44/44 passing
+  - type-check: passing
+  - production build: passing
+
+---
+
+## 2026-05-17 — Impeccable bolder pass (brand register)
+
+### Completed
+- Executed an explicit `bolder` amplification pass aligned to `PRODUCT.md` (register: brand) and the impeccable brand+bolder references.
+- Increased visual commitment and hierarchy contrast in `HeroSection`:
+  - added atmospheric accent field behind hero for stronger first-fold identity
+  - increased name scale and typographic contrast
+  - strengthened primary CTA weight and shadow presence
+- Amplified `ProjectsSection` composition and emphasis:
+  - stronger desktop heading scale and left-aligned header treatment
+  - deeper featured project typography and spacing
+  - stronger hover lift for project tiles
+- Amplified `SkillsSection` rhythm and surface energy:
+  - introduced subtle accent-backed section atmosphere
+  - increased heading and skill-card title/summary hierarchy contrast
+  - stronger card hover translation for clearer interaction signal
+- Removed banned copy/style patterns introduced in earlier iterations:
+  - replaced visible em dashes in section copy with compliant punctuation
+  - removed side-stripe accent border treatment from current Work History card and replaced with full-border + gradient-surface emphasis
+- Updated affected test expectation for renamed project title punctuation.
+
+### Verification
+- `npm run check` ✓
+  - tests: 44/44 passing
+  - type-check: passing
+  - production build: passing

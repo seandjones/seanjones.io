@@ -2,23 +2,30 @@
 
 :root {
   --color-bg: #f5f5f7;
-  --color-bg-secondary: #ffffff;
-  --color-bg-card: #ffffff;
+  --color-bg-secondary: #fcfcfd;
+  --color-bg-card: #fdfdff;
   --color-text-primary: #1d1d1f;
   --color-text-secondary: #6e6e73;
   --color-accent: #0071e3;
   --color-accent-hover: #0077ed;
-  --color-on-accent: #ffffff;
+  --color-on-accent: #f7fbff;
   --color-border: rgba(0, 0, 0, 0.08);
   --color-pill-bg: rgba(0, 113, 227, 0.08);
   --color-pill-text: #0071e3;
   --color-pill-border: rgba(0, 113, 227, 0.2);
   --color-hero-overlay: rgba(245, 245, 247, 0.85);
   --color-toggle-bg: rgba(0, 0, 0, 0.06);
-  --color-toggle-thumb: #ffffff;
+  --color-toggle-thumb: #f6f8fb;
+  --color-icon-sun: #d3880a;
+  --color-icon-moon: #6479d6;
   --color-error: #d93025;
   --shadow-card: 0 2px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 6px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-hero: 0 8px 40px rgba(0, 0, 0, 0.12);
+  --shadow-accent-hover: 0 4px 16px rgba(0, 113, 227, 0.3);
+  --shadow-modal: 0 16px 52px rgba(0, 0, 0, 0.28);
+  --shadow-toggle-thumb: 0 1px 4px rgba(0, 0, 0, 0.15);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-accent) 28%, transparent);
   --radius-card: 16px;
   --radius-pill: 100px;
   --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
@@ -27,7 +34,7 @@
 }
 
 [data-theme='dark'] {
-  --color-bg: #000000;
+  --color-bg: #0a0b0d;
   opacity: 1;
   --color-bg-secondary: #1c1c1e;
   --color-bg-card: #1c1c1e;
@@ -35,7 +42,7 @@
   --color-text-secondary: #d1d1d6;
   --color-accent: #2997ff;
   --color-accent-hover: #47aaff;
-  --color-on-accent: #000000;
+  --color-on-accent: #05111c;
   --color-border: rgba(255, 255, 255, 0.08);
   --color-pill-bg: rgba(9, 28, 48, 0.95);
   --color-pill-text: #eaf4ff;
@@ -43,9 +50,16 @@
   --color-hero-overlay: rgba(0, 0, 0, 0.7);
   --color-toggle-bg: rgba(255, 255, 255, 0.1);
   --color-toggle-thumb: #1c1c1e;
+  --color-icon-sun: #ecaf3f;
+  --color-icon-moon: #97a4f3;
   --color-error: #ff453a;
   --shadow-card: 0 2px 24px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 6px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-hero: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-accent-hover: 0 4px 16px rgba(56, 159, 255, 0.4);
+  --shadow-modal: 0 14px 48px rgba(0, 0, 0, 0.46);
+  --shadow-toggle-thumb: 0 1px 5px rgba(0, 0, 0, 0.36);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-accent) 34%, transparent);
 }
 
 // ─── Reset & Base ─────────────────────────────────────────────────────────────
@@ -59,9 +73,14 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

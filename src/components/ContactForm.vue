@@ -1,10 +1,9 @@
 <template>
-  <section id="contact" class="contact" aria-labelledby="contact-heading">
+  <section id="contact" class="contact" aria-labelledby="contact-heading" role="region" aria-describedby="contact-description">
     <div class="contact__container">
       <div class="contact__header">
-        <p class="contact__eyebrow">Let's talk</p>
         <h2 id="contact-heading" class="contact__heading">Get in Touch</h2>
-        <p class="contact__subheading">
+        <p id="contact-description" class="contact__subheading">
           Have a project in mind or just want to connect? Drop me a message.
         </p>
       </div>
@@ -253,15 +252,6 @@ function reset() {
     margin-bottom: 3rem;
   }
 
-  &__eyebrow {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: 0.5rem;
-  }
-
   &__heading {
     font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 700;
@@ -278,12 +268,16 @@ function reset() {
 
   &__honeypot {
     position: absolute;
-    left: -9999px;
+    left: 0;
+    top: 0;
     width: 1px;
     height: 1px;
     overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
     opacity: 0;
     pointer-events: none;
+    white-space: nowrap;
   }
 
   &__form {
@@ -295,6 +289,7 @@ function reset() {
 
   &__submit {
     align-self: flex-start;
+    min-height: 44px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -352,6 +347,12 @@ function reset() {
     border-top-color: currentColor;
     border-radius: 50%;
     animation: spin 0.65s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      border-top-color: currentColor;
+      opacity: 0.6;
+    }
   }
 }
 
@@ -381,6 +382,7 @@ function reset() {
 
 .form-input {
   width: 100%;
+  min-height: 44px;
   padding: 0.625rem 0.875rem;
   background: var(--color-bg-card);
   border: 1.5px solid var(--color-border);
@@ -393,7 +395,6 @@ function reset() {
     border-color var(--transition-base),
     box-shadow var(--transition-base),
     color var(--transition-theme);
-  outline: none;
 
   &::placeholder {
     color: var(--color-text-secondary);
@@ -403,6 +404,11 @@ function reset() {
   &:focus {
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 
   &--textarea {

@@ -17,7 +17,7 @@ beforeEach(() => {
 })
 
 describe('App navbar branding', () => {
-  it('renders favicon as the navbar brand mark image and mounts cursor follower', async () => {
+  it('renders favicon as the navbar brand mark image and mounts all sections', async () => {
     const wrapper = mount(App, {
       global: {
         stubs: {
@@ -32,11 +32,11 @@ describe('App navbar branding', () => {
     expect(brandMark.attributes('src')).toBe('/favicon.png')
     expect(brandMark.attributes('aria-hidden')).toBe('true')
     expect(brandMark.attributes('alt')).toBe('')
-    expect(wrapper.find('.cursor-follower').exists()).toBe(true)
     expect(wrapper.find('section.hero').exists()).toBe(true)
     expect(wrapper.find('section#skills').exists()).toBe(true)
     expect(wrapper.find('section#projects').exists()).toBe(true)
     expect(wrapper.find('section#work').exists()).toBe(true)
     expect(wrapper.find('section#contact').exists()).toBe(true)
+    expect(wrapper.find('.skip-link').attributes('href')).toBe('#main-content')
   })
 })

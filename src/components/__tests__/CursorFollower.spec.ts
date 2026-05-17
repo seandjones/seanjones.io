@@ -27,12 +27,12 @@ describe('CursorFollower', () => {
     expect(wrapper.find('.cursor-follower').exists()).toBe(true)
   })
 
-  it('renders 12 trail segments in an SVG when enabled', async () => {
+  it('renders 10 trail segments in an SVG when enabled', async () => {
     const wrapper = mount(CursorFollower)
     await nextTick()
 
     expect(wrapper.find('.cursor-trail-svg').exists()).toBe(true)
-    expect(wrapper.findAll('.cursor-trail-segment').length).toBe(12)
+    expect(wrapper.findAll('.cursor-trail-segment').length).toBe(10)
   })
 
   it('declares non-interactive overlay styles to avoid blocking clicks', async () => {
@@ -44,7 +44,7 @@ describe('CursorFollower', () => {
     expect(follower.exists()).toBe(true)
     expect(cursorFollowerSource).toContain('pointer-events: none;')
     expect(cursorFollowerSource).toContain('z-index: 0;')
-    expect(cursorFollowerSource).toContain('opacity: 0.72;')
+    expect(cursorFollowerSource).toContain('opacity: 0.64;')
     expect(cursorFollowerSource).toContain('width: 24px;')
     expect(cursorFollowerSource).toContain('height: 24px;')
     expect(cursorFollowerSource).toContain('transform 0.16s cubic-bezier(0.19, 1, 0.22, 1)')
@@ -58,11 +58,11 @@ describe('CursorFollower', () => {
     const lightBlock = lightBlockMatch?.[1] ?? ''
     const darkBlock = darkBlockMatch?.[1] ?? ''
 
-    expect(lightBlock).toContain("background: color-mix(in srgb, var(--color-accent) 68%, transparent);")
-    expect(lightBlock).toContain('0 0 30px')
+    expect(lightBlock).toContain("background: color-mix(in srgb, var(--color-accent) 60%, transparent);")
+    expect(lightBlock).toContain('0 0 14px')
 
-    expect(darkBlock).toContain("background: color-mix(in srgb, var(--color-accent) 50%, transparent);")
-    expect(darkBlock).toContain('0 0 26px')
+    expect(darkBlock).toContain("background: color-mix(in srgb, var(--color-accent) 42%, transparent);")
+    expect(darkBlock).toContain('0 0 12px')
   })
 
   it('updates transform style on pointer movement', async () => {
@@ -116,7 +116,7 @@ describe('CursorFollower', () => {
 
     const segments = wrapper.findAll('.cursor-trail-segment')
     const first = segments[0].element as HTMLElement
-    const last = segments[11].element as HTMLElement
+    const last = segments[9].element as HTMLElement
 
     const firstOpacity = parseFloat(first.style.opacity)
     const lastOpacity = parseFloat(last.style.opacity)

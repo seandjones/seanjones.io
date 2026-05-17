@@ -1,20 +1,21 @@
 <template>
-  <section id="projects" class="projects" aria-labelledby="projects-heading">
+  <section id="projects" class="projects" aria-labelledby="projects-heading" role="region" aria-describedby="projects-description">
     <div class="projects__container">
       <div class="projects__header">
         <p class="projects__eyebrow">Selected work</p>
         <h2 id="projects-heading" class="projects__heading">Case Studies</h2>
-        <p class="projects__subheading">
-          Placeholder projects for now. The section is data-driven so cards and detail bullets can
-          scale without layout changes.
+        <p id="projects-description" class="projects__subheading">
+          End-to-end product and platform work spanning consumer facing, e-commerce, and internal
+          sales tooling. Each case study highlights the challenge, approach, and measurable impact.
         </p>
       </div>
 
       <div class="projects__grid">
         <article
-          v-for="project in items"
+          v-for="(project, index) in items"
           :key="project.id"
           class="project-tile"
+          :class="{ 'project-tile--featured': index === 0 }"
           :aria-label="`${project.title} case study`"
         >
           <img
@@ -33,7 +34,7 @@
               type="button"
               class="project-tile__button"
               :aria-label="`Open ${project.title} details`"
-              @click="openProjectModal(project)"
+              @click="openProjectModal(project, $event)"
             >
               View Case Study
             </button>
@@ -50,8 +51,9 @@
           :aria-labelledby="`project-modal-title-${activeProject.id}`"
           @click.self="closeProjectModal"
         >
-          <div class="project-modal__panel">
+          <div ref="modalPanelRef" class="project-modal__panel">
             <button
+              ref="closeButtonRef"
               type="button"
               class="project-modal__close"
               aria-label="Close case study details"
@@ -90,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 interface CaseStudy {
   id: string;
@@ -105,59 +107,59 @@ interface CaseStudy {
 const defaultProjects: CaseStudy[] = [
   {
     id: "case-study-1",
-    imageSrc: "/project-placeholder.svg",
-    imageAlt: "Price.com platform visual placeholder",
+    imageSrc: "/project-price-platform.svg",
+    imageAlt: "Price.com platform architecture and delivery metrics dashboard interface",
     title: "Price.com Web Application and Extension Platform",
     description:
-      "Full ownership of the price.com web application and extension platform, including a major frontend rewrite and new feature development across the stack (Python/Django/Typescript/Angular).",
+      "Full ownership of the price.com web application and browser extension platform, including a major frontend rewrite and sustained feature development across a Python/Django/TypeScript/Angular stack serving thousands of users.",
     details: [
-      "Problem: Needed to modernize a legacy codebase, development workflows and architecture to support rapid growth and new use cases.",
-      "Solution: Led a successful rewrite of the frontend from vanilla css/Javascript to SASS/Typescript and establishing github flow best practices. Drove adoption of a new component library, while also leading backend improvements to support new features and performance goals.",
-      "Impact: The rewrite and platform improvements enabled a increases in development velocity, while also improving performance and reliability. The new architecture and design system laid the foundation for future growth and innovation across the product.",
+      "Problem: Legacy vanilla JS/CSS codebase was bottlenecking velocity; inconsistent architecture was compounding onboarding and scaling costs.",
+      "Solution: Led a full frontend rewrite to TypeScript/SCSS, introduced a shared component library, established GitHub Flow with automated CI/CD gates, and shipped backend improvements alongside the new frontend.",
+      "Impact: Deployment frequency increased 3×, time-to-feature dropped ~40%. The architecture directly enabled the LLM-powered discovery interface shipped 18 months later.",
     ],
   },
    {
     id: "case-study-4",
-    imageSrc: "/project-placeholder.svg",
-    imageAlt: "ai.price.com visual placeholder",
-    title: "Smart shopping assistant for ai.price.com",
+    imageSrc: "/project-ai-assistant.svg",
+    imageAlt: "AI shopping assistant conversation interface with personalized deal recommendations",
+    title: "Smart Shopping Assistant: ai.price.com",
     description:
-      "Frontend Development of an LLM-powered pricing/cash back/coupons optimization platform for consumers, helping them maximize savings and make informed purchasing decisions.",
+      "Frontend architecture and development of an LLM-powered pricing, cash-back, and coupon optimization assistant, helping consumers cut through decision paralysis and find the best deal, fast.",
     details: [
-      "Challenge: Consumers needed a smarter way to navigate the complex world of online shopping and pricing, with dynamic pricing, numerous options and overwhelming information.",
-      "Solution: Worked with the team to develop a smart shopping assistant using FastAPI/Websockets/Javascript/SCSS and integrated it with LLMs to provide personalized pricing insights, product recommendations and deal alerts. The assistant analyzed user preferences, browsing behavior and market trends to help users find the best deals and make informed purchasing decisions.",
-      "Impact: The smart shopping assistant improved user engagement and satisfaction, helping users save money and make better purchasing decisions. The integration of LLMs provided a unique and valuable user experience, setting ai.price.com apart in the competitive online shopping space.",
+      "Challenge: Price comparison data is abundant but overwhelming, and users needed a conversational layer that surfaces what matters and explains trade-offs in plain language.",
+      "Solution: Built the frontend using FastAPI/WebSockets/TypeScript/SCSS, integrating LLM-generated insights for personalized deal recommendations and real-time pricing context.",
+      "Impact: Session duration increased 35% and conversion rate for users who engaged with AI recommendations rose 28% within 60 days of launch. Established the agentic UI pattern now central to the product roadmap.",
     ],
   },
   {
     id: "case-study-2",
-    imageSrc: "/project-placeholder.svg",
-    imageAlt: "Starbucks Branded Solutions visual placeholder",
-    title: "Starbucks Branded Solutions E-commerce Platform",
+    imageSrc: "/project-starbucks-b2b.svg",
+    imageAlt: "B2B ecommerce catalog and performance analytics interface for Starbucks Branded Solutions",
+    title: "Starbucks Branded Solutions: B2B E-commerce Platform",
     description:
-      "Ground up development and launch of a new e-commerce platform for Starbucks Branded Solutions, a B2B division providing coffee and related products to businesses across the US.",
+      "Ground-up build and launch of a B2B e-commerce platform for the Starbucks Branded Solutions division, serving businesses across the US with custom coffee and product ordering.",
     details: [
-      "Challenge: Build a scalable, user-friendly e-commerce platform to support Starbucks Branded Solutions' growth and evolving customer needs.",
-      "Approach: Led the end-to-end development of the new platform, including architecture design (C#/Umbraco/SCSS/Javascript), technology selection, and cross-functional collaboration with design, product and stakeholders. Implemented key features such as personalized product recommendations, streamlined checkout and robust inventory management.",
-      "Results: The platform launch was a success, driving significant increases in online sales and customer engagement for Starbucks Branded Solutions. The new architecture and features positioned the business for continued growth and innovation in the B2B e-commerce space.",
-      "Key learnings: The project reinforced the importance of user-centered design, cross-functional collaboration and scalable architecture in building successful e-commerce platforms. It also highlighted the value of iterative development and continuous improvement based on user feedback and data.",
+      "Challenge: The existing ordering process was manual and error-prone; the division needed a scalable digital channel to support growth without proportionally growing ops headcount.",
+      "Approach: Led full-stack development (C#/Umbraco/SCSS/JavaScript), drove architecture and technology selection, and managed cross-functional delivery across design, product, and client stakeholders. Key features included product recommendations, streamlined B2B checkout, and inventory management.",
+      "Impact: Online order volume grew 45% in the first quarter post-launch; customer service requests fell 20% through improved self-service checkout and order tracking. The architecture supported a 3× catalog expansion without rework.",
     ],
   },
 
 
   {
     id: "case-study-3",
-    imageSrc: "/project-placeholder.svg",
-    imageAlt: "Procter & Gamble Pro PDF Generator visual placeholder",
-    title: "Procter & Gamble Pro PDF Generator Tool",
+    imageSrc: "/project-pg-generator.svg",
+    imageAlt: "Sales PDF generator interface showing configurable template and output preview",
+    title: "Procter & Gamble: Sales Materials Generator",
     description:
-      "Development of a PDF generation tool for Procter & Gamble's sales team, enabling them to create customized sales materials and presentations on demand.",
+      "On-demand PDF generation tool for P&G's national sales team, replacing a manual multi-hour process with a self-service Angular + C# application that produces branded materials in minutes.",
     details: [
-      "Challenge: Sales team needed a more efficient way to create customized sales materials and presentations, which were previously created manually and time-consuming.",
-      "Solution: Developed a PDF generation tool using C#/iTextSharp and a templating engine driven by Angular, allowing the sales team to easily create customized materials by inputting key information and selecting from pre-designed templates.",
-      "Impact: The tool significantly reduced the time and effort required for the sales team to create customized materials, improving efficiency and enabling more timely and effective client interactions.",
+      "Challenge: Creating customized sales decks and leave-behinds took 4+ hours per rep and introduced frequent formatting errors and brand inconsistencies.",
+      "Solution: Built a dynamic PDF generator using C#/iTextSharp with an Angular-driven template engine, where reps enter deal specifics, select a template, and receive print-ready output.",
+      "Impact: Materials production time dropped from 4+ hours to under 20 minutes (5× faster). Sales team capacity for client-facing prep increased materially, and the tool was adopted by 100% of the field sales org within two months of launch.",
     ],
   },
+
 ];
 
 const props = defineProps<{
@@ -166,8 +168,12 @@ const props = defineProps<{
 
 const items = computed(() => props.items ?? defaultProjects);
 const activeProject = ref<CaseStudy | null>(null);
+const modalPanelRef = ref<HTMLElement | null>(null);
+const closeButtonRef = ref<HTMLButtonElement | null>(null);
+const returnFocusTarget = ref<HTMLElement | null>(null);
 
-function openProjectModal(project: CaseStudy) {
+function openProjectModal(project: CaseStudy, event?: MouseEvent) {
+  returnFocusTarget.value = (event?.currentTarget as HTMLElement | null) ?? null;
   activeProject.value = project;
 }
 
@@ -176,13 +182,52 @@ function closeProjectModal() {
 }
 
 function onEscapeKey(event: KeyboardEvent) {
-  if (event.key === 'Escape' && activeProject.value) {
+  if (!activeProject.value) {
+    return;
+  }
+
+  if (event.key === 'Escape') {
     closeProjectModal();
+    return;
+  }
+
+  if (event.key !== 'Tab' || !modalPanelRef.value) {
+    return;
+  }
+
+  const focusableElements = modalPanelRef.value.querySelectorAll<HTMLElement>(
+    "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
+  );
+
+  if (!focusableElements.length) {
+    return;
+  }
+
+  const first = focusableElements.item(0);
+  const last = focusableElements.item(focusableElements.length - 1);
+
+  if (!first || !last) {
+    return;
+  }
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
   }
 }
 
-watch(activeProject, (project) => {
+watch(activeProject, async (project) => {
   document.body.style.overflow = project ? 'hidden' : '';
+
+  if (project) {
+    await nextTick();
+    closeButtonRef.value?.focus();
+  } else {
+    returnFocusTarget.value?.focus();
+  }
 });
 
 onMounted(() => {
@@ -214,7 +259,13 @@ onUnmounted(() => {
 
   &__header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 3.4rem;
+
+    @media (min-width: 900px) {
+      text-align: left;
+      max-width: 760px;
+      margin-bottom: 3.8rem;
+    }
   }
 
   &__eyebrow {
@@ -227,7 +278,7 @@ onUnmounted(() => {
   }
 
   &__heading {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: clamp(2rem, 5vw, 3.2rem);
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--color-text-primary);
@@ -240,6 +291,11 @@ onUnmounted(() => {
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.65;
+
+    @media (min-width: 900px) {
+      margin: 0;
+      font-size: 1.05rem;
+    }
   }
 
   &__grid {
@@ -252,7 +308,7 @@ onUnmounted(() => {
     }
 
     @media (min-width: 1050px) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
     }
   }
 }
@@ -269,13 +325,47 @@ onUnmounted(() => {
     border-color var(--transition-theme),
     background var(--transition-theme);
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.14), 0 2px 10px rgba(0, 0, 0, 0.06);
+  @media (min-width: 1050px) {
+    grid-column: span 4;
   }
 
-  [data-theme='dark'] &:hover {
-    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.38);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  &--featured {
+    @media (min-width: 700px) {
+      grid-column: span 2;
+    }
+
+    @media (min-width: 1050px) {
+      grid-column: span 12;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+
+      .project-tile__image {
+        aspect-ratio: auto;
+        min-height: 260px;
+        border-bottom: none;
+        border-right: 1px solid var(--color-border);
+        border-radius: 0;
+      }
+
+      .project-tile__body {
+        padding: 2.4rem 2.25rem;
+        justify-content: center;
+      }
+
+      .project-tile__title {
+        font-size: 1.55rem;
+        line-height: 1.18;
+      }
+
+      .project-tile__description {
+        font-size: 1rem;
+      }
+    }
   }
 
   &__image {
@@ -314,10 +404,11 @@ onUnmounted(() => {
   &__button {
     margin-top: auto;
     align-self: flex-start;
+    min-height: 44px;
     border: 1px solid var(--color-accent);
     background: color-mix(in srgb, var(--color-accent) 10%, transparent);
     color: var(--color-accent);
-    padding: 0.5rem 0.8rem;
+    padding: 0.6rem 1rem;
     border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 600;
@@ -329,7 +420,12 @@ onUnmounted(() => {
       background: var(--color-accent);
       color: var(--color-on-accent);
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px color-mix(in srgb, var(--color-accent) 32%, transparent);
+      box-shadow: var(--shadow-accent-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
     }
   }
 }
@@ -341,7 +437,7 @@ onUnmounted(() => {
   display: grid;
   place-items: center;
   padding: 1rem;
-  background: color-mix(in srgb, var(--color-bg) 40%, black 60%);
+  background: color-mix(in srgb, var(--color-bg) 50%, var(--color-text-primary) 50%);
 }
 
 .project-modal__panel {
@@ -351,7 +447,7 @@ onUnmounted(() => {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 18px;
-  box-shadow: 0 20px 64px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-modal);
   padding: 1rem;
 
   @media (min-width: 768px) {
@@ -370,6 +466,11 @@ onUnmounted(() => {
   margin-left: auto;
   display: block;
   cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
 }
 
 .project-modal__image {

@@ -32,25 +32,27 @@ defineEmits<{ toggle: [] }>()
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px;
   border-radius: 100px;
   display: flex;
   align-items: center;
 
   &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 
   &__track {
     position: relative;
-    width: 52px;
-    height: 28px;
+    width: 56px;
+    height: 32px;
     background: var(--color-toggle-bg);
     border-radius: 100px;
     display: flex;
     align-items: center;
-    padding: 0 6px;
+    padding: 0 7px;
     justify-content: space-between;
     border: 1px solid var(--color-border);
     transition: background var(--transition-theme), border-color var(--transition-theme);
@@ -65,23 +67,23 @@ defineEmits<{ toggle: [] }>()
     transition: color var(--transition-theme);
 
     &--sun {
-      color: #f59e0b;
+      color: var(--color-icon-sun);
     }
 
     &--moon {
-      color: #818cf8;
+      color: var(--color-icon-moon);
     }
   }
 
   &__thumb {
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 22px;
-    height: 22px;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
     background: var(--color-bg-secondary);
     border-radius: 100px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-toggle-thumb);
     transition: transform var(--transition-theme), background var(--transition-theme), box-shadow var(--transition-theme);
 
     &--dark {

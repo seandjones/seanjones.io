@@ -40,6 +40,6 @@ describe('HeroSection', () => {
     const wrapper = mount(HeroSection)
     const links = wrapper.findAll('.hero__cta a').map(node => node.attributes('href'))
 
-    expect(links).toEqual(['#skills', '#projects', '#work', '#contact'])
+    expect(links).toEqual(['#projects', '#contact'])
   })
 })

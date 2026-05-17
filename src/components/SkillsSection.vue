@@ -1,23 +1,23 @@
 <template>
-  <section id="skills" class="skills" aria-labelledby="skills-heading">
+  <section id="skills" class="skills" aria-labelledby="skills-heading" role="region" aria-describedby="skills-description">
     <div class="skills__container">
       <div class="skills__header">
-        <p class="skills__eyebrow">What I bring</p>
         <h2 id="skills-heading" class="skills__heading">Skills &amp; Expertise</h2>
-        <p class="skills__subheading">
-          From front-end pixel perfection to back-end architecture, I cover the
-          full engineering spectrum.
+        <p id="skills-description" class="skills__subheading">
+          Twelve years building across the full stack, leading teams, shipping at scale, and integrating AI before it was a job title.
         </p>
       </div>
 
       <div class="skills__grid">
         <article
-          v-for="group in skillGroups"
+          v-for="(group, index) in skillGroups"
           :key="group.title"
           class="skill-card"
+          :class="{ 'skill-card--featured': index === 0 || index === 3 }"
         >
           <div class="skill-card__icon" aria-hidden="true" v-html="group.icon"></div>
           <h3 class="skill-card__title">{{ group.title }}</h3>
+          <p class="skill-card__summary">{{ group.summary }}</p>
           <ul class="skill-card__list" :aria-label="`${group.title} skills`">
             <li
               v-for="skill in group.skills"
@@ -37,6 +37,7 @@
 interface SkillGroup {
   title: string
   icon: string
+  summary: string
   skills: string[]
 }
 
@@ -47,6 +48,7 @@ const skillGroups: SkillGroup[] = [
       <rect x="2" y="3" width="20" height="14" rx="2"/>
       <path d="M8 21h8M12 17v4"/>
     </svg>`,
+    summary: 'Leading teams, setting architecture, and owning outcomes across the full product lifecycle.',
     skills: [
       'System Architecture',
       'Team Leadership',
@@ -62,6 +64,7 @@ const skillGroups: SkillGroup[] = [
       <polyline points="16 18 22 12 16 6"/>
       <polyline points="8 6 2 12 8 18"/>
     </svg>`,
+    summary: 'TypeScript-first, framework-agnostic, precision UI from component architecture to pixel.',
     skills: [
       'TypeScript',
       'JavaScript (ES2024+)',
@@ -78,6 +81,7 @@ const skillGroups: SkillGroup[] = [
       <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
       <line x1="12" y1="22.08" x2="12" y2="12"/>
     </svg>`,
+    summary: 'Shipped cross-browser extensions to millions of users across all major platforms.',
     skills: [
       'Chrome Extension',
       'Firefox Extension',
@@ -95,6 +99,7 @@ const skillGroups: SkillGroup[] = [
       <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
       <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
     </svg>`,
+    summary: 'API design, data modeling, and systems built to handle real load at production scale.',
     skills: [
       'Python',
       'Django',
@@ -114,6 +119,7 @@ const skillGroups: SkillGroup[] = [
       <path d="M9 9h6v6H9z"/>
       <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>
     </svg>`,
+    summary: 'Integrating LLMs into product surfaces since before it was a job title, from prompts to agentic workflows.',
     skills: [
       'Prompt Engineering',
       'Harness Engineering',
@@ -127,7 +133,9 @@ const skillGroups: SkillGroup[] = [
 <style lang="scss" scoped>
 .skills {
   padding: 5rem 1.5rem;
-  background: var(--color-bg-secondary);
+  background:
+    radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 42%),
+    var(--color-bg-secondary);
   transition: background var(--transition-theme);
 
   @media (min-width: 768px) {
@@ -141,20 +149,15 @@ const skillGroups: SkillGroup[] = [
 
   &__header {
     text-align: center;
-    margin-bottom: 3.5rem;
-  }
+    margin-bottom: 3.8rem;
 
-  &__eyebrow {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: 0.5rem;
+    @media (min-width: 900px) {
+      margin-bottom: 4.4rem;
+    }
   }
 
   &__heading {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-size: clamp(2rem, 5.2vw, 3rem);
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--color-text-primary);
@@ -178,10 +181,10 @@ const skillGroups: SkillGroup[] = [
       grid-template-columns: repeat(2, 1fr);
     }
     @media (min-width: 900px) {
-          grid-template-columns: repeat(3, 1fr);
-        }
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
     @media (min-width: 1100px) {
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
     }
   }
 }
@@ -200,13 +203,23 @@ const skillGroups: SkillGroup[] = [
     transform var(--transition-base);
   box-shadow: var(--shadow-card);
 
-  &:hover {
-    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
+  @media (min-width: 900px) {
+    grid-column: span 3;
   }
 
-  [data-theme='dark'] &:hover {
-    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
+  &:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
+  }
+
+  &--featured {
+    @media (min-width: 900px) {
+      grid-column: span 6;
+    }
+
+    @media (min-width: 1100px) {
+      grid-column: span 5;
+    }
   }
 
   &__icon {
@@ -223,9 +236,17 @@ const skillGroups: SkillGroup[] = [
   }
 
   &__title {
-    font-size: 0.9375rem;
-    font-weight: 600;
+    font-size: 1.03rem;
+    font-weight: 700;
     color: var(--color-text-primary);
+    margin-bottom: 0.35rem;
+    transition: color var(--transition-theme);
+  }
+
+  &__summary {
+    font-size: 0.86rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
     margin-bottom: 1rem;
     transition: color var(--transition-theme);
   }
