@@ -81,7 +81,7 @@ const jobs: Job[] = [
     company_link: "https://price.com",
     period: "Nov 2016 – Present",
     description:
-      "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari), resulting in reduced load times by 20%, by deploying solutions using: TypeScript, Angular, Python, and AWS.",
+      "Leading engineering teams to build scalable web applications and browser extensions that enhance product discovery and price comparison for millions of transactions.",
     contributions: [
       "Boosted user click-through rate (CTR) on AI recommendations by 15% by leading the frontend architecture, state management, and interface responsiveness for an LLM-powered product discovery platform.",
       "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari), resulting in reduced load times by 20%, by deploying solutions using TypeScript, Angular, Python, and AWS.",

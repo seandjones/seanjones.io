@@ -42,16 +42,17 @@
         </article>
       </div>
 
-      <transition name="project-modal">
-        <div
-          v-if="activeProject"
-          class="project-modal"
-          role="dialog"
-          aria-modal="true"
-          :aria-labelledby="`project-modal-title-${activeProject.id}`"
-          @click.self="closeProjectModal"
-        >
-          <div ref="modalPanelRef" class="project-modal__panel">
+      <Teleport to="body">
+        <transition name="project-modal">
+          <div
+            v-if="activeProject"
+            class="project-modal"
+            role="dialog"
+            aria-modal="true"
+            :aria-labelledby="`project-modal-title-${activeProject.id}`"
+            @click.self="closeProjectModal"
+          >
+            <div ref="modalPanelRef" class="project-modal__panel">
             <button
               ref="closeButtonRef"
               type="button"
@@ -84,9 +85,10 @@
                 {{ detail }}
               </li>
             </ul>
+            </div>
           </div>
-        </div>
-      </transition>
+        </transition>
+      </Teleport>
     </div>
   </section>
 </template>
@@ -478,6 +480,21 @@ onUnmounted(() => {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .project-tile,
+  .project-tile__button {
+    transition: none;
+  }
+
+  .project-tile:hover,
+  .project-tile__button:hover {
+    transform: none;
+  }
+}
+</style>
+
+<!-- Modal styles are unscoped because the modal is teleported to <body> -->
+<style lang="scss">
 .project-modal {
   position: fixed;
   inset: 0;
@@ -490,7 +507,7 @@ onUnmounted(() => {
 
 .project-modal__panel {
   width: min(760px, 100%);
-  max-height: min(88vh, 860px);
+  max-height: min(88dvh, 860px);
   overflow-y: auto;
   background: var(--color-bg-card);
   border: 1.4px solid color-mix(in srgb, var(--color-border) 74%, var(--color-accent) 26%);
@@ -594,18 +611,11 @@ onUnmounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .project-tile,
-  .project-tile__button,
   .project-modal-enter-active,
   .project-modal-leave-active,
   .project-modal-enter-active .project-modal__panel,
   .project-modal-leave-active .project-modal__panel {
     transition: none;
-  }
-
-  .project-tile:hover,
-  .project-tile__button:hover {
-    transform: none;
   }
 }
 </style>
