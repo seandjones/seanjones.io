@@ -5,7 +5,7 @@
         <p class="projects__eyebrow">Selected work</p>
         <h2 id="projects-heading" class="projects__heading">Case Studies</h2>
         <p id="projects-description" class="projects__subheading">
-          End-to-end product and platform work spanning consumer facing, e-commerce, and internal
+          End-to-end product and platform work spanning consumer-facing, e-commerce, and internal
           sales tooling. Each case study highlights the challenge, approach, and measurable impact.
         </p>
       </div>
@@ -111,7 +111,7 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "Price.com platform architecture and delivery metrics dashboard interface",
     title: "Price.com Web Application and Extension Platform",
     description:
-      "Full ownership of the price.com web application and browser extension platform, including a major frontend rewrite and sustained feature development across a Python/Django/TypeScript/Angular stack serving thousands of users.",
+      "Full ownership of the Price.com web application and browser extension platform, including a major frontend rewrite and sustained feature development across a Python/Django/TypeScript/Angular stack serving thousands of users.",
     details: [
       "Problem: Legacy vanilla JS/CSS codebase was bottlenecking velocity; inconsistent architecture was compounding onboarding and scaling costs.",
       "Solution: Led a full frontend rewrite to TypeScript/SCSS, introduced a shared component library, established GitHub Flow with automated CI/CD gates, and shipped backend improvements alongside the new frontend.",
@@ -134,7 +134,7 @@ const defaultProjects: CaseStudy[] = [
   {
     id: "case-study-2",
     imageSrc: "/project-starbucks-b2b.svg",
-    imageAlt: "B2B ecommerce catalog and performance analytics interface for Starbucks Branded Solutions",
+    imageAlt: "B2B e-commerce catalog and performance analytics interface for Starbucks Branded Solutions",
     title: "Starbucks Branded Solutions: B2B E-commerce Platform",
     description:
       "Ground-up build and launch of a B2B e-commerce platform for the Starbucks Branded Solutions division, serving businesses across the US with custom coffee and product ordering.",
@@ -242,96 +242,120 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .projects {
-  padding: 5rem 1.5rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(5.5rem, 9vw, 8.5rem) 1.2rem;
   background:
-    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--color-accent) 11%, transparent), transparent 45%),
-    linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-secondary) 100%);
+    radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--color-accent) 26%, transparent), transparent 42%),
+    radial-gradient(circle at 16% 86%, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 44%),
+    linear-gradient(165deg, color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-secondary)) 0%, var(--color-bg) 58%);
   transition: background var(--transition-theme);
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -9rem -22vw auto auto;
+    width: min(70vw, 900px);
+    height: clamp(180px, 25vw, 340px);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    transform: rotate(-8deg);
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto auto -9rem -22vw;
+    width: min(72vw, 920px);
+    height: clamp(220px, 32vw, 420px);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+    transform: rotate(9deg);
+    z-index: -1;
+  }
+
   @media (min-width: 768px) {
-    padding: 6rem 2rem;
+    padding: clamp(6rem, 9vw, 9rem) clamp(1.6rem, 5vw, 3rem);
   }
 
   &__container {
-    max-width: 1100px;
+    max-width: 1220px;
     margin: 0 auto;
   }
 
   &__header {
-    text-align: center;
-    margin-bottom: 3.4rem;
-
-    @media (min-width: 900px) {
-      text-align: left;
-      max-width: 760px;
-      margin-bottom: 3.8rem;
-    }
+    text-align: left;
+    max-width: 74ch;
+    margin-bottom: clamp(2.2rem, 5vw, 4.2rem);
   }
 
   &__eyebrow {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: 0.5rem;
-  }
-
-  &__heading {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    color: var(--color-text-primary);
     margin-bottom: 0.75rem;
   }
 
-  &__subheading {
-    font-size: 1rem;
-    color: var(--color-text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.65;
+  &__heading {
+    font-size: clamp(2.45rem, 8vw, 5rem);
+    font-weight: 780;
+    letter-spacing: -0.04em;
+    line-height: 0.96;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+    text-wrap: balance;
+  }
 
-    @media (min-width: 900px) {
-      margin: 0;
-      font-size: 1.05rem;
-    }
+  &__subheading {
+    font-size: clamp(1rem, 1.8vw, 1.16rem);
+    color: color-mix(in srgb, var(--color-text-secondary) 94%, var(--color-text-primary));
+    max-width: 65ch;
+    margin: 0;
+    line-height: 1.7;
   }
 
   &__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: clamp(1rem, 2.5vw, 1.8rem);
 
     @media (min-width: 700px) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    @media (min-width: 1050px) {
+    @media (min-width: 1040px) {
       grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: stretch;
     }
   }
 }
 
 .project-tile {
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
+  border: 1.4px solid color-mix(in srgb, var(--color-border) 78%, var(--color-accent) 22%);
   border-radius: var(--radius-card);
   overflow: hidden;
   box-shadow: var(--shadow-card);
   transition:
-    transform var(--transition-base),
-    box-shadow var(--transition-base),
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.34s cubic-bezier(0.22, 1, 0.36, 1),
     border-color var(--transition-theme),
-    background var(--transition-theme);
+    background var(--transition-theme),
+    filter var(--transition-base);
 
-  @media (min-width: 1050px) {
-    grid-column: span 4;
+  @media (min-width: 1040px) {
+    grid-column: span 6;
   }
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow: var(--shadow-card-hover);
+    border-color: color-mix(in srgb, var(--color-accent) 44%, var(--color-border));
+    filter: saturate(1.03);
   }
 
   &--featured {
@@ -339,32 +363,53 @@ onUnmounted(() => {
       grid-column: span 2;
     }
 
-    @media (min-width: 1050px) {
+    @media (min-width: 1040px) {
       grid-column: span 12;
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
 
       .project-tile__image {
         aspect-ratio: auto;
-        min-height: 260px;
+        min-height: 310px;
         border-bottom: none;
-        border-right: 1px solid var(--color-border);
+        border-right: 1.4px solid color-mix(in srgb, var(--color-border) 78%, var(--color-accent) 22%);
         border-radius: 0;
       }
 
       .project-tile__body {
-        padding: 2.4rem 2.25rem;
+        padding: clamp(1.8rem, 3.1vw, 2.8rem) clamp(1.4rem, 2.7vw, 2.4rem);
         justify-content: center;
       }
 
       .project-tile__title {
-        font-size: 1.55rem;
-        line-height: 1.18;
+        font-size: clamp(1.7rem, 3.4vw, 2.35rem);
+        line-height: 1.06;
+        max-width: 20ch;
       }
 
       .project-tile__description {
-        font-size: 1rem;
+        font-size: 1.04rem;
       }
+    }
+  }
+
+  @media (min-width: 1040px) {
+    &:nth-child(2) {
+      grid-column: span 5;
+    }
+
+    &:nth-child(3) {
+      grid-column: span 7;
+    }
+
+    &:nth-child(4) {
+      grid-column: span 6;
+    }
+  }
+
+  @media (min-width: 1040px) and (max-width: 1279px) {
+    &:nth-child(4) {
+      margin-top: 0;
     }
   }
 
@@ -373,45 +418,48 @@ onUnmounted(() => {
     aspect-ratio: 16 / 9;
     object-fit: cover;
     object-position: center;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1.4px solid color-mix(in srgb, var(--color-border) 78%, var(--color-accent) 22%);
   }
 
   &__body {
-    padding: 1.1rem 1rem 1rem;
+    padding: 1.2rem 1rem 1.1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.85rem;
 
     @media (min-width: 768px) {
-      padding: 1.25rem;
+      padding: 1.4rem 1.35rem 1.3rem;
     }
   }
 
   &__title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: 1.15rem;
+    font-weight: 760;
+    letter-spacing: -0.018em;
     color: var(--color-text-primary);
-    line-height: 1.25;
+    line-height: 1.14;
+    text-wrap: pretty;
   }
 
   &__description {
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    line-height: 1.66;
   }
 
   &__button {
     margin-top: auto;
     align-self: flex-start;
     min-height: 44px;
-    border: 1px solid var(--color-accent);
-    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    border: 1.4px solid var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
     color: var(--color-accent);
-    padding: 0.6rem 1rem;
+    padding: 0.62rem 1.02rem;
     border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: background var(--transition-base), color var(--transition-base),
       transform var(--transition-base), box-shadow var(--transition-base);
@@ -437,7 +485,7 @@ onUnmounted(() => {
   display: grid;
   place-items: center;
   padding: 1rem;
-  background: color-mix(in srgb, var(--color-bg) 50%, var(--color-text-primary) 50%);
+  background: color-mix(in srgb, var(--color-bg) 42%, var(--color-text-primary) 58%);
 }
 
 .project-modal__panel {
@@ -445,7 +493,7 @@ onUnmounted(() => {
   max-height: min(88vh, 860px);
   overflow-y: auto;
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
+  border: 1.4px solid color-mix(in srgb, var(--color-border) 74%, var(--color-accent) 26%);
   border-radius: 18px;
   box-shadow: var(--shadow-modal);
   padding: 1rem;
@@ -543,5 +591,21 @@ onUnmounted(() => {
 .project-modal-leave-to .project-modal__panel {
   transform: scale(0.94);
   opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-tile,
+  .project-tile__button,
+  .project-modal-enter-active,
+  .project-modal-leave-active,
+  .project-modal-enter-active .project-modal__panel,
+  .project-modal-leave-active .project-modal__panel {
+    transition: none;
+  }
+
+  .project-tile:hover,
+  .project-tile__button:hover {
+    transform: none;
+  }
 }
 </style>

@@ -1,11 +1,16 @@
 <template>
-  <section id="work" class="work" aria-labelledby="work-heading" role="region" aria-describedby="work-description">
+  <section
+    id="work"
+    class="work"
+    aria-labelledby="work-heading"
+    role="region"
+    aria-describedby="work-description"
+  >
     <div class="work__container">
       <div class="work__header">
-        <h2 id="work-heading" class="work__heading">Work History</h2>
+        <h2 id="work-heading" class="work__heading">Experience</h2>
         <p id="work-description" class="work__subheading">
-          Over 15 years building products at the intersection of engineering leadership
-          and hands-on development.
+          Combines deep technical expertise with product and engineering leadership to deliver high-performance, scalable systems.
         </p>
       </div>
 
@@ -35,7 +40,8 @@
                 :href="job.company_link"
                 target="_blank"
                 rel="noopener noreferrer"
-              >{{ job.company }}</a>
+                >{{ job.company }}</a
+              >
             </p>
             <p v-else class="timeline__company">{{ job.company }}</p>
             <p class="timeline__description">{{ job.description }}</p>
@@ -75,14 +81,14 @@ const jobs: Job[] = [
     company_link: "https://price.com",
     period: "Nov 2016 – Present",
     description:
-      "Led development of core platform features for a large-scale product matching system delivering pricing transparency across consumer and enterprise products.",
+      "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari), resulting in reduced load times by 20%, by deploying solutions using: TypeScript, Angular, Python, and AWS.",
     contributions: [
-      "Drove architecture and development across web applications and browser extensions (Chrome, Firefox, Safari) using a range of technologies including TypeScript, Angular, Python (Django and Fastapi) and AWS services (S3, EC2, Cloudfront)",
-      "Defined and executed frontend architecture decisions for development of LLM-Powered Discovery Interface product, including component design, state management, and API integration",
-      "Led technical decision-making for scalable frontend and backend systems",
-      "Contributed to product strategy and execution across both consumer-facing and enterprise offerings",
-      "Established and maintained development workflows, tooling, and release processes",
-      "Built and optimized high-performance user experiences across modern JavaScript frameworks",
+      "Boosted user click-through rate (CTR) on AI recommendations by 15% by leading the frontend architecture, state management, and interface responsiveness for an LLM-powered product discovery platform.",
+      "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari), resulting in reduced load times by 20%, by deploying solutions using TypeScript, Angular, Python, and AWS.",
+      "Decreased deployment time by 25%, increasing team velocity, by establishing standardized development workflows, tooling, and release processes.",
+      "Improved application performance 4x (validated via Lighthouse) and enhanced user experience across modern JavaScript applications by optimizing rendering, API integration patterns, and frontend architecture decisions.",
+      "Partnered with product and executive stakeholders to align technical roadmap with business priorities.",
+      "Led cross-functional engineering initiatives spanning frontend architecture, platform scalability, and release operations across distributed teams.",
     ],
   },
   {
@@ -93,37 +99,32 @@ const jobs: Job[] = [
     description:
       "Developed and maintained enterprise-level web applications for global clients across multiple industries.",
     contributions: [
-      "Delivered end-to-end web applications across Microsoft and LAMP stacks (C#, PHP, SQL Server, MySQL, Apache, IIS, Django)",
-      "Designed and implemented scalable database structures and backend systems",
-      "Managed deployments, staging environments, and production releases",
-      "Partnered with stakeholders to translate business requirements into technical solutions",
+      "Delivered scalable enterprise-level web applications for global clients, generating 22% increase in client revenue, by utilizing Microsoft and LAMP stacks (C#, PHP, Python/Django, SQL Server, IIS, Apache).",
+      "Achieved a 99% successful deployment rate, drastically minimizing the need for production rollbacks, by implementing automated deployment workflows and scalable backend architectures.",
     ],
   },
   {
     role: "IT Programmer",
     company: "Springfield ReManufacturing Corp.",
     company_link: "https://www.srcreman.com/",
-    period: "2011 – 2012",
+    period: "Aug 2011 – Aug 2012",
     description:
       "Developed internal tools and web applications to improve operational efficiency.",
     contributions: [
-      "Established workflows and managed day-to-day development tasks",
-      "Built internal tools and web applications to improve operational efficiency using PHP, MySQL, and JavaScript on IIS Servers",
-      "Collaborated with internal teams to deliver business-critical solutions",
+      "Increased operational efficiency by 20%, saving hundreds of manual hours weekly, by building and deploying internal PHP, MySQL, and JavaScript tools on IIS Servers.",
+      "Achieved a 100% adoption rate among internal teams, measured by active daily users, by collaborating across departments to deliver business-critical solutions.",
     ],
   },
   {
     role: "Web Developer Intern",
     company: "Marlin Connections",
     company_link: "https://www.marlinconnections.net/",
-    period: "2010 – 2011",
+    period: "Nov 2010 – Aug 2011",
     description:
       "Built MVC-based web applications using C# and gained foundational experience in full-stack development and software architecture.",
     contributions: [
-      "Built MVC-based web applications using C#, SQL Server, IIS",
-      "Gained foundational experience in full-stack development and software architecture",
-      "Worked with designers and project managers to deliver client projects on time using SCSS/SASS, JavaScript, and HTML",
-      "Converted designs and wireframes into high-quality code across multiple projects and clients",
+      "Developed MVC-based web applications using C#, SQL Server, IIS, JavaScript, and SCSS/SASS for multiple client engagements. Maintained a 100% on-time delivery record across 5 concurrent client web application projects.",
+      "Converted wireframes and visual designs into responsive, production-ready applications, improving delivery speed and frontend consistency across projects.",
     ],
   },
 ];
@@ -253,14 +254,12 @@ const jobs: Job[] = [
       color-mix(in srgb, var(--color-accent) 9%, var(--color-bg-card)) 0%,
       var(--color-bg-card) 42%
     );
-    box-shadow:
-      0 16px 38px color-mix(in srgb, var(--color-accent) 17%, transparent),
+    box-shadow: 0 16px 38px color-mix(in srgb, var(--color-accent) 17%, transparent),
       var(--shadow-card);
   }
 
   &__item--current &__dot {
-    box-shadow:
-      0 0 0 2px var(--color-accent),
+    box-shadow: 0 0 0 2px var(--color-accent),
       0 0 0 7px color-mix(in srgb, var(--color-accent) 22%, transparent);
   }
 

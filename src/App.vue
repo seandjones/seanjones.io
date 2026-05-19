@@ -29,7 +29,7 @@
               <ul class="keyboard-help__list" aria-label="Navigation shortcuts">
                 <li><kbd>g</kbd><span>Go to Case Studies</span></li>
                 <li><kbd>s</kbd><span>Go to Skills</span></li>
-                <li><kbd>w</kbd><span>Go to Work History</span></li>
+                <li><kbd>w</kbd><span>Go to Experience</span></li>
                 <li><kbd>c</kbd><span>Go to Contact</span></li>
                 <li><kbd>h</kbd><span>Go to Home (Hero)</span></li>
               </ul>
@@ -303,14 +303,64 @@ html {
   background: var(--color-bg);
   position: relative;
   isolation: isolate;
-}
+  // Decorative fields must remain behind all content. Avoid global child z-index overrides.
 
-.app > :not(.skip-link) {
-  position: relative;
+  &::before {
+    content: '';
+    position: fixed;
+    inset: -16rem -22vw auto auto;
+    width: min(66vw, 920px);
+    height: clamp(220px, 30vw, 420px);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    transform: rotate(-8deg);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    position: fixed;
+    inset: auto auto -14rem -20vw;
+    width: min(60vw, 760px);
+    height: clamp(180px, 24vw, 300px);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+    transform: rotate(10deg);
+    pointer-events: none;
+    z-index: -1;
+  }
 }
 
 .app > main > * {
   scroll-margin-top: 80px;
+  animation: section-reveal 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  &:nth-child(1) {
+    animation-delay: 70ms;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 120ms;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 170ms;
+  }
+
+  &:nth-child(4) {
+    animation-delay: 220ms;
+  }
+
+  &:nth-child(5) {
+    animation-delay: 270ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app > main > * {
+    animation: none;
+  }
 }
 
 .skip-link {
@@ -346,7 +396,7 @@ html {
   display: flex;
   align-items: center;
   transition: background var(--transition-theme), backdrop-filter var(--transition-theme),
-    border-color var(--transition-base), box-shadow var(--transition-base);
+    border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
   border-bottom: 1px solid transparent;
 
   @media (min-width: 768px) {
@@ -360,11 +410,12 @@ html {
   }
 
   &--scrolled {
-    background: color-mix(in srgb, var(--color-bg) 85%, transparent);
-    backdrop-filter: saturate(125%) blur(8px);
-    -webkit-backdrop-filter: saturate(125%) blur(8px);
-    border-bottom-color: var(--color-border);
-    box-shadow: 0 1px 0 var(--color-border);
+    background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+    backdrop-filter: saturate(138%) blur(10px);
+    -webkit-backdrop-filter: saturate(138%) blur(10px);
+    border-bottom-color: color-mix(in srgb, var(--color-border) 76%, var(--color-accent) 24%);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 80%, var(--color-accent) 20%),
+      0 10px 28px color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 
     @media (max-width: 600px) {
       backdrop-filter: none;
@@ -382,7 +433,7 @@ html {
 
   &__inner {
     width: 100%;
-    max-width: 1100px;
+    max-width: 1220px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -401,7 +452,7 @@ html {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.35rem 0.5rem;
+    padding: 0.35rem 0.62rem;
     border-radius: 999px;
     text-decoration: none;
     color: var(--color-text-primary);
@@ -409,6 +460,7 @@ html {
 
     &:hover {
       color: var(--color-text-primary);
+      background: color-mix(in srgb, var(--color-toggle-bg) 76%, transparent);
     }
     @media (max-width: 600px) {
       padding: 0.25rem 0.15rem;
@@ -423,7 +475,7 @@ html {
     border-radius: 20px;
     display: block;
     object-fit: cover;
-    border: 1px solid var(--color-border);
+    border: 1.2px solid color-mix(in srgb, var(--color-border) 78%, var(--color-accent) 22%);
     flex-shrink: 0;
 
     [data-theme='light'] & {
@@ -432,9 +484,9 @@ html {
   }
 
   &__brand-name {
-    font-size: 0.9375rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
 
     @media (max-width: 600px) {
       display: none;
@@ -497,15 +549,15 @@ html {
   &__nav {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.35rem;
     margin-left: auto;
 
     @media (max-width: 600px) {
-      position: fixed;
-      top: 60px;
+      position: absolute;
+      top: 100%;
       left: 0;
       right: 0;
-      display: none;
+      display: flex;
       flex-direction: column;
       align-items: stretch;
       gap: 0;
@@ -513,11 +565,21 @@ html {
       background: var(--color-bg);
       border-bottom: 1px solid var(--color-border);
       box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
-      z-index: 230;
+      z-index: 260;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-4px);
+      transition: max-height var(--transition-base), opacity var(--transition-base),
+        transform var(--transition-base), visibility var(--transition-base);
       pointer-events: none;
 
       &--open {
-        display: flex;
+        max-height: 320px;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
         pointer-events: auto;
       }
     }
@@ -530,8 +592,10 @@ html {
     justify-content: center;
     padding: 0.5rem 0.9rem;
     border-radius: 100px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 0.82rem;
+    font-weight: 680;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--color-text-secondary);
     text-decoration: none;
     transition: color var(--transition-base), background var(--transition-base);
@@ -564,6 +628,18 @@ html {
         color: var(--color-text-primary);
       }
     }
+  }
+}
+
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

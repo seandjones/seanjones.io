@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import App from '../App.vue'
+import appSource from '../App.vue?raw'
 
 beforeEach(() => {
   vi.stubGlobal('matchMedia', vi.fn().mockImplementation(() => ({
@@ -38,5 +39,35 @@ describe('App navbar branding', () => {
     expect(wrapper.find('section#work').exists()).toBe(true)
     expect(wrapper.find('section#contact').exists()).toBe(true)
     expect(wrapper.find('.skip-link').attributes('href')).toBe('#main-content')
+  })
+
+  it('toggles mobile navigation open state from hamburger control', async () => {
+    const wrapper = mount(App, {
+      global: {
+        stubs: {
+          ThemeToggle: true,
+        },
+      },
+    })
+
+    const menuButton = wrapper.get('.navbar__hamburger')
+    const nav = wrapper.get('#site-nav')
+
+    expect(menuButton.attributes('aria-expanded')).toBe('false')
+    expect(nav.classes()).not.toContain('navbar__nav--open')
+
+    await menuButton.trigger('click')
+
+    expect(menuButton.attributes('aria-expanded')).toBe('true')
+    expect(nav.classes()).toContain('navbar__nav--open')
+
+    await menuButton.trigger('click')
+
+    expect(menuButton.attributes('aria-expanded')).toBe('false')
+    expect(nav.classes()).not.toContain('navbar__nav--open')
+  })
+
+  it('does not reintroduce global z-index override on app children', () => {
+    expect(appSource).not.toContain('.app > :not(.skip-link)')
   })
 })

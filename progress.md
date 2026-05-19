@@ -1,5 +1,158 @@
 # Progress
 
+## 2026-05-19 — Impeccable bolder pass (hero)
+
+### Completed
+- Ran required startup validation before editing:
+  - `npm install`
+  - `npm run check` (tests + type-check + build all passing)
+- Loaded impeccable context via loader script and confirmed register as `brand`.
+- Applied a bolder hero treatment in `src/components/HeroSection.vue`:
+  - Increased hierarchy contrast with stronger display scale and split-line name treatment.
+  - Introduced a more committed accent background field and asymmetrical atmospheric shapes.
+  - Expanded visual rhythm and scan flow with a new high-signal stamp line.
+  - Added concise proof-point rows to improve evidence density without card-grid repetition.
+  - Preserved existing image optimization attributes and CTA anchor behavior.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — Impeccable bolder pass (projects)
+
+### Completed
+- Applied a second bolder pass to `src/components/ProjectsSection.vue` as the next most visible surface.
+- Increased section-level visual commitment:
+  - stronger atmospheric background layers
+  - larger heading hierarchy and tighter typographic contrast
+  - asymmetrical tile rhythm on desktop to avoid uniform card cadence
+  - sharper borders and CTA treatment for clearer action affordance
+- Kept existing structure and behavior intact, including modal accessibility and keyboard interaction.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — Impeccable bolder pass (skills + app shell)
+
+### Completed
+- Applied bolder visual treatment to `src/components/SkillsSection.vue`:
+  - stronger section atmosphere and larger type hierarchy
+  - higher contrast card/pill styling
+  - asymmetrical desktop rhythm to reduce uniform card-grid feel
+- Applied bolder app-shell framing in `src/App.vue`:
+  - more intentional navbar weight and contrast
+  - ambient global background fields for stronger page identity
+  - section reveal choreography with reduced-motion fallback
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — Impeccable polish pass (hero + skills + projects)
+
+### Completed
+- Applied final consistency refinements across `HeroSection`, `SkillsSection`, and `ProjectsSection`:
+  - improved heading/body wrap behavior to reduce awkward line breaks
+  - refined asymmetrical offsets at desktop breakpoints to reduce collision risk
+  - added reduced-motion safeguards for hover and transition-heavy interactions
+- Preserved all existing structure, content, and interaction behavior.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — QA sweep (micro-copy + consistency)
+
+### Completed
+- Performed a targeted QA sweep across hero/skills/projects for terminology, hyphenation, and naming consistency.
+- Applied low-risk copy fixes:
+  - `ASP.net` → `ASP.NET`
+  - `SQLServer` → `SQL Server`
+  - `consumer facing` → `consumer-facing`
+  - `ecommerce` → `e-commerce` in image alt text
+- Kept all layout, structure, and interaction behavior unchanged.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — QA sweep (cross-section copy voice)
+
+### Completed
+- Harmonized cross-section language and naming consistency:
+  - `price.com` → `Price.com` in hero/project narrative copy
+  - keyboard shortcut label aligned with nav language (`Go to Experience`)
+  - work section heading updated from `Work History` to `Experience` for consistent section voice
+- Kept all behavior, structure, and styling unchanged.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — QA sweep (subtitle grammar consistency)
+
+### Completed
+- Applied one ultra-light subtitle edit so section subheadings read in a consistent declarative voice.
+- Updated contact subtitle from a question+imperative structure to declarative copy.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 44/44 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — Mobile nav visibility fix
+
+### Completed
+- Fixed a regression where tapping the mobile hamburger could leave `#site-nav` invisible.
+- Reworked mobile nav open/closed CSS from `display: none/flex` switching to a more reliable state model using:
+  - `max-height`
+  - `opacity`
+  - `visibility`
+  - `transform`
+- Added a focused regression test in `src/__tests__/App.spec.ts` to verify:
+  - hamburger `aria-expanded` toggles correctly
+  - `navbar__nav--open` class toggles correctly
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 45/45 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+## 2026-05-19 — Mobile nav layering regression hardening
+
+### Completed
+- Addressed resurfaced mobile nav visibility issue caused by global child stacking rule:
+  - removed `.app > :not(.skip-link) { position: relative; z-index: 1; }`
+- Updated decorative background pseudo-elements on `.app` to stay behind content without global stacking overrides:
+  - `.app::before` / `.app::after` now use `z-index: -1`
+- Added regression guard in `src/__tests__/App.spec.ts` to prevent reintroduction of the removed selector.
+
+### Verification
+- `npm run check` ✓
+  - `vitest run`: 46/46 tests passing
+  - `vue-tsc --build`: passing
+  - `vite build`: passing
+
+### Follow-up
+- Added inline code comment in `src/App.vue` near `.app` pseudo-elements documenting the layering rule:
+  - decorative fields stay behind content
+  - do not reintroduce global child z-index overrides
+
 ## 2026-04-10 — Initial application scaffold
 
 ### Completed

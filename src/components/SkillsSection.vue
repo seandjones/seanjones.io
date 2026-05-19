@@ -4,7 +4,7 @@
       <div class="skills__header">
         <h2 id="skills-heading" class="skills__heading">Skills &amp; Expertise</h2>
         <p id="skills-description" class="skills__subheading">
-          Twelve years building across the full stack, leading teams, shipping at scale, and integrating AI before it was a job title.
+         Proven track record leading architecture, performance optimization, and platform delivery across TypeScript, Angular, Python, ASP.NET, C#, SQL Server, IIS, and AWS ecosystems serving large-scale user bases.
         </p>
       </div>
 
@@ -109,7 +109,7 @@ const skillGroups: SkillGroup[] = [
       'REST APIs',
       'PostgreSQL',
       'MySQL',
-      'SQLServer'
+      'SQL Server'
         ],
   },
   {
@@ -132,49 +132,63 @@ const skillGroups: SkillGroup[] = [
 
 <style lang="scss" scoped>
 .skills {
-  padding: 5rem 1.5rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(5.5rem, 9vw, 8.2rem) 1.2rem;
   background:
-    radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 42%),
-    var(--color-bg-secondary);
+    radial-gradient(circle at 84% 10%, color-mix(in srgb, var(--color-accent) 26%, transparent), transparent 42%),
+    radial-gradient(circle at 18% 88%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 46%),
+    linear-gradient(170deg, color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-secondary)) 0%, var(--color-bg-secondary) 62%);
   transition: background var(--transition-theme);
 
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -9rem -26vw auto auto;
+    width: min(70vw, 900px);
+    height: clamp(170px, 24vw, 340px);
+    border-radius: 999px;
+    transform: rotate(-8deg);
+    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    z-index: -1;
+  }
+
   @media (min-width: 768px) {
-    padding: 6rem 2rem;
+    padding: clamp(6rem, 9vw, 8.8rem) clamp(1.6rem, 5vw, 3rem);
   }
 
   &__container {
-    max-width: 1100px;
+    max-width: 1220px;
     margin: 0 auto;
   }
 
   &__header {
-    text-align: center;
-    margin-bottom: 3.8rem;
-
-    @media (min-width: 900px) {
-      margin-bottom: 4.4rem;
-    }
+    text-align: left;
+    margin-bottom: clamp(2.4rem, 4.6vw, 4.6rem);
   }
 
   &__heading {
-    font-size: clamp(2rem, 5.2vw, 3rem);
-    font-weight: 700;
-    letter-spacing: -0.025em;
+    font-size: clamp(2.3rem, 8.4vw, 4.7rem);
+    font-weight: 780;
+    letter-spacing: -0.04em;
+    line-height: 0.96;
     color: var(--color-text-primary);
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    text-wrap: balance;
   }
 
   &__subheading {
-    font-size: 1rem;
-    color: var(--color-text-secondary);
-    max-width: 480px;
-    margin: 0 auto;
-    line-height: 1.65;
+    font-size: clamp(1rem, 1.8vw, 1.12rem);
+    color: color-mix(in srgb, var(--color-text-secondary) 93%, var(--color-text-primary));
+    max-width: 66ch;
+    margin: 0;
+    line-height: 1.74;
   }
 
   &__grid {
     display: grid;
-    gap: 1.25rem;
+    gap: clamp(1rem, 2.3vw, 1.7rem);
     grid-template-columns: 1fr;
 
     @media (min-width: 600px) {
@@ -193,14 +207,14 @@ const skillGroups: SkillGroup[] = [
 
 .skill-card {
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
+  border: 1.4px solid color-mix(in srgb, var(--color-border) 76%, var(--color-accent) 24%);
   border-radius: var(--radius-card);
-  padding: 1.75rem 1.5rem;
+  padding: 1.75rem 1.4rem;
   transition:
     background var(--transition-theme),
     border-color var(--transition-theme),
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
+    box-shadow 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow-card);
 
   @media (min-width: 900px) {
@@ -209,7 +223,8 @@ const skillGroups: SkillGroup[] = [
 
   &:hover {
     box-shadow: var(--shadow-card-hover);
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--color-accent) 44%, var(--color-border));
   }
 
   &--featured {
@@ -222,32 +237,56 @@ const skillGroups: SkillGroup[] = [
     }
   }
 
+  @media (min-width: 1100px) {
+    &:nth-child(2) {
+      grid-column: span 3;
+      margin-top: 1.4rem;
+    }
+
+    &:nth-child(3) {
+      grid-column: span 4;
+    }
+
+    &:nth-child(5) {
+      grid-column: span 5;
+      margin-top: -1.6rem;
+    }
+  }
+
+  @media (min-width: 1100px) and (max-width: 1279px) {
+    &:nth-child(2),
+    &:nth-child(5) {
+      margin-top: 0;
+    }
+  }
+
   &__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--color-pill-bg);
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--color-pill-bg) 75%, var(--color-bg-card));
     color: var(--color-accent);
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
     transition: background var(--transition-theme), color var(--transition-theme);
   }
 
   &__title {
-    font-size: 1.03rem;
-    font-weight: 700;
+    font-size: 1.12rem;
+    font-weight: 760;
+    letter-spacing: -0.015em;
     color: var(--color-text-primary);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.45rem;
     transition: color var(--transition-theme);
   }
 
   &__summary {
-    font-size: 0.86rem;
+    font-size: 0.9rem;
     color: var(--color-text-secondary);
-    line-height: 1.55;
-    margin-bottom: 1rem;
+    line-height: 1.64;
+    margin-bottom: 1.1rem;
     transition: color var(--transition-theme);
   }
 
@@ -264,17 +303,28 @@ const skillGroups: SkillGroup[] = [
 .skill-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.65rem;
-  background: var(--color-pill-bg);
+  padding: 0.28rem 0.67rem;
+  background: color-mix(in srgb, var(--color-pill-bg) 84%, var(--color-bg-card));
   color: var(--color-pill-text);
-  border: 1px solid var(--color-pill-border);
+  border: 1.2px solid var(--color-pill-border);
   border-radius: var(--radius-pill);
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   transition:
     background var(--transition-theme),
     color var(--transition-theme),
     border-color var(--transition-theme);
   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-card {
+    transition: none;
+  }
+
+  .skill-card:hover {
+    transform: none;
+  }
 }
 </style>

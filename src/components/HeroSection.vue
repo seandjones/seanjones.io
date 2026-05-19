@@ -14,25 +14,34 @@
         fetchpriority="high"
         decoding="async"
       />
+      <p class="hero__stamp">Leading engineering teams that ship measurable outcomes</p>
     </div>
 
     <!-- Identity -->
     <div class="hero__content">
       <p class="hero__eyebrow">Director of Engineering</p>
-      <h1 class="hero__name">Sean Jones</h1>
+      <h1 class="hero__name">
+        <span class="hero__name-line">Sean</span>
+        <span class="hero__name-line">Jones</span>
+      </h1>
       <p class="hero__title">
-        Building at price.com
+        Building at Price.com
         <span class="hero__company">since 2016</span>
       </p>
       <p class="hero__bio">
-        Twelve years of full-stack depth. I own platforms, lead teams, make architecture calls,
-        and ship experiences users actually notice, all in the same week.
+       Engineering leader and full-stack architect with 15+ years of experience building scalable consumer platforms, browser extensions, and AI-powered web applications.
       </p>
 
       <div class="hero__cta">
         <a href="#projects" class="btn btn--primary">Case Studies</a>
         <a href="#contact" class="btn btn--ghost">Get in Touch</a>
       </div>
+
+      <ul class="hero__proof" aria-label="Career highlights">
+        <li class="hero__proof-item">15+ years building consumer platforms and APIs</li>
+        <li class="hero__proof-item">Scaled teams across product, platform, and AI delivery</li>
+        <li class="hero__proof-item">Execution-first leadership from architecture to launch</li>
+      </ul>
     </div>
   </section>
 </template>
@@ -46,32 +55,66 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 2.5rem;
-  padding: 7rem 1.5rem 4rem;
-  text-align: center;
+  gap: 2.75rem;
+  padding: clamp(6rem, 10vw, 8.5rem) 1.25rem 4.25rem;
+  text-align: left;
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   background:
-    radial-gradient(circle at 80% 16%, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 46%),
-    radial-gradient(circle at 20% 86%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 52%),
-    linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 4%, transparent) 0%, transparent 30%);
+    radial-gradient(circle at 88% 14%, color-mix(in srgb, var(--color-accent) 30%, transparent), transparent 42%),
+    linear-gradient(140deg, color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-secondary)) 0%, var(--color-bg) 58%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -12rem -30vw auto auto;
+    width: min(74vw, 840px);
+    height: clamp(220px, 38vw, 440px);
+    background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+    border-radius: 999px;
+    transform: rotate(-9deg);
+    filter: blur(2px);
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto auto -11rem -20vw;
+    width: min(68vw, 680px);
+    height: clamp(180px, 28vw, 320px);
+    background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+    border-radius: 999px;
+    transform: rotate(12deg);
+    z-index: -1;
+  }
 
   @media (min-width: 768px) {
     flex-direction: row;
-    text-align: left;
-    gap: 4rem;
-    padding: 6rem clamp(2.5rem, 7vw, 8rem) 4rem;
+    align-items: center;
+    gap: clamp(3.5rem, 8vw, 9rem);
+    padding: clamp(5.5rem, 11vw, 8rem) clamp(2rem, 8vw, 8.5rem) 4.5rem;
     width: 100%;
   }
 
   @media (min-width: 1100px) {
-    gap: 6rem;
+    &::before {
+      inset: -8rem -16vw auto auto;
+    }
+
+    &::after {
+      inset: auto auto -8rem -12vw;
+    }
   }
 
   &__image-wrap {
     flex-shrink: 0;
+    display: grid;
+    gap: 1.15rem;
+    width: min(100%, 300px);
   }
 
   &__avatar {
@@ -86,39 +129,60 @@
     transition: box-shadow var(--transition-theme), border-color var(--transition-theme),
       opacity var(--transition-theme);
     opacity: 1;
+
     @media (min-width: 768px) {
-      width: 220px;
-      height: 220px;
+      width: 260px;
+      height: 260px;
     }
   }
 
+  &__stamp {
+    max-width: 22ch;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text-primary) 82%, var(--color-bg));
+    line-height: 1.5;
+  }
+
   &__content {
-    max-width: 620px;
+    max-width: 700px;
   }
 
   &__eyebrow {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-accent);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
   }
 
   &__name {
-    font-size: clamp(2.5rem, 7vw, 5.2rem);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 0.98;
+    font-size: clamp(3.1rem, 13vw, 8rem);
+    font-weight: 780;
+    letter-spacing: -0.052em;
+    line-height: 0.86;
     color: var(--color-text-primary);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
+    text-wrap: balance;
+  }
+
+  &__name-line {
+    display: block;
+
+    &:last-child {
+      color: color-mix(in srgb, var(--color-accent) 70%, var(--color-text-primary));
+    }
   }
 
   &__title {
-    font-size: clamp(1.02rem, 2.3vw, 1.38rem);
-    font-weight: 600;
+    font-size: clamp(1.05rem, 2.8vw, 1.58rem);
+    font-weight: 670;
     color: var(--color-text-secondary);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.45rem;
+    text-wrap: balance;
   }
 
   &__company {
@@ -127,23 +191,47 @@
   }
 
   &__bio {
-    font-size: 1rem;
-    line-height: 1.75;
+    font-size: clamp(1rem, 1.6vw, 1.13rem);
+    line-height: 1.78;
     color: var(--color-text-secondary);
-    margin-bottom: 2rem;
-    max-width: 480px;
+    margin-bottom: 2.2rem;
+    max-width: 58ch;
+    text-wrap: pretty;
   }
 
   &__cta {
     display: flex;
-    gap: 0.9rem;
+    gap: 0.85rem;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+  }
 
-    @media (min-width: 768px) {
-      justify-content: flex-start;
+  &__proof {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+    max-width: 62ch;
+    padding: 0;
+    margin: 0;
+
+    @media (min-width: 980px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: none;
+      gap: 1rem;
     }
+  }
+
+  &__proof-item {
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.55;
+    letter-spacing: 0.01em;
+    color: color-mix(in srgb, var(--color-text-secondary) 88%, var(--color-text-primary));
+    padding-top: 0.78rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
   }
 }
 
@@ -198,6 +286,14 @@
       outline: none;
       box-shadow: var(--focus-ring);
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero,
+  .hero__avatar,
+  .btn {
+    transition: none;
   }
 }
 </style>

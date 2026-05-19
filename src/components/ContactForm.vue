@@ -4,7 +4,7 @@
       <div class="contact__header">
         <h2 id="contact-heading" class="contact__heading">Get in Touch</h2>
         <p id="contact-description" class="contact__subheading">
-          Have a project in mind or just want to connect? Drop me a message.
+          Open to new projects, leadership conversations, and collaboration opportunities.
         </p>
       </div>
 
