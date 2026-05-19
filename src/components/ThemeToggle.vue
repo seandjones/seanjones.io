@@ -38,6 +38,13 @@ defineEmits<{ toggle: [] }>()
   border-radius: 100px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+
+  @media (max-width: 600px) {
+    order: 2;
+    margin-left: auto;
+    padding: 3px;
+  }
 
   &:focus-visible {
     outline: none;
@@ -56,6 +63,12 @@ defineEmits<{ toggle: [] }>()
     justify-content: space-between;
     border: 1px solid var(--color-border);
     transition: background var(--transition-theme), border-color var(--transition-theme);
+
+    @media (max-width: 600px) {
+      width: 50px;
+      height: 28px;
+      padding: 0 5px;
+    }
   }
 
   &__icon {
@@ -86,8 +99,19 @@ defineEmits<{ toggle: [] }>()
     box-shadow: var(--shadow-toggle-thumb);
     transition: transform var(--transition-theme), background var(--transition-theme), box-shadow var(--transition-theme);
 
+    @media (max-width: 600px) {
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+    }
+
     &--dark {
       transform: translateX(24px);
+
+      @media (max-width: 600px) {
+        transform: translateX(20px);
+      }
     }
   }
 }

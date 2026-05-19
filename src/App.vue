@@ -10,14 +10,15 @@
         role="dialog"
         aria-modal="true"
         aria-labelledby="keyboard-help-title"
-        @click.self="showKeyboardHelp = false"
+        @click.self="closeKeyboardHelp"
       >
         <div class="keyboard-help-panel">
           <button
+            ref="keyboardHelpCloseBtn"
             type="button"
             class="keyboard-help__close"
             aria-label="Close keyboard help"
-            @click="showKeyboardHelp = false"
+            @click="closeKeyboardHelp"
           >
             ✕
           </button>
@@ -45,18 +46,31 @@
     </transition>
 
     <!-- ─── Navigation ─────────────────────────────────────────────────── -->
-    <header class="navbar" :class="{ 'navbar--scrolled': scrolled }" role="banner">
+    <header class="navbar" :class="{ 'navbar--scrolled': scrolled, 'navbar--nav-open': mobileNavOpen }" role="banner">
       <div class="navbar__inner">
         <a href="#" class="navbar__brand" aria-label="Sean Jones, home">
           <img class="navbar__brand-mark" src="/favicon.png" alt="" aria-hidden="true" />
           <span class="navbar__brand-name">Sean Jones</span>
         </a>
 
-        <nav class="navbar__nav" aria-label="Site navigation">
-          <a href="#skills" class="navbar__link">Skills</a>
-          <a href="#projects" class="navbar__link">Case Studies</a>
-          <a href="#work" class="navbar__link">Experience</a>
-          <a href="#contact" class="navbar__link">Contact</a>
+        <button
+          type="button"
+          class="navbar__hamburger"
+          :aria-expanded="mobileNavOpen"
+          aria-controls="site-nav"
+          :aria-label="mobileNavOpen ? 'Close navigation' : 'Open navigation'"
+          @click="mobileNavOpen = !mobileNavOpen"
+        >
+          <span class="navbar__hamburger-bar"></span>
+          <span class="navbar__hamburger-bar"></span>
+          <span class="navbar__hamburger-bar"></span>
+        </button>
+
+        <nav id="site-nav" class="navbar__nav" :class="{ 'navbar__nav--open': mobileNavOpen }" aria-label="Site navigation">
+          <a href="#skills" class="navbar__link" @click="handleNavLinkClick($event, '#skills')">Skills</a>
+          <a href="#projects" class="navbar__link" @click="handleNavLinkClick($event, '#projects')">Case Studies</a>
+          <a href="#work" class="navbar__link" @click="handleNavLinkClick($event, '#work')">Experience</a>
+          <a href="#contact" class="navbar__link" @click="handleNavLinkClick($event, '#contact')">Contact</a>
         </nav>
 
         <ThemeToggle :is-dark="theme === 'dark'" @toggle="toggleTheme" />
@@ -144,8 +158,68 @@ onUnmounted(() => {
 // ─── Keyboard Shortcuts ──────────────────────────────────────────────────────
 
 const showKeyboardHelp = ref(false);
+const mobileNavOpen = ref(false);
+const keyboardHelpCloseBtn = ref<HTMLButtonElement | null>(null);
+let keyboardHelpTriggerEl: HTMLElement | null = null;
+
+function closeKeyboardHelp() {
+  showKeyboardHelp.value = false;
+  keyboardHelpTriggerEl?.focus();
+}
+
+function handleNavLinkClick(event: MouseEvent, targetSelector: string) {
+  event.preventDefault();
+  mobileNavOpen.value = false;
+
+  const target = document.querySelector(targetSelector);
+  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // Keep URL hash in sync for deep-link semantics.
+  if (window.location.hash !== targetSelector) {
+    history.replaceState(null, "", targetSelector);
+  }
+}
 
 function handleKeydown(event: KeyboardEvent) {
+  // Escape closes modal or mobile nav
+  if (event.key === "Escape") {
+    if (showKeyboardHelp.value) {
+      event.preventDefault();
+      closeKeyboardHelp();
+      return;
+    }
+    if (mobileNavOpen.value) {
+      mobileNavOpen.value = false;
+      return;
+    }
+  }
+
+  // Focus trap inside keyboard help modal
+  if (showKeyboardHelp.value && event.key === "Tab") {
+    const panel = document.querySelector(".keyboard-help-panel");
+    if (!panel) return;
+    const focusable = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute("disabled"));
+    if (focusable.length === 0) return;
+    const first = focusable[0]!;
+    const last = focusable[focusable.length - 1]!;
+    if (event.shiftKey) {
+      if (document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    return;
+  }
+
   // Ignore if user is typing in an input or textarea
   if (
     event.target instanceof HTMLInputElement ||
@@ -165,7 +239,14 @@ function handleKeydown(event: KeyboardEvent) {
 
   if (key === "?") {
     event.preventDefault();
-    showKeyboardHelp.value = !showKeyboardHelp.value;
+    if (!showKeyboardHelp.value) {
+      keyboardHelpTriggerEl = document.activeElement as HTMLElement | null;
+      showKeyboardHelp.value = true;
+      // focus close button on next tick
+      setTimeout(() => keyboardHelpCloseBtn.value?.focus(), 0);
+    } else {
+      closeKeyboardHelp();
+    }
     return;
   }
 
@@ -211,6 +292,10 @@ const socialLinks = [
 <style lang="scss">
 @use './assets/main.scss';
 
+html {
+  scroll-padding-top: 80px;
+}
+
 .app {
   min-height: 100vh;
   display: flex;
@@ -222,7 +307,10 @@ const socialLinks = [
 
 .app > :not(.skip-link) {
   position: relative;
-  z-index: 1;
+}
+
+.app > main > * {
+  scroll-margin-top: 80px;
 }
 
 .skip-link {
@@ -252,7 +340,7 @@ const socialLinks = [
   position: fixed;
   top: 0;
   inset-inline: 0;
-  z-index: 100;
+  z-index: 220;
   padding: 0 1.5rem;
   height: 60px;
   display: flex;
@@ -266,12 +354,23 @@ const socialLinks = [
     height: 64px;
   }
 
+  @media (max-width: 600px) {
+    height: 60px;
+    padding: 0 0.85rem;
+  }
+
   &--scrolled {
     background: color-mix(in srgb, var(--color-bg) 85%, transparent);
     backdrop-filter: saturate(125%) blur(8px);
     -webkit-backdrop-filter: saturate(125%) blur(8px);
     border-bottom-color: var(--color-border);
     box-shadow: 0 1px 0 var(--color-border);
+
+    @media (max-width: 600px) {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background: var(--color-bg);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -288,6 +387,12 @@ const socialLinks = [
     display: flex;
     align-items: center;
     gap: 1.5rem;
+
+    @media (max-width: 600px) {
+      flex-wrap: nowrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
   }
 
   &__brand {
@@ -306,8 +411,8 @@ const socialLinks = [
       color: var(--color-text-primary);
     }
     @media (max-width: 600px) {
-      border-radius: 20px;
-      background: var(--color-accent);
+      padding: 0.25rem 0.15rem;
+      border-radius: 12px;
     }
   }
 
@@ -321,7 +426,7 @@ const socialLinks = [
     border: 1px solid var(--color-border);
     flex-shrink: 0;
 
-    :global([data-theme='light']) & {
+    [data-theme='light'] & {
       mix-blend-mode: multiply;
     }
   }
@@ -336,11 +441,86 @@ const socialLinks = [
     }
   }
 
+  &__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    border-radius: 8px;
+    transition: background var(--transition-base);
+
+    &:hover {
+      background: var(--color-toggle-bg);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+
+    @media (max-width: 600px) {
+      display: flex;
+      order: 2;
+      margin-left: auto;
+    }
+  }
+
+  &__hamburger-bar {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--transition-base), opacity var(--transition-base);
+
+    .navbar--nav-open &:nth-child(1) {
+      transform: translateY(6.5px) rotate(45deg);
+    }
+    .navbar--nav-open &:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .navbar--nav-open &:nth-child(3) {
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+  }
+
   &__nav {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     margin-left: auto;
+
+    @media (max-width: 600px) {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin-left: 0;
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+      z-index: 230;
+      pointer-events: none;
+
+      &--open {
+        display: flex;
+        pointer-events: auto;
+      }
+    }
   }
 
   &__link {
@@ -364,6 +544,25 @@ const socialLinks = [
     &:focus-visible {
       outline: none;
       box-shadow: var(--focus-ring);
+    }
+
+    @media (max-width: 600px) {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0.85rem 1.25rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--color-border);
+      }
+
+      &:hover {
+        background: var(--color-toggle-bg);
+        color: var(--color-text-primary);
+      }
     }
   }
 }
