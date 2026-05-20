@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import ProjectsSection from '../ProjectsSection.vue'
 import projectsSectionSource from '../ProjectsSection.vue?raw'
 
@@ -11,7 +11,6 @@ describe('ProjectsSection', () => {
 
     expect(wrapper.find('section#projects').exists()).toBe(true)
     expect(wrapper.get('#projects-heading').text()).toBe('Case Studies')
-    expect(wrapper.get('.projects__eyebrow').text()).toBe('Selected work')
     expect(wrapper.get('.projects__subheading').text()).toContain('End-to-end product')
     expect(wrapper.get('section#projects').attributes('aria-labelledby')).toBe('projects-heading')
     expect(tiles.length).toBe(4)
@@ -37,16 +36,18 @@ describe('ProjectsSection', () => {
 
     await secondButton.trigger('click')
 
-    const dialog = wrapper.get('[role="dialog"]')
-    expect(dialog.exists()).toBe(true)
-    expect(dialog.attributes('aria-modal')).toBe('true')
-    expect(wrapper.get('.project-modal__title').text()).toBe('Smart Shopping Assistant: ai.price.com')
-    expect(wrapper.get('.project-modal__description').text()).toContain('LLM-powered')
-    expect(wrapper.findAll('.project-modal__detail')).toHaveLength(3)
-    expect(wrapper.findAll('.project-modal__detail')[0].text()).toContain('Challenge:')
+    const dialog = document.body.querySelector('[role="dialog"]')
+    expect(dialog).not.toBeNull()
+    expect(dialog!.getAttribute('aria-modal')).toBe('true')
+    expect(document.body.querySelector('.project-modal__title')!.textContent?.trim()).toBe('Smart Shopping Assistant: ai.price.com')
+    expect(document.body.querySelector('.project-modal__description')!.textContent).toContain('LLM-powered')
+    expect(document.body.querySelectorAll('.project-modal__detail')).toHaveLength(3)
+    expect(document.body.querySelectorAll('.project-modal__detail')[0].textContent).toContain('Challenge:')
 
-    await wrapper.get('.project-modal__close').trigger('click')
-    expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
+    const closeBtn = document.body.querySelector('.project-modal__close') as HTMLButtonElement
+    closeBtn.click()
+    await flushPromises()
+    expect(document.body.querySelector('.project-modal__panel')).toBeNull()
   })
 
   it('manages keyboard focus when opening, tabbing inside, and closing modal', async () => {
@@ -56,14 +57,15 @@ describe('ProjectsSection', () => {
     await trigger.trigger('click')
     await wrapper.vm.$nextTick()
 
-    const closeButton = wrapper.get('.project-modal__close').element as HTMLButtonElement
+    const closeButton = document.body.querySelector('.project-modal__close') as HTMLButtonElement
     expect(document.activeElement).toBe(closeButton)
 
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }))
     await wrapper.vm.$nextTick()
     expect(document.activeElement).toBe(closeButton)
 
-    await wrapper.get('.project-modal__close').trigger('click')
+    closeButton.click()
+    await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()
     expect(document.activeElement).toBe(trigger.element)
 
@@ -74,13 +76,15 @@ describe('ProjectsSection', () => {
     const wrapper = mount(ProjectsSection)
     await wrapper.get('.project-tile__button').trigger('click')
 
-    await wrapper.get('.project-modal').trigger('click')
-    expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
+    const overlay = document.body.querySelector('.project-modal') as HTMLElement
+    overlay.click()
+    await flushPromises()
+    expect(document.body.querySelector('.project-modal__panel')).toBeNull()
 
     await wrapper.get('.project-tile__button').trigger('click')
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
-    await wrapper.vm.$nextTick()
-    expect(wrapper.find('[role="dialog"]').exists()).toBe(false)
+    await flushPromises()
+    expect(document.body.querySelector('.project-modal__panel')).toBeNull()
   })
 
   it('supports empty project input without rendering tiles', () => {
@@ -99,6 +103,6 @@ describe('ProjectsSection', () => {
     expect(projectsSectionSource).toContain('.project-modal-enter-from .project-modal__panel')
     expect(projectsSectionSource).toContain('transform: scale(0.94);')
     expect(projectsSectionSource).toContain('.project-modal-enter-active .project-modal__panel')
-    expect(projectsSectionSource).toContain('transition: transform 0.22s ease, opacity 0.22s ease;')
+    expect(projectsSectionSource).toContain('transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;')
   })
 })

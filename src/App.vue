@@ -3,47 +3,49 @@
     <a href="#main-content" class="skip-link" aria-label="Skip to main content. Press ? for keyboard shortcuts">Skip to main content</a>
 
     <!-- ─── Keyboard Help Modal ─────────────────────────────────────── -->
-    <transition name="help-modal">
-      <div
-        v-if="showKeyboardHelp"
-        class="keyboard-help-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="keyboard-help-title"
-        @click.self="closeKeyboardHelp"
-      >
-        <div class="keyboard-help-panel">
-          <button
-            ref="keyboardHelpCloseBtn"
-            type="button"
-            class="keyboard-help__close"
-            aria-label="Close keyboard help"
-            @click="closeKeyboardHelp"
-          >
-            ✕
-          </button>
-          <h2 id="keyboard-help-title" class="keyboard-help__title">Keyboard Shortcuts</h2>
-          <div class="keyboard-help__content">
-            <div class="keyboard-help__group">
-              <p class="keyboard-help__group-title">Navigation</p>
-              <ul class="keyboard-help__list" aria-label="Navigation shortcuts">
-                <li><kbd>g</kbd><span>Go to Case Studies</span></li>
-                <li><kbd>s</kbd><span>Go to Skills</span></li>
-                <li><kbd>w</kbd><span>Go to Experience</span></li>
-                <li><kbd>c</kbd><span>Go to Contact</span></li>
-                <li><kbd>h</kbd><span>Go to Home (Hero)</span></li>
-              </ul>
-            </div>
-            <div class="keyboard-help__group">
-              <p class="keyboard-help__group-title">Other</p>
-              <ul class="keyboard-help__list" aria-label="Other shortcuts">
-                <li><kbd>?</kbd><span>Show this help</span></li>
-              </ul>
+    <Teleport to="body">
+      <transition name="help-modal">
+        <div
+          v-if="showKeyboardHelp"
+          class="keyboard-help-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="keyboard-help-title"
+          @click.self="closeKeyboardHelp"
+        >
+          <div class="keyboard-help-panel">
+            <button
+              ref="keyboardHelpCloseBtn"
+              type="button"
+              class="keyboard-help__close"
+              aria-label="Close keyboard help"
+              @click="closeKeyboardHelp"
+            >
+              ✕
+            </button>
+            <h2 id="keyboard-help-title" class="keyboard-help__title">Keyboard Shortcuts</h2>
+            <div class="keyboard-help__content">
+              <div class="keyboard-help__group">
+                <h3 class="keyboard-help__group-title">Navigation</h3>
+                <ul class="keyboard-help__list" aria-label="Navigation shortcuts">
+                  <li><kbd>g</kbd><span>Go to Case Studies</span></li>
+                  <li><kbd>s</kbd><span>Go to Skills</span></li>
+                  <li><kbd>w</kbd><span>Go to Experience</span></li>
+                  <li><kbd>c</kbd><span>Go to Contact</span></li>
+                  <li><kbd>h</kbd><span>Go to Home (Hero)</span></li>
+                </ul>
+              </div>
+              <div class="keyboard-help__group">
+                <h3 class="keyboard-help__group-title">Other</h3>
+                <ul class="keyboard-help__list" aria-label="Other shortcuts">
+                  <li><kbd>?</kbd><span>Show this help</span></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </Teleport>
 
     <!-- ─── Navigation ─────────────────────────────────────────────────── -->
     <header class="navbar" :class="{ 'navbar--scrolled': scrolled, 'navbar--nav-open': mobileNavOpen }" role="banner">
@@ -94,15 +96,23 @@
         </p>
         <div class="footer__links">
           <a
-            v-for="link in socialLinks"
-            :key="link.label"
-            :href="link.href"
+            href="https://github.com/seandjones"
             class="footer__link"
             target="_blank"
             rel="noopener noreferrer"
-            :aria-label="link.label"
-            v-html="link.icon"
-          ></a>
+            aria-label="GitHub"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/sean-jones-301439b0/"
+            class="footer__link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
         </div>
       </div>
     </footer>
@@ -171,8 +181,9 @@ function handleNavLinkClick(event: MouseEvent, targetSelector: string) {
   event.preventDefault();
   mobileNavOpen.value = false;
 
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const target = document.querySelector(targetSelector);
-  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+  target?.scrollIntoView({ behavior: prefersReducedMotion ? 'instant' : 'smooth', block: 'start' });
 
   // Keep URL hash in sync for deep-link semantics.
   if (window.location.hash !== targetSelector) {
@@ -253,11 +264,12 @@ function handleKeydown(event: KeyboardEvent) {
   if (key in routes) {
     event.preventDefault();
     const target = routes[key] as string;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (target === "#") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'instant' : 'smooth' });
     } else {
       const element = document.querySelector(target);
-      element?.scrollIntoView({ behavior: "smooth", block: "start" });
+      element?.scrollIntoView({ behavior: prefersReducedMotion ? 'instant' : 'smooth', block: 'start' });
     }
     showKeyboardHelp.value = false;
   }
@@ -274,19 +286,6 @@ onUnmounted(() => {
 // ─── Static data ─────────────────────────────────────────────────────────────
 
 const currentYear = new Date().getFullYear();
-
-const socialLinks = [
-  {
-    label: "GitHub",
-    href: "https://github.com/seandjones",
-    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>`,
-  },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/sean-jones-301439b0/",
-    icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>`,
-  },
-];
 </script>
 
 <style lang="scss">
@@ -414,6 +413,11 @@ html {
     backdrop-filter: saturate(138%) blur(10px);
     -webkit-backdrop-filter: saturate(138%) blur(10px);
     border-bottom-color: color-mix(in srgb, var(--color-border) 76%, var(--color-accent) 24%);
+
+    @media (max-width: 768px) {
+      backdrop-filter: saturate(120%) blur(4px);
+      -webkit-backdrop-filter: saturate(120%) blur(4px);
+    }
     box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 80%, var(--color-accent) 20%),
       0 10px 28px color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 

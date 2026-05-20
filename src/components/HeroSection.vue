@@ -9,7 +9,7 @@
         sizes="(min-width: 768px) 220px, 160px"
         width="220"
         height="220"
-        alt="Portrait of Sean Jones"
+        alt="Sean Jones, Director of Engineering"
         loading="eager"
         fetchpriority="high"
         decoding="async"
@@ -76,7 +76,6 @@
     background: color-mix(in srgb, var(--color-accent) 20%, transparent);
     border-radius: 999px;
     transform: rotate(-9deg);
-    filter: blur(2px);
     z-index: -1;
   }
 
@@ -234,9 +233,9 @@
     border-top: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
   }
 }
-
+//Critical to prevent entire page having opacity
 :global([data-theme="dark"]) .hero__avatar {
-  opacity: 0.75;
+  opacity: 1;
 }
 
 // ─── Buttons ──────────────────────────────────────────────────────────────────

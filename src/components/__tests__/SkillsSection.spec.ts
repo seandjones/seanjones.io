@@ -42,7 +42,6 @@ describe('SkillsSection', () => {
       'Agentic Workflows',
     ])
 
-    expect(aiCard.find('.skill-card__icon svg').exists()).toBe(true)
   })
 
   it('keeps the existing card/grid structure and accessibility labels', () => {
@@ -54,7 +53,6 @@ describe('SkillsSection', () => {
     expect(cards).toHaveLength(5)
 
     for (const card of cards) {
-      expect(card.find('.skill-card__icon').exists()).toBe(true)
       expect(card.find('.skill-card__title').exists()).toBe(true)
 
       const list = card.find('.skill-card__list')

@@ -1,10 +1,18 @@
 <template>
-  <section id="skills" class="skills" aria-labelledby="skills-heading" role="region" aria-describedby="skills-description">
+  <section
+    id="skills"
+    class="skills"
+    aria-labelledby="skills-heading"
+    role="region"
+    aria-describedby="skills-description"
+  >
     <div class="skills__container">
       <div class="skills__header">
         <h2 id="skills-heading" class="skills__heading">Skills &amp; Expertise</h2>
         <p id="skills-description" class="skills__subheading">
-         Proven track record leading architecture, performance optimization, and platform delivery across TypeScript, Angular, Python, ASP.NET, C#, SQL Server, IIS, and AWS ecosystems serving large-scale user bases.
+          Proven track record leading architecture, performance optimization, and platform
+          delivery across TypeScript, Angular, Python, ASP.NET, C#, SQL Server, IIS, and
+          AWS ecosystems serving large-scale user bases.
         </p>
       </div>
 
@@ -15,15 +23,18 @@
           class="skill-card"
           :class="{ 'skill-card--featured': index === 0 || index === 3 }"
         >
-          <div class="skill-card__icon" aria-hidden="true" v-html="group.icon"></div>
+          <!-- <span
+            v-if="index === 0 || index === 3"
+            class="skill-card__index"
+            aria-hidden="true"
+          >
+            {{ String(index + 1).padStart(2, "0") }}
+          </span> -->
+          <!-- Index is currently hidden as it doesn't add much value and can be distracting; can be re-enabled if needed for emphasis -->
           <h3 class="skill-card__title">{{ group.title }}</h3>
           <p class="skill-card__summary">{{ group.summary }}</p>
           <ul class="skill-card__list" :aria-label="`${group.title} skills`">
-            <li
-              v-for="skill in group.skills"
-              :key="skill"
-              class="skill-pill"
-            >
+            <li v-for="skill in group.skills" :key="skill" class="skill-pill">
               {{ skill }}
             </li>
           </ul>
@@ -35,99 +46,80 @@
 
 <script setup lang="ts">
 interface SkillGroup {
-  title: string
-  icon: string
-  summary: string
-  skills: string[]
+  title: string;
+  summary: string;
+  skills: string[];
 }
 
 const skillGroups: SkillGroup[] = [
   {
-    title: 'Application Management',
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="2" y="3" width="20" height="14" rx="2"/>
-      <path d="M8 21h8M12 17v4"/>
-    </svg>`,
-    summary: 'Leading teams, setting architecture, and owning outcomes across the full product lifecycle.',
+    title: "Application Management",
+    summary:
+      "Leading teams, setting architecture, and owning outcomes across the full product lifecycle.",
     skills: [
-      'System Architecture',
-      'Team Leadership',
-      'Agile / Scrum',
-      'Deployment Pipelines',
-      'Performance Optimization',
-      'Code Review',
+      "System Architecture",
+      "Team Leadership",
+      "Agile / Scrum",
+      "Deployment Pipelines",
+      "Performance Optimization",
+      "Code Review",
     ],
   },
   {
-    title: 'Frontend Engineering',
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="16 18 22 12 16 6"/>
-      <polyline points="8 6 2 12 8 18"/>
-    </svg>`,
-    summary: 'TypeScript-first, framework-agnostic, precision UI from component architecture to pixel.',
+    title: "Frontend Engineering",
+    summary:
+      "TypeScript-first, framework-agnostic, precision UI from component architecture to pixel.",
     skills: [
-      'TypeScript',
-      'JavaScript (ES2024+)',
-      'Angular',
-      'Vue',
-      'SCSS / CSS',
-      'HTML5',
+      "TypeScript",
+      "JavaScript (ES2024+)",
+      "Angular",
+      "Vue",
+      "SCSS / CSS",
+      "HTML5",
     ],
   },
   {
-    title: 'Extension Development',
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-      <line x1="12" y1="22.08" x2="12" y2="12"/>
-    </svg>`,
-    summary: 'Shipped cross-browser extensions to millions of users across all major platforms.',
+    title: "Extension Development",
+    summary:
+      "Shipped cross-browser extensions to millions of users across all major platforms.",
     skills: [
-      'Chrome Extension',
-      'Firefox Extension',
-      'Safari Extension',
-      'Microsoft Edge Extension',
-      'Extension APIs',
-      'Packaging & Publishing',
-      'Deployment Pipelines',
+      "Chrome Extension",
+      "Firefox Extension",
+      "Safari Extension",
+      "Microsoft Edge Extension",
+      "Extension APIs",
+      "Packaging & Publishing",
+      "Deployment Pipelines",
     ],
   },
   {
-    title: 'Backend & APIs',
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-      <ellipse cx="12" cy="5" rx="9" ry="3"/>
-      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-    </svg>`,
-    summary: 'API design, data modeling, and systems built to handle real load at production scale.',
+    title: "Backend & APIs",
+    summary:
+      "API design, data modeling, and systems built to handle real load at production scale.",
     skills: [
-      'Python',
-      'Django',
-      'FastAPI',
-      'C#',
-      '.NET Core',
-      'REST APIs',
-      'PostgreSQL',
-      'MySQL',
-      'SQL Server'
-        ],
-  },
-  {
-    title: 'AI Engineering',
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="4" y="4" width="16" height="16" rx="3"/>
-      <path d="M9 9h6v6H9z"/>
-      <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>
-    </svg>`,
-    summary: 'Integrating LLMs into product surfaces since before it was a job title, from prompts to agentic workflows.',
-    skills: [
-      'Prompt Engineering',
-      'Harness Engineering',
-      'AI Product Strategy',
-      'Agentic Workflows',
+      "Python",
+      "Django",
+      "FastAPI",
+      "C#",
+      ".NET Core",
+      "REST APIs",
+      "PostgreSQL",
+      "MySQL",
+      "SQL Server",
     ],
   },
-]
+  {
+    title: "AI Engineering",
+    summary:
+      "Integrating LLMs into product surfaces since before it was a job title, from prompts to agentic workflows.",
+    skills: [
+      "Prompt Engineering",
+      "Harness Engineering",
+      "AI Product Strategy",
+      "Agentic Workflows",
+    ],
+  },
+];
 </script>
 
 <style lang="scss" scoped>
@@ -136,21 +128,28 @@ const skillGroups: SkillGroup[] = [
   isolation: isolate;
   overflow: hidden;
   padding: clamp(5.5rem, 9vw, 8.2rem) 1.2rem;
-  background:
-    radial-gradient(circle at 84% 10%, color-mix(in srgb, var(--color-accent) 26%, transparent), transparent 42%),
-    radial-gradient(circle at 18% 88%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 46%),
-    linear-gradient(170deg, color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-secondary)) 0%, var(--color-bg-secondary) 62%);
+  background: radial-gradient(
+      ellipse at 4% 52%,
+      color-mix(in srgb, var(--color-accent) 22%, transparent),
+      transparent 46%
+    ),
+    radial-gradient(
+      circle at 96% 6%,
+      color-mix(in srgb, var(--color-accent) 10%, transparent),
+      transparent 38%
+    ),
+    linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
   transition: background var(--transition-theme);
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
-    inset: -9rem -26vw auto auto;
-    width: min(70vw, 900px);
-    height: clamp(170px, 24vw, 340px);
+    inset: auto -18vw -7rem auto;
+    width: min(68vw, 860px);
+    height: clamp(160px, 22vw, 320px);
     border-radius: 999px;
-    transform: rotate(-8deg);
-    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    transform: rotate(6deg);
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
     z-index: -1;
   }
 
@@ -209,13 +208,13 @@ const skillGroups: SkillGroup[] = [
   background: var(--color-bg-card);
   border: 1.4px solid color-mix(in srgb, var(--color-border) 76%, var(--color-accent) 24%);
   border-radius: var(--radius-card);
-  padding: 1.75rem 1.4rem;
-  transition:
-    background var(--transition-theme),
-    border-color var(--transition-theme),
+  padding: 1.6rem 1.4rem 1.5rem;
+  transition: background var(--transition-theme), border-color var(--transition-theme),
     box-shadow 0.34s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
 
   @media (min-width: 900px) {
     grid-column: span 3;
@@ -235,12 +234,25 @@ const skillGroups: SkillGroup[] = [
     @media (min-width: 1100px) {
       grid-column: span 5;
     }
+
+    .skill-card__title {
+      font-size: clamp(1.5rem, 2.6vw, 2rem);
+      font-weight: 780;
+      letter-spacing: -0.032em;
+      line-height: 1.08;
+      margin-bottom: 0.7rem;
+    }
+
+    .skill-card__summary {
+      font-size: 0.95rem;
+      max-width: 52ch;
+      margin-bottom: 1.4rem;
+    }
   }
 
   @media (min-width: 1100px) {
     &:nth-child(2) {
       grid-column: span 3;
-      margin-top: 1.4rem;
     }
 
     &:nth-child(3) {
@@ -249,41 +261,31 @@ const skillGroups: SkillGroup[] = [
 
     &:nth-child(5) {
       grid-column: span 5;
-      margin-top: -1.6rem;
     }
   }
 
-  @media (min-width: 1100px) and (max-width: 1279px) {
-    &:nth-child(2),
-    &:nth-child(5) {
-      margin-top: 0;
-    }
-  }
-
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--color-pill-bg) 75%, var(--color-bg-card));
+  &__index {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     color: var(--color-accent);
-    margin-bottom: 1.1rem;
-    transition: background var(--transition-theme), color var(--transition-theme);
+    opacity: 0.7;
+    margin-bottom: 0.85rem;
+    display: block;
+    font-variant-numeric: tabular-nums;
   }
 
   &__title {
-    font-size: 1.12rem;
-    font-weight: 760;
-    letter-spacing: -0.015em;
+    font-size: 1.08rem;
+    font-weight: 720;
+    letter-spacing: -0.012em;
     color: var(--color-text-primary);
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.42rem;
     transition: color var(--transition-theme);
   }
 
   &__summary {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--color-text-secondary);
     line-height: 1.64;
     margin-bottom: 1.1rem;
@@ -295,6 +297,7 @@ const skillGroups: SkillGroup[] = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+    margin-top: auto;
   }
 }
 
@@ -311,9 +314,7 @@ const skillGroups: SkillGroup[] = [
   font-size: 0.73rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  transition:
-    background var(--transition-theme),
-    color var(--transition-theme),
+  transition: background var(--transition-theme), color var(--transition-theme),
     border-color var(--transition-theme);
   white-space: nowrap;
 }

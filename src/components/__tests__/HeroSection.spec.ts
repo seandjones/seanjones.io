@@ -15,7 +15,7 @@ describe('HeroSection', () => {
     expect(image.attributes('width')).toBe('220')
     expect(image.attributes('height')).toBe('220')
     expect(image.attributes('fetchpriority')).toBe('high')
-    expect(image.attributes('alt')).toBe('Portrait of Sean Jones')
+    expect(image.attributes('alt')).toBe('Sean Jones, Director of Engineering')
   })
 
   it('uses avatar styling hooks and removes placeholder artwork', () => {

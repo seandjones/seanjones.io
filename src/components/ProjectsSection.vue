@@ -2,7 +2,6 @@
   <section id="projects" class="projects" aria-labelledby="projects-heading" role="region" aria-describedby="projects-description">
     <div class="projects__container">
       <div class="projects__header">
-        <p class="projects__eyebrow">Selected work</p>
         <h2 id="projects-heading" class="projects__heading">Case Studies</h2>
         <p id="projects-description" class="projects__subheading">
           End-to-end product and platform work spanning consumer-facing, e-commerce, and internal
@@ -249,9 +248,9 @@ onUnmounted(() => {
   overflow: hidden;
   padding: clamp(5.5rem, 9vw, 8.5rem) 1.2rem;
   background:
-    radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--color-accent) 26%, transparent), transparent 42%),
-    radial-gradient(circle at 16% 86%, color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 44%),
-    linear-gradient(165deg, color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-secondary)) 0%, var(--color-bg) 58%);
+    radial-gradient(ellipse at 50% 104%, color-mix(in srgb, var(--color-accent) 28%, transparent), transparent 52%),
+    radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 36%),
+    linear-gradient(175deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-accent) 6%, var(--color-bg-secondary)) 100%);
   transition: background var(--transition-theme);
 
   &::before {
@@ -266,24 +265,12 @@ onUnmounted(() => {
     z-index: -1;
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: auto auto -9rem -22vw;
-    width: min(72vw, 920px);
-    height: clamp(220px, 32vw, 420px);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
-    transform: rotate(9deg);
-    z-index: -1;
-  }
-
   @media (min-width: 768px) {
     padding: clamp(6rem, 9vw, 9rem) clamp(1.6rem, 5vw, 3rem);
   }
 
   &__container {
-    max-width: 1220px;
+    max-width: 1380px;
     margin: 0 auto;
   }
 
@@ -291,15 +278,6 @@ onUnmounted(() => {
     text-align: left;
     max-width: 74ch;
     margin-bottom: clamp(2.2rem, 5vw, 4.2rem);
-  }
-
-  &__eyebrow {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-bottom: 0.75rem;
   }
 
   &__heading {
@@ -357,7 +335,6 @@ onUnmounted(() => {
     transform: translateY(-6px);
     box-shadow: var(--shadow-card-hover);
     border-color: color-mix(in srgb, var(--color-accent) 44%, var(--color-border));
-    filter: saturate(1.03);
   }
 
   &--featured {
@@ -369,6 +346,10 @@ onUnmounted(() => {
       grid-column: span 12;
       display: grid;
       grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    }
+
+    @media (min-width: 1400px) {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
 
       .project-tile__image {
         aspect-ratio: auto;
@@ -596,7 +577,7 @@ onUnmounted(() => {
 
 .project-modal-enter-active .project-modal__panel,
 .project-modal-leave-active .project-modal__panel {
-  transition: transform 0.22s ease, opacity 0.22s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
 }
 
 .project-modal-enter-from,
