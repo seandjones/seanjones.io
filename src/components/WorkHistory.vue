@@ -85,7 +85,7 @@ const jobs: Job[] = [
     contributions: [
       "Boosted user click-through rate (CTR) on AI recommendations by 15% by leading the frontend architecture, state management, and interface responsiveness for an LLM-powered product discovery platform.",
       "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari), resulting in reduced load times by 20%, by deploying solutions using TypeScript, Angular, Python, and AWS.",
-      "Decreased deployment time by 25%, increasing team velocity, by establishing standardized development workflows, tooling, and release processes.",
+      "Decreased deployment time by 25% by establishing standardized development workflows, tooling, and release processes.",
       "Improved application performance 4x (validated via Lighthouse) and enhanced user experience across modern JavaScript applications by optimizing rendering, API integration patterns, and frontend architecture decisions.",
       "Partnered with product and executive stakeholders to align technical roadmap with business priorities.",
       "Led cross-functional engineering initiatives spanning frontend architecture, platform scalability, and release operations across distributed teams.",
