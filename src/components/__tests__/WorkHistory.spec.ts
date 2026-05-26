@@ -20,6 +20,7 @@ describe('WorkHistory', () => {
     const timelineContributionItems = wrapper.findAll('.timeline__contribution')
 
     expect(timelineRoles).toEqual([
+      'Lead Software Engineer',
       'Senior Web Developer',
       'IT Programmer',
       'Web Developer Intern',
@@ -28,10 +29,11 @@ describe('WorkHistory', () => {
     expect(timelineRoles).not.toContain('Director of Engineering')
     expect(wrapper.find('.timeline__badge').exists()).toBe(false)
     expect(timelineLinks).toEqual([
+      'https://price.com',
       'https://www.marlinconnections.net/',
       'https://www.srcreman.com/',
       'https://www.marlinconnections.net/',
     ])
-    expect(timelineContributionItems).toHaveLength(6)
+    expect(timelineContributionItems).toHaveLength(9)
   })
 })

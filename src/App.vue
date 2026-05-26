@@ -191,7 +191,22 @@ function handleNavLinkClick(event: MouseEvent, targetSelector: string) {
   }
 }
 
+function isShortcutSuppressedTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+
+  const blockedInteractive = target.closest(
+    'input, textarea, select, button, a, [contenteditable="true"], [role="textbox"], [role="combobox"], [role="listbox"], [role="menuitem"], [data-shortcuts="off"]'
+  );
+
+  return blockedInteractive !== null;
+}
+
 function handleKeydown(event: KeyboardEvent) {
+  if (event.metaKey || event.ctrlKey || event.altKey) {
+    return;
+  }
+
   // Escape closes modal or mobile nav
   if (event.key === "Escape") {
     if (showKeyboardHelp.value) {
@@ -231,11 +246,8 @@ function handleKeydown(event: KeyboardEvent) {
     return;
   }
 
-  // Ignore if user is typing in an input or textarea
-  if (
-    event.target instanceof HTMLInputElement ||
-    event.target instanceof HTMLTextAreaElement
-  ) {
+  // Ignore shortcuts while focus is in interactive/editable contexts.
+  if (isShortcutSuppressedTarget(event.target)) {
     return;
   }
 
@@ -394,8 +406,8 @@ html {
   height: 60px;
   display: flex;
   align-items: center;
-  transition: background var(--transition-theme), backdrop-filter var(--transition-theme),
-    border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+  transition: background var(--transition-theme), border-color var(--transition-base),
+    box-shadow var(--transition-base), transform var(--transition-base);
   border-bottom: 1px solid transparent;
 
   @media (min-width: 768px) {
@@ -410,28 +422,12 @@ html {
 
   &--scrolled {
     background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-    backdrop-filter: saturate(138%) blur(10px);
-    -webkit-backdrop-filter: saturate(138%) blur(10px);
     border-bottom-color: color-mix(in srgb, var(--color-border) 76%, var(--color-accent) 24%);
-
-    @media (max-width: 768px) {
-      backdrop-filter: saturate(120%) blur(4px);
-      -webkit-backdrop-filter: saturate(120%) blur(4px);
-    }
     box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 80%, var(--color-accent) 20%),
       0 10px 28px color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 
-    @media (max-width: 600px) {
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
+    @media (max-width: 768px) {
       background: var(--color-bg);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &--scrolled {
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
     }
   }
 
@@ -760,8 +756,6 @@ html {
   justify-content: center;
   padding: 1.5rem;
   background: color-mix(in srgb, var(--color-bg) 90%, transparent);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
 }
 
 .keyboard-help-panel {

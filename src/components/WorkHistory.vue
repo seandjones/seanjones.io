@@ -49,7 +49,7 @@
         </ul>
       </article>
 
-      <p class="work__bridge">Earlier roles that shaped this leadership foundation.</p>
+      <p class="work__bridge">Previous Roles</p>
 
       <div class="timeline" aria-label="Earlier experience timeline">
         <article v-for="(job, index) in previousRoles" :key="index" class="timeline__item">
@@ -426,23 +426,6 @@ const previousRoles = jobs.slice(1);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-accent);
-  }
-
-  &__badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.15rem 0.5rem;
-    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
-    color: var(--color-accent);
-    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
-    border-radius: 999px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-left: 0.6rem;
-    vertical-align: middle;
-    transition: background var(--transition-theme), border-color var(--transition-theme);
   }
 
   &__role {
