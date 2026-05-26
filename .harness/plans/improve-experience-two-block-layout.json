@@ -1,0 +1,25 @@
+{
+  "slug": "improve-experience-two-block-layout",
+  "title": "Split experience into featured and timeline blocks",
+  "type": "improvement",
+  "created": "2026-05-26",
+  "status": "complete",
+  "context": "User requested implementing a two-block experience layout with current role highlighted separately from prior roles.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Refactor WorkHistory into featured current role plus previous timeline",
+      "status": "complete",
+      "acceptance_criteria": [
+        "Experience section renders a standalone featured block for the current role before the timeline.",
+        "Timeline renders only previous roles and no longer applies current-role styling to timeline items.",
+        "Existing role content remains intact, including links and contribution bullets.",
+        "Project verification command passes after the refactor."
+      ],
+      "files": [
+        "src/components/WorkHistory.vue"
+      ],
+      "depends_on": []
+    }
+  ]
+}

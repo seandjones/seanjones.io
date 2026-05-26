@@ -494,6 +494,28 @@
   - type-check: passing
   - production build: passing
 
+## 2026-05-26 — Experience two-block refactor
+
+### Completed
+- Updated `src/components/WorkHistory.vue` to split Experience into two blocks:
+  - a featured current-role card for `Director of Engineering` at `Price.com`
+  - a separate timeline containing only earlier roles
+- Preserved existing role descriptions, links, and contribution bullets.
+- Removed timeline current-role labeling to keep the split narrative clean.
+- Added `src/components/__tests__/WorkHistory.spec.ts` to cover:
+  - featured current-role rendering
+  - timeline previous-role composition (no current role in timeline)
+  - timeline links and contribution-item rendering
+
+### Verification
+- `npm run check` ✓
+  - tests: 48/48 passing
+  - type-check: passing
+  - production build: passing
+
+### Notes
+- Finalized as approved-as-is per user decision after implementation and green verification.
+
 ---
 
 ## 2026-05-17 — Impeccable bolder pass (brand register)

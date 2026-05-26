@@ -14,13 +14,45 @@
         </p>
       </div>
 
-      <div class="timeline">
-        <article
-          v-for="(job, index) in jobs"
-          :key="index"
-          class="timeline__item"
-          :class="{ 'timeline__item--current': index === 0 }"
+      <article
+        v-if="currentRole"
+        class="featured-role"
+        aria-label="Current leadership role"
+      >
+        <div class="featured-role__meta">
+          <span class="featured-role__period">{{ currentRole.period }}</span>
+          <span class="featured-role__badge">Current Role</span>
+        </div>
+        <h3 class="featured-role__role">{{ currentRole.role }}</h3>
+        <p v-if="currentRole.company_link" class="featured-role__company">
+          <a
+            class="featured-role__company-link"
+            :href="currentRole.company_link"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ currentRole.company }}</a
+          >
+        </p>
+        <p v-else class="featured-role__company">{{ currentRole.company }}</p>
+        <p class="featured-role__description">{{ currentRole.description }}</p>
+        <ul
+          class="featured-role__contributions"
+          :aria-label="`Key contributions at ${currentRole.company}`"
         >
+          <li
+            v-for="(point, i) in currentRole.contributions"
+            :key="i"
+            class="featured-role__contribution"
+          >
+            {{ point }}
+          </li>
+        </ul>
+      </article>
+
+      <p class="work__bridge">Earlier roles that shaped this leadership foundation.</p>
+
+      <div class="timeline" aria-label="Earlier experience timeline">
+        <article v-for="(job, index) in previousRoles" :key="index" class="timeline__item">
           <!-- Line + dot -->
           <div class="timeline__track" aria-hidden="true">
             <div class="timeline__dot"></div>
@@ -31,7 +63,6 @@
           <div class="timeline__card">
             <div class="timeline__meta">
               <span class="timeline__period">{{ job.period }}</span>
-              <span v-if="index === 0" class="timeline__badge">Current</span>
             </div>
             <h3 class="timeline__role">{{ job.role }}</h3>
             <p v-if="job.company_link" class="timeline__company">
@@ -79,16 +110,27 @@ const jobs: Job[] = [
     role: "Director of Engineering",
     company: "Price.com",
     company_link: "https://price.com",
-    period: "Nov 2016 – Present",
+    period: "Nov 2022 – Present",
     description:
-      "Leading engineering teams to build scalable web applications and browser extensions that enhance product discovery and price comparison for millions of transactions.",
+      "Sole technical lead in a lean startup environment: owning architecture, platform strategy, and engineering operations across frontend, backend, and browser extension surfaces.",
     contributions: [
-      "Boosted user click-through rate (CTR) on AI recommendations by 15% by leading the frontend architecture, state management, and interface responsiveness for an LLM-powered product discovery platform.",
-      "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari), resulting in reduced load times by 20%, by deploying solutions using TypeScript, Angular, Python, and AWS.",
-      "Decreased deployment time by 25% by establishing standardized development workflows, tooling, and release processes.",
-      "Improved application performance 4x (validated via Lighthouse) and enhanced user experience across modern JavaScript applications by optimizing rendering, API integration patterns, and frontend architecture decisions.",
-      "Partnered with product and executive stakeholders to align technical roadmap with business priorities.",
-      "Led cross-functional engineering initiatives spanning frontend architecture, platform scalability, and release operations across distributed teams.",
+      "Architected and delivered an LLM-powered product discovery platform, owning frontend architecture, state management, and API integration that resulted in a 15% increase in user CTR on AI-driven recommendations.",
+      "Improved application performance 4x (validated via Lighthouse) by overhauling rendering pipelines, API integration patterns, and frontend architecture across modern JavaScript applications.",
+      "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari, Edge), reducing load times by 20% using TypeScript, Angular, Python, and AWS.",
+      "Decreased deployment time by 25% by establishing standardized development workflows, tooling, and CI/CD release processes from the ground up."
+    ],
+  },
+   {
+    role: "Lead Software Engineer",
+    company: "Price.com",
+    company_link: "https://price.com",
+    period: "Nov 2016 – Nov 2022",
+    description:
+      "Led engineering efforts across frontend and browser extension development, driving architectural decisions and delivery milestones in a fast-paced startup environment.",
+    contributions: [
+      "Partnered directly with product and executive stakeholders to define and execute technical roadmap, translating business priorities into architectural decisions and delivery milestones.",
+      "Led cross-functional engineering initiatives spanning frontend architecture (Django/SCSS/JavaScript/HTML5), platform scalability, and release operations across a distributed remote team.",
+      "Rewrote all browser extensions to be fully featured in-browser experiences using Angular and TypeScript and handled all deployments for Chrome, Firefox, Edge and Safari including release processes and versioning."
     ],
   },
   {
@@ -128,6 +170,9 @@ const jobs: Job[] = [
     ],
   },
 ];
+
+const currentRole = jobs[0];
+const previousRoles = jobs.slice(1);
 </script>
 
 <style lang="scss" scoped>
@@ -164,6 +209,127 @@ const jobs: Job[] = [
     max-width: 480px;
     margin: 0 auto;
     line-height: 1.6;
+  }
+
+  &__bridge {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.25rem 3px;
+  }
+}
+
+// ─── Featured Current Role ──────────────────────────────────────────────────
+
+.featured-role {
+  background: linear-gradient(
+    138deg,
+    color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-card)) 0%,
+    var(--color-bg-card) 44%
+  );
+  border: 1px solid color-mix(in srgb, var(--color-accent) 48%, var(--color-border));
+  border-radius: var(--radius-card);
+  box-shadow: 0 16px 38px color-mix(in srgb, var(--color-accent) 17%, transparent),
+    var(--shadow-card);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transition: background var(--transition-theme), border-color var(--transition-theme),
+    box-shadow var(--transition-theme);
+
+  @media (min-width: 640px) {
+    padding: 1.75rem 2rem;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__period {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  &__role {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+
+    @media (min-width: 640px) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__company {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.875rem;
+  }
+
+  &__company-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+    text-underline-offset: 0.2em;
+
+    &:hover {
+      color: var(--color-text-primary);
+      text-decoration-color: var(--color-accent);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 3px;
+    }
+  }
+
+  &__description {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+
+  &__contributions {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  &__contribution {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+    padding-left: 1.1rem;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      opacity: 0.7;
+    }
   }
 }
 
@@ -244,23 +410,6 @@ const jobs: Job[] = [
     &:hover {
       box-shadow: var(--shadow-card-hover);
     }
-  }
-
-  // Current role card gets accent left border
-  &__item--current &__card {
-    border-color: color-mix(in srgb, var(--color-accent) 44%, var(--color-border));
-    background: linear-gradient(
-      138deg,
-      color-mix(in srgb, var(--color-accent) 9%, var(--color-bg-card)) 0%,
-      var(--color-bg-card) 42%
-    );
-    box-shadow: 0 16px 38px color-mix(in srgb, var(--color-accent) 17%, transparent),
-      var(--shadow-card);
-  }
-
-  &__item--current &__dot {
-    box-shadow: 0 0 0 2px var(--color-accent),
-      0 0 0 7px color-mix(in srgb, var(--color-accent) 22%, transparent);
   }
 
   &__meta {

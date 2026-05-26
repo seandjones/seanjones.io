@@ -215,3 +215,11 @@
 - Added `check` script to `package.json` (`npm run test && npm run build`) to standardize harness verification.
 - Verification: `npm run check` ✓ (43/43 tests, build/type-check passing).
 - Evaluator verdict: PASS (after one retry that tightened test specificity and verification command consistency).
+
+## 2026-05-26 - improve-experience-two-block-layout: Task 1 - Split experience into featured and timeline blocks
+
+- Refactored `src/components/WorkHistory.vue` into a dedicated featured current-role block plus a separate earlier-experience timeline.
+- Kept all existing role copy, links, and contribution bullets while removing current-role labeling from the timeline.
+- Added focused regression coverage in `src/components/__tests__/WorkHistory.spec.ts` for featured-role rendering and timeline-only previous roles.
+- Verification: `npm run check` ✓ (48/48 tests, type-check passing, production build passing).
+- User decision: approved as-is after implementation and full verification passed.
