@@ -74,9 +74,11 @@ const skillGroups: SkillGroup[] = [
       "JavaScript (ES2024+)",
       "Angular",
       "Vue",
+      "React",
       "SCSS / CSS",
       "HTML5",
-    ],
+      "Webpack",
+      "Vite",],
   },
   {
     title: "Extension Development",
