@@ -544,3 +544,44 @@
   - tests: 44/44 passing
   - type-check: passing
   - production build: passing
+
+---
+
+## 2026-07-30 — TaskRiver ventures added to Experience and Case Studies (feat-taskriver-case-studies)
+
+### Completed
+- Added TaskRiver.ai and its three product sites to the portfolio as both experience and case study content.
+- `src/components/WorkHistory.vue`:
+  - Generalized the featured-role block from a single hardcoded `jobs[0]` to a `current` flag, so multiple concurrent present-day roles render as featured cards above the timeline.
+  - Added `Founder / TaskRiver.ai` (2026 – Present) as a second current role alongside Director of Engineering at Price.com.
+  - New `.work__current` wrapper owns spacing between featured cards; removed the now-conflicting `margin-bottom` from `.featured-role`.
+  - Updated the section subheading to cover both the startup and independent product tracks.
+- `src/components/ProjectsSection.vue`:
+  - Added four case studies: TaskRiver.ai (parent automation platform), WhatContractorsPay.com, The Family Shortlist, and FSMA Radar.
+  - Grid grew from 4 to 8 tiles; desktop row rhythm retuned to 12 / 5+7 / 4+4+4 / 7+5 so the three TaskRiver products read as a set and no row is left with an orphan tile.
+  - Broadened the section subheading to include independently built automation and data products.
+- New case study artwork, each in its own hue family to stay distinguishable from the existing four:
+  - `public/project-taskriver.svg` (teal, workflow node graph)
+  - `public/project-whatcontractorspay.svg` (steel/amber, pricing table with verified badges)
+  - `public/project-family-shortlist.svg` (rose, directory + map + health scores)
+  - `public/project-fsma-radar.svg` (olive, weekly digest layout)
+- Added `.claude/launch.json` so the dev server can be driven for visual verification.
+
+### Bug fixed along the way
+- `.featured-role__badge` ("Current Role") had no CSS rule at all, so it inherited near-black body text and was invisible against the dark-theme card. Measured at 2.3:1. Now a filled pill using the site's existing `--color-accent` / `--color-on-accent` pair, matching primary button treatment.
+
+### Test updates
+- `SkillsSection.spec.ts`: card-order assertion updated to match the committed reorder (Backend & APIs first, Application Management fourth). This test was already failing on `main` before this branch.
+- `WorkHistory.spec.ts`: added coverage for multiple concurrent current roles and for the TaskRiver card's link, period, and venture list.
+- `ProjectsSection.spec.ts`: tile count 4 → 8, added full tile-title ordering assertion and a TaskRiver modal detail test.
+
+### Verification
+- `npm run check` ✓
+  - tests: 52/52 passing
+  - type-check: passing
+  - production build: passing
+- Desktop grid geometry verified in-browser at 1440px: measured tile widths confirm the 12 / 5+7 / 4+4+4 / 7+5 rhythm across four clean rows.
+- Both current-role badges verified rendering as 116×24 accent pills with dark on-accent text.
+
+### Known follow-up (not addressed here)
+- The site-wide `--color-accent` / `--color-on-accent` pair measures ~4.15:1 in light theme, below WCAG AA 4.5:1 for small text. This affects primary buttons site-wide, not just the new badge, so it is a global token decision rather than a component fix.

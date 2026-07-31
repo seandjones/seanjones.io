@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Care facility directory listings with map and health score panel mockup">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a1725"/>
+      <stop offset="100%" stop-color="#4c2743"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="78" y="68" width="1044" height="539" rx="22" fill="#241322"/>
+  <rect x="112" y="102" width="300" height="32" rx="10" fill="#e0748f"/>
+  <rect x="640" y="102" width="448" height="32" rx="10" fill="#3b2033"/>
+
+  <!-- listing cards -->
+  <g>
+    <rect x="112" y="172" width="470" height="122" rx="16" fill="#33192c"/>
+    <rect x="140" y="198" width="228" height="18" rx="7" fill="#e0748f"/>
+    <rect x="140" y="230" width="308" height="12" rx="6" fill="#5c3049"/>
+    <rect x="140" y="254" width="182" height="12" rx="6" fill="#5c3049"/>
+    <rect x="470" y="196" width="84" height="26" rx="13" fill="#4a2a3e"/>
+
+    <rect x="112" y="310" width="470" height="122" rx="16" fill="#33192c"/>
+    <rect x="140" y="336" width="196" height="18" rx="7" fill="#e0748f"/>
+    <rect x="140" y="368" width="284" height="12" rx="6" fill="#5c3049"/>
+    <rect x="140" y="392" width="154" height="12" rx="6" fill="#5c3049"/>
+    <rect x="470" y="334" width="84" height="26" rx="13" fill="#4a2a3e"/>
+
+    <rect x="112" y="448" width="470" height="122" rx="16" fill="#33192c"/>
+    <rect x="140" y="474" width="242" height="18" rx="7" fill="#e0748f"/>
+    <rect x="140" y="506" width="266" height="12" rx="6" fill="#5c3049"/>
+    <rect x="140" y="530" width="170" height="12" rx="6" fill="#5c3049"/>
+    <rect x="470" y="472" width="84" height="26" rx="13" fill="#4a2a3e"/>
+  </g>
+
+  <!-- map panel -->
+  <rect x="616" y="172" width="472" height="240" rx="16" fill="#301827"/>
+  <path d="M616 300 L716 254 L820 296 L930 240 L1088 288" stroke="#5c3049" stroke-width="6" fill="none"/>
+  <path d="M616 360 L740 330 L864 366 L1002 322 L1088 350" stroke="#5c3049" stroke-width="6" fill="none"/>
+  <circle cx="742" cy="266" r="13" fill="#e0748f"/>
+  <circle cx="898" cy="248" r="13" fill="#e0748f"/>
+  <circle cx="826" cy="352" r="13" fill="#e0748f"/>
+
+  <!-- health score panel -->
+  <rect x="616" y="428" width="472" height="142" rx="16" fill="#301827"/>
+  <rect x="644" y="456" width="176" height="14" rx="6" fill="#5c3049"/>
+  <g>
+    <rect x="644" y="492" width="88" height="52" rx="12" fill="#3e2033"/>
+    <rect x="666" y="510" width="44" height="18" rx="7" fill="#6fc98a"/>
+    <rect x="752" y="492" width="88" height="52" rx="12" fill="#3e2033"/>
+    <rect x="774" y="510" width="44" height="18" rx="7" fill="#e0b04a"/>
+    <rect x="860" y="492" width="88" height="52" rx="12" fill="#3e2033"/>
+    <rect x="882" y="510" width="44" height="18" rx="7" fill="#6fc98a"/>
+    <rect x="968" y="492" width="92" height="52" rx="12" fill="#3e2033"/>
+    <rect x="992" y="510" width="44" height="18" rx="7" fill="#6fc98a"/>
+  </g>
+</svg>

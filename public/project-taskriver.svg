@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="Automation workflow builder interface mockup">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b2a33"/>
+      <stop offset="100%" stop-color="#0f5060"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="80" y="70" width="1040" height="535" rx="22" fill="#0a2129"/>
+  <rect x="112" y="104" width="268" height="30" rx="10" fill="#2fc4d8"/>
+  <rect x="416" y="104" width="672" height="30" rx="10" fill="#194250"/>
+
+  <!-- workflow lanes -->
+  <path d="M262 232 H430" stroke="#2fc4d8" stroke-width="5" fill="none" opacity="0.75"/>
+  <path d="M262 232 H352 V366 H430" stroke="#2fc4d8" stroke-width="5" fill="none" opacity="0.45"/>
+  <path d="M604 232 H772" stroke="#2fc4d8" stroke-width="5" fill="none" opacity="0.75"/>
+  <path d="M604 366 H700 V500 H772" stroke="#2fc4d8" stroke-width="5" fill="none" opacity="0.45"/>
+
+  <!-- trigger node -->
+  <rect x="112" y="188" width="150" height="88" rx="16" fill="#12414f"/>
+  <rect x="136" y="212" width="94" height="16" rx="6" fill="#2fc4d8"/>
+  <rect x="136" y="240" width="62" height="12" rx="6" fill="#2b6577"/>
+
+  <!-- action nodes -->
+  <rect x="430" y="188" width="174" height="88" rx="16" fill="#12414f"/>
+  <rect x="456" y="212" width="112" height="16" rx="6" fill="#6fdcea"/>
+  <rect x="456" y="240" width="78" height="12" rx="6" fill="#2b6577"/>
+
+  <rect x="430" y="322" width="174" height="88" rx="16" fill="#12414f"/>
+  <rect x="456" y="346" width="96" height="16" rx="6" fill="#6fdcea"/>
+  <rect x="456" y="374" width="66" height="12" rx="6" fill="#2b6577"/>
+
+  <rect x="772" y="188" width="316" height="88" rx="16" fill="#12414f"/>
+  <rect x="800" y="212" width="150" height="16" rx="6" fill="#2fc4d8"/>
+  <rect x="800" y="240" width="228" height="12" rx="6" fill="#2b6577"/>
+
+  <rect x="772" y="456" width="316" height="88" rx="16" fill="#12414f"/>
+  <rect x="800" y="480" width="128" height="16" rx="6" fill="#2fc4d8"/>
+  <rect x="800" y="508" width="196" height="12" rx="6" fill="#2b6577"/>
+
+  <!-- activity log -->
+  <rect x="112" y="322" width="196" height="222" rx="16" fill="#0e3441"/>
+  <rect x="136" y="350" width="120" height="14" rx="6" fill="#2b6577"/>
+  <rect x="136" y="384" width="148" height="12" rx="6" fill="#1c5364"/>
+  <rect x="136" y="412" width="126" height="12" rx="6" fill="#1c5364"/>
+  <rect x="136" y="440" width="140" height="12" rx="6" fill="#1c5364"/>
+  <rect x="136" y="468" width="104" height="12" rx="6" fill="#1c5364"/>
+  <rect x="136" y="496" width="132" height="12" rx="6" fill="#1c5364"/>
+</svg>

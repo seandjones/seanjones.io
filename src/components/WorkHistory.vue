@@ -10,44 +10,50 @@
       <div class="work__header">
         <h2 id="work-heading" class="work__heading">Experience</h2>
         <p id="work-description" class="work__subheading">
-          Combines deep technical expertise with product and engineering leadership to deliver high-performance, scalable systems.
+          Combines deep technical expertise with product and engineering leadership to deliver
+          high-performance, scalable systems, both inside a venture-backed startup and across
+          independently built products.
         </p>
       </div>
 
-      <article
-        v-if="currentRole"
-        class="featured-role"
-        aria-label="Current leadership role"
-      >
-        <div class="featured-role__meta">
-          <span class="featured-role__period">{{ currentRole.period }}</span>
-          <span class="featured-role__badge">Current Role</span>
-        </div>
-        <h3 class="featured-role__role">{{ currentRole.role }}</h3>
-        <p v-if="currentRole.company_link" class="featured-role__company">
-          <a
-            class="featured-role__company-link"
-            :href="currentRole.company_link"
-            target="_blank"
-            rel="noopener noreferrer"
-            >{{ currentRole.company }}</a
-          >
-        </p>
-        <p v-else class="featured-role__company">{{ currentRole.company }}</p>
-        <p class="featured-role__description">{{ currentRole.description }}</p>
-        <ul
-          class="featured-role__contributions"
-          :aria-label="`Key contributions at ${currentRole.company}`"
+      <div class="work__current" role="list" aria-label="Current roles">
+        <article
+          v-for="role in currentRoles"
+          :key="`${role.company}-${role.role}`"
+          class="featured-role"
+          role="listitem"
+          :aria-label="`Current role at ${role.company}`"
         >
-          <li
-            v-for="(point, i) in currentRole.contributions"
-            :key="i"
-            class="featured-role__contribution"
+          <div class="featured-role__meta">
+            <span class="featured-role__period">{{ role.period }}</span>
+            <span class="featured-role__badge">Current Role</span>
+          </div>
+          <h3 class="featured-role__role">{{ role.role }}</h3>
+          <p v-if="role.company_link" class="featured-role__company">
+            <a
+              class="featured-role__company-link"
+              :href="role.company_link"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ role.company }}</a
+            >
+          </p>
+          <p v-else class="featured-role__company">{{ role.company }}</p>
+          <p class="featured-role__description">{{ role.description }}</p>
+          <ul
+            class="featured-role__contributions"
+            :aria-label="`Key contributions at ${role.company}`"
           >
-            {{ point }}
-          </li>
-        </ul>
-      </article>
+            <li
+              v-for="(point, i) in role.contributions"
+              :key="i"
+              class="featured-role__contribution"
+            >
+              {{ point }}
+            </li>
+          </ul>
+        </article>
+      </div>
 
       <p class="work__bridge">Previous Roles</p>
 
@@ -103,6 +109,8 @@ interface Job {
   period: string;
   description: string;
   contributions: string[];
+  /** Concurrent present-day roles render as featured cards above the timeline. */
+  current?: boolean;
 }
 
 const jobs: Job[] = [
@@ -111,6 +119,7 @@ const jobs: Job[] = [
     company: "Price.com",
     company_link: "https://price.com",
     period: "Nov 2022 – Present",
+    current: true,
     description:
       "Sole technical lead in a lean startup environment: owning architecture, platform strategy, and engineering operations across frontend, backend, and browser extension surfaces.",
     contributions: [
@@ -118,6 +127,22 @@ const jobs: Job[] = [
       "Improved application performance 4x (validated via Lighthouse) by overhauling rendering pipelines, API integration patterns, and frontend architecture across modern JavaScript applications.",
       "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari, Edge), reducing load times by 20% using TypeScript, Angular, Python, and AWS.",
       "Decreased deployment time by 25% by establishing standardized development workflows, tooling, and CI/CD release processes from the ground up."
+    ],
+  },
+  {
+    role: "Founder",
+    company: "TaskRiver.ai",
+    company_link: "https://taskriver.ai",
+    period: "2026 – Present",
+    current: true,
+    description:
+      "Founded and run an automation practice that helps local service businesses replace repetitive manual work with reliable systems, spanning client engagements and a portfolio of independently operated products.",
+    contributions: [
+      "Design and implement custom automation systems covering missed call recovery, lead capture and qualification, estimate follow-up, review request workflows, CRM synchronization, and appointment reminders.",
+      "Built and operate WhatContractorsPay.com, a construction software pricing database where every submitted figure is verified against a state contractor-license board before publication.",
+      "Building The Family Shortlist, a directory pairing Colorado dementia care facilities with CDPHE health inspection data for families comparing care options.",
+      "Publish FSMA Radar, a weekly regulatory digest for QA and food-safety managers, built on automated monitoring of the Federal Register, the eCFR, and FDA enforcement activity.",
+      "Own the full stack of each venture end to end: product definition, architecture, data pipelines, frontend, and go-to-market.",
     ],
   },
    {
@@ -171,8 +196,8 @@ const jobs: Job[] = [
   },
 ];
 
-const currentRole = jobs[0];
-const previousRoles = jobs.slice(1);
+const currentRoles = jobs.filter((job) => job.current);
+const previousRoles = jobs.filter((job) => !job.current);
 </script>
 
 <style lang="scss" scoped>
@@ -211,6 +236,13 @@ const previousRoles = jobs.slice(1);
     line-height: 1.6;
   }
 
+  &__current {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
   &__bridge {
     font-size: 0.8rem;
     letter-spacing: 0.08em;
@@ -233,7 +265,6 @@ const previousRoles = jobs.slice(1);
   box-shadow: 0 16px 38px color-mix(in srgb, var(--color-accent) 17%, transparent),
     var(--shadow-card);
   padding: 1.5rem;
-  margin-bottom: 2rem;
   transition: background var(--transition-theme), border-color var(--transition-theme),
     box-shadow var(--transition-theme);
 
@@ -255,6 +286,21 @@ const previousRoles = jobs.slice(1);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-accent);
+  }
+
+  // Without an explicit color the badge inherits near-black body text and
+  // disappears against the dark-theme card surface.
+  &__badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-on-accent);
+    background: var(--color-accent);
+    border-radius: 999px;
+    padding: 0.18rem 0.6rem;
+    margin-left: 0.35rem;
+    transition: color var(--transition-theme), background var(--transition-theme);
   }
 
   &__role {

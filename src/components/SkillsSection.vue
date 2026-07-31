@@ -11,8 +11,7 @@
         <h2 id="skills-heading" class="skills__heading">Skills &amp; Expertise</h2>
         <p id="skills-description" class="skills__subheading">
           Proven track record leading architecture, performance optimization, and platform
-          delivery across TypeScript, Angular, Python, ASP.NET, C#, SQL Server, IIS, and
-          AWS ecosystems serving large-scale user bases.
+          delivery across TypeScript, Angular, Python, ASP.NET, C#, SQL Server, IIS, LAMP Stack, and AWS ecosystems serving large-scale user bases.
         </p>
       </div>
 
@@ -53,16 +52,21 @@ interface SkillGroup {
 
 const skillGroups: SkillGroup[] = [
   {
-    title: "Application Management",
+    title: "Backend & APIs",
     summary:
-      "Leading teams, setting architecture, and owning outcomes across the full product lifecycle.",
+      "API design, data modeling, and systems built to handle real load at production scale.",
     skills: [
-      "System Architecture",
-      "Team Leadership",
-      "Agile / Scrum",
-      "Deployment Pipelines",
-      "Performance Optimization",
-      "Code Review",
+      "Python",
+      "Django",
+      "FastAPI",
+      "PHP",
+      "Laravel",
+      "C#",
+      ".NET Core",
+      "REST APIs",
+      "PostgreSQL",
+      "MySQL",
+      "SQL Server",
     ],
   },
   {
@@ -95,21 +99,19 @@ const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    title: "Backend & APIs",
+    title: "Application Management",
     summary:
-      "API design, data modeling, and systems built to handle real load at production scale.",
+      "Leading teams, setting architecture, and owning outcomes across the full product lifecycle.",
     skills: [
-      "Python",
-      "Django",
-      "FastAPI",
-      "C#",
-      ".NET Core",
-      "REST APIs",
-      "PostgreSQL",
-      "MySQL",
-      "SQL Server",
+      "System Architecture",
+      "Agile / Scrum",
+      "Deployment Pipelines",
+      "Performance Optimization",
+      "Code Review",
+      "Team Leadership",
     ],
   },
+
   {
     title: "AI Engineering",
     summary:
