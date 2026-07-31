@@ -13,7 +13,7 @@ describe('ProjectsSection', () => {
     expect(wrapper.get('#projects-heading').text()).toBe('Case Studies')
     expect(wrapper.get('.projects__subheading').text()).toContain('End-to-end product')
     expect(wrapper.get('section#projects').attributes('aria-labelledby')).toBe('projects-heading')
-    expect(tiles.length).toBe(4)
+    expect(tiles.length).toBe(8)
     expect(buttons.length).toBe(tiles.length)
 
     for (const tile of tiles) {
@@ -28,6 +28,39 @@ describe('ProjectsSection', () => {
     }
 
     expect(wrapper.findAll('.project-tile__detail')).toHaveLength(0)
+  })
+
+  it('renders the TaskRiver platform tile alongside a tile per TaskRiver product', () => {
+    const wrapper = mount(ProjectsSection)
+    const titles = wrapper.findAll('.project-tile__title').map(node => node.text())
+
+    expect(titles).toEqual([
+      'Price.com Web Application and Extension Platform',
+      'Smart Shopping Assistant: ai.price.com',
+      'TaskRiver.ai: Automation Platform for Local Service Businesses',
+      'WhatContractorsPay.com: License-Verified Software Pricing',
+      'The Family Shortlist: Colorado Dementia Care Directory',
+      'FSMA Radar: Weekly Food Safety Regulatory Digest',
+      'Starbucks Branded Solutions: B2B E-commerce Platform',
+      'Procter & Gamble: Sales Materials Generator',
+    ])
+  })
+
+  it('opens the TaskRiver modal with its automation detail list', async () => {
+    const wrapper = mount(ProjectsSection)
+    await wrapper.findAll('.project-tile__button')[2].trigger('click')
+
+    const title = document.body.querySelector('.project-modal__title')!.textContent?.trim()
+    const details = Array.from(document.body.querySelectorAll('.project-modal__detail'))
+      .map(node => node.textContent ?? '')
+      .join(' ')
+
+    expect(title).toBe('TaskRiver.ai: Automation Platform for Local Service Businesses')
+    expect(details).toContain('missed call recovery')
+    expect(details).toContain('CRM synchronization')
+
+    ;(document.body.querySelector('.project-modal__close') as HTMLButtonElement).click()
+    await flushPromises()
   })
 
   it('opens a modal with full details for the selected project and closes from button', async () => {

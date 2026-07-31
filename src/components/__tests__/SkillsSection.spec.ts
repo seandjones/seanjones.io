@@ -8,10 +8,10 @@ describe('SkillsSection', () => {
     const titles = wrapper.findAll('.skill-card__title').map(node => node.text())
 
     expect(titles).toEqual([
-      'Application Management',
+      'Backend & APIs',
       'Frontend Engineering',
       'Extension Development',
-      'Backend & APIs',
+      'Application Management',
       'AI Engineering',
     ])
   })

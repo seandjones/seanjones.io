@@ -4,8 +4,9 @@
       <div class="projects__header">
         <h2 id="projects-heading" class="projects__heading">Case Studies</h2>
         <p id="projects-description" class="projects__subheading">
-          End-to-end product and platform work spanning consumer-facing, e-commerce, and internal
-          sales tooling. Each case study highlights the challenge, approach, and measurable impact.
+          End-to-end product and platform work spanning consumer-facing apps, e-commerce, internal
+          sales tooling, and independently built automation and data products. Each case study
+          highlights the challenge, approach, and measurable impact.
         </p>
       </div>
 
@@ -130,6 +131,62 @@ const defaultProjects: CaseStudy[] = [
       "Challenge: Price comparison data is abundant but overwhelming, and users needed a conversational layer that surfaces what matters and explains trade-offs in plain language.",
       "Solution: Built the frontend using FastAPI/WebSockets/TypeScript/SCSS, integrating LLM-generated insights for personalized deal recommendations and real-time pricing context.",
       "Impact: Session duration increased 35% and conversion rate for users who engaged with AI recommendations rose 28% within 60 days of launch. Established the agentic UI pattern now central to the product roadmap.",
+    ],
+  },
+  {
+    id: "case-study-taskriver",
+    imageSrc: "/project-taskriver.svg",
+    imageAlt: "Automation workflow builder showing triggers, actions, and an activity log",
+    title: "TaskRiver.ai: Automation Platform for Local Service Businesses",
+    description:
+      "Founded and built TaskRiver.ai, which designs and implements custom automation systems that help local service businesses improve customer communication, streamline operations, and cut manual administrative work.",
+    details: [
+      "Challenge: Local service businesses lose revenue to problems that are entirely mechanical. Calls go unanswered, estimates go un-followed-up, and reviews never get requested, because the owner is on a job site rather than at a desk.",
+      "Solution: Built a reusable automation platform covering missed call recovery, lead capture and qualification, estimate follow-up, customer communication, review request workflows, CRM synchronization, appointment reminders, and internal operational workflows, deployed as custom systems per client.",
+      "Approach: Each engagement starts with mapping the existing manual workflow, then replacing the highest-leverage steps with reliable automation rather than rebuilding the whole operation at once.",
+      "Impact: Recovers revenue that would otherwise be lost to slow response times and gives owners back hours per week without adding administrative headcount.",
+    ],
+  },
+  {
+    id: "case-study-whatcontractorspay",
+    imageSrc: "/project-whatcontractorspay.svg",
+    imageAlt: "Construction software pricing comparison table with license-verified contributor badges",
+    title: "WhatContractorsPay.com: License-Verified Software Pricing",
+    description:
+      "A public database of what construction software actually costs, built on anonymous contributor submissions that are only published once the submitter is verified against a state contractor-license board.",
+    details: [
+      "Challenge: Construction software vendors hide pricing behind sales calls, so contractors have no way to benchmark a quote before they are already in a negotiation.",
+      "Solution: Built an anonymous submission pipeline where every price figure is stamped only after its author is checked against a state contractor-license board, keeping the data credible without exposing who submitted it.",
+      "Editorial stance: No affiliate links and no vendor money. The incentive model is the product, so the trust guarantee had to be enforced in the data pipeline rather than in a disclosure footer.",
+      "Impact: Gives contractors a pricing floor to negotiate against and turns opaque vendor quotes into a comparable dataset.",
+    ],
+  },
+  {
+    id: "case-study-family-shortlist",
+    imageSrc: "/project-family-shortlist.svg",
+    imageAlt: "Dementia care facility directory with map view and health inspection score panel",
+    title: "The Family Shortlist: Colorado Dementia Care Directory",
+    description:
+      "In-progress directory pairing Colorado dementia care facilities with CDPHE health inspection data, so families comparing options can see care quality alongside the listing itself.",
+    details: [
+      "Challenge: Families searching for dementia care are making a high-stakes decision under time pressure, and the inspection record that would inform it lives in a separate state dataset most people never find.",
+      "Solution: Joining facility listings to CDPHE health score data so inspection history sits directly on the listing rather than a database a family has to know exists.",
+      "Design priority: The audience is often making this decision during a crisis, so the interface favors plain language and scannable comparison over dense regulatory detail.",
+      "Status: Work in progress, currently focused on Colorado with the data model built to extend to additional states.",
+    ],
+  },
+  {
+    id: "case-study-fsma-radar",
+    imageSrc: "/project-fsma-radar.svg",
+    imageAlt: "Weekly regulatory digest layout with dated issue entries and monitored source list",
+    title: "FSMA Radar: Weekly Food Safety Regulatory Digest",
+    description:
+      "A weekly digest for QA and food-safety managers at mid-size food manufacturers, covering the Federal Register, the eCFR, and FDA enforcement activity so Monday starts with answers instead of tabs.",
+    details: [
+      "Challenge: Food-safety managers are accountable for regulatory changes spread across the Federal Register, the eCFR, and FDA enforcement actions, with no single source that tells them which ones actually apply to their plant.",
+      "Solution: An automated monitoring and summarization pipeline across those sources, filtered and edited down to a weekly issue built for readers who need a decision, not a reading list.",
+      "Audience fit: Written for mid-size manufacturers who carry enterprise-level compliance obligations without an enterprise regulatory affairs team.",
+      "Impact: Replaces hours of manual source-checking each week with a single digest, and creates an auditable record of what changed and when.",
     ],
   },
   {
@@ -376,6 +433,8 @@ onUnmounted(() => {
     }
   }
 
+  // Row rhythm on desktop: 12 / 5+7 / 4+4+4 / 7+5.
+  // The 4+4+4 row holds the three TaskRiver products, so they read as a set.
   @media (min-width: 1040px) {
     &:nth-child(2) {
       grid-column: span 5;
@@ -385,14 +444,18 @@ onUnmounted(() => {
       grid-column: span 7;
     }
 
-    &:nth-child(4) {
-      grid-column: span 6;
+    &:nth-child(4),
+    &:nth-child(5),
+    &:nth-child(6) {
+      grid-column: span 4;
     }
-  }
 
-  @media (min-width: 1040px) and (max-width: 1279px) {
-    &:nth-child(4) {
-      margin-top: 0;
+    &:nth-child(7) {
+      grid-column: span 7;
+    }
+
+    &:nth-child(8) {
+      grid-column: span 5;
     }
   }
 
