@@ -113,11 +113,11 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "Price.com platform architecture and delivery metrics dashboard interface",
     title: "Price.com Web Application and Extension Platform",
     description:
-      "Full ownership of the Price.com web application and browser extension platform, including a major frontend rewrite and sustained feature development across a Python/Django/TypeScript/Angular stack serving thousands of users.",
+      "Full ownership of the Price.com web application and browser extension platform, including a major frontend rewrite and sustained feature development across a Python/Django/TypeScript/Angular stack serving 590,000 monthly active users.",
     details: [
       "Problem: Legacy vanilla JS/CSS codebase was bottlenecking velocity; inconsistent architecture was compounding onboarding and scaling costs.",
       "Solution: Led a full frontend rewrite to TypeScript/SCSS, introduced a shared component library, established GitHub Flow with automated CI/CD gates, and shipped backend improvements alongside the new frontend.",
-      "Impact: Deployment frequency increased 3×, time-to-feature dropped ~40%. The architecture directly enabled the LLM-powered discovery interface shipped 18 months later.",
+      "Impact: Quadrupled the web app's Lighthouse performance score, cut load times 20% across the web app and browser extensions, and reduced deployment time 25%.",
     ],
   },
    {
@@ -130,7 +130,7 @@ const defaultProjects: CaseStudy[] = [
     details: [
       "Challenge: Price comparison data is abundant but overwhelming, and users needed a conversational layer that surfaces what matters and explains trade-offs in plain language.",
       "Solution: Built the frontend using FastAPI/WebSockets/TypeScript/SCSS, integrating LLM-generated insights for personalized deal recommendations and real-time pricing context.",
-      "Impact: Session duration increased 35% and conversion rate for users who engaged with AI recommendations rose 28% within 60 days of launch. Established the agentic UI pattern now central to the product roadmap.",
+      "Impact: Click-through on AI-driven recommendations rose 15% after launch.",
     ],
   },
   {
@@ -199,7 +199,6 @@ const defaultProjects: CaseStudy[] = [
     details: [
       "Challenge: The existing ordering process was manual and error-prone; the division needed a scalable digital channel to support growth without proportionally growing ops headcount.",
       "Approach: Led full-stack development (C#/Umbraco/SCSS/JavaScript), drove architecture and technology selection, and managed cross-functional delivery across design, product, and client stakeholders. Key features included product recommendations, streamlined B2B checkout, and inventory management.",
-      "Impact: Online order volume grew 45% in the first quarter post-launch; customer service requests fell 20% through improved self-service checkout and order tracking. The architecture supported a 3× catalog expansion without rework.",
     ],
   },
 
@@ -212,9 +211,9 @@ const defaultProjects: CaseStudy[] = [
     description:
       "On-demand PDF generation tool for P&G's national sales team, replacing a manual multi-hour process with a self-service Angular + C# application that produces branded materials in minutes.",
     details: [
-      "Challenge: Creating customized sales decks and leave-behinds took 4+ hours per rep and introduced frequent formatting errors and brand inconsistencies.",
+      "Challenge: Creating customized sales decks and leave-behinds was a multi-hour manual process that introduced frequent formatting errors and brand inconsistencies.",
       "Solution: Built a dynamic PDF generator using C#/iTextSharp with an Angular-driven template engine, where reps enter deal specifics, select a template, and receive print-ready output.",
-      "Impact: Materials production time dropped from 4+ hours to under 20 minutes (5× faster). Sales team capacity for client-facing prep increased materially, and the tool was adopted by 100% of the field sales org within two months of launch.",
+      "Impact: Cut materials production from hours to minutes.",
     ],
   },
 

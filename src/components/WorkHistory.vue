@@ -121,12 +121,12 @@ const jobs: Job[] = [
     period: "Nov 2022 – Present",
     current: true,
     description:
-      "Sole technical lead in a lean startup environment: owning architecture, platform strategy, and engineering operations across frontend, backend, and browser extension surfaces.",
+      "Sole technical lead for a shopping platform with 590,000 monthly active users; own architecture, platform strategy, and engineering operations across web, backend, and browser extensions.",
     contributions: [
-      "Architected and delivered an LLM-powered product discovery platform, owning frontend architecture, state management, and API integration that resulted in a 15% increase in user CTR on AI-driven recommendations.",
-      "Improved application performance 4x (validated via Lighthouse) by overhauling rendering pipelines, API integration patterns, and frontend architecture across modern JavaScript applications.",
-      "Spearheaded frontend and backend architecture across web applications and browser extensions (Chrome, Firefox, Safari, Edge), reducing load times by 20% using TypeScript, Angular, Python, and AWS.",
-      "Decreased deployment time by 25% by establishing standardized development workflows, tooling, and CI/CD release processes from the ground up."
+      "Built the frontend for ai.price.com, a Gemini-powered shopping assistant for pricing, cash-back, and coupons, designing its state management and the WebSocket integration that renders model output; click-through on AI-driven recommendations rose 15% after launch.",
+      "Quadrupled the web app's Lighthouse performance score by reworking rendering, API call patterns, and frontend architecture.",
+      "Cut load times 20% across the web app and browser extensions (10,000+ users on Chrome, Firefox, Safari, and Edge) through frontend and backend architecture work in TypeScript, Angular, Python, and AWS.",
+      "Established CI/CD and release processes from scratch with GitHub Actions and Docker, standardizing development workflows and cutting deployment time 25%."
     ],
   },
   {
@@ -136,7 +136,7 @@ const jobs: Job[] = [
     period: "2026 – Present",
     current: true,
     description:
-      "Founded and run an automation practice that helps local service businesses replace repetitive manual work with reliable systems, spanning client engagements and a portfolio of independently operated products.",
+      "Founded and run an automation practice that helps local service businesses replace repetitive manual work with reliable systems, alongside a portfolio of independently operated products.",
     contributions: [
       "Design and implement custom automation systems covering missed call recovery, lead capture and qualification, estimate follow-up, review request workflows, CRM synchronization, and appointment reminders.",
       "Built and operate WhatContractorsPay.com, a construction software pricing database where every submitted figure is verified against a state contractor-license board before publication.",
@@ -153,45 +153,44 @@ const jobs: Job[] = [
     description:
       "Led engineering efforts across frontend and browser extension development, driving architectural decisions and delivery milestones in a fast-paced startup environment.",
     contributions: [
-      "Partnered directly with product and executive stakeholders to define and execute technical roadmap, translating business priorities into architectural decisions and delivery milestones.",
-      "Led cross-functional engineering initiatives spanning frontend architecture (Django/SCSS/JavaScript/HTML5), platform scalability, and release operations across a distributed remote team.",
-      "Rewrote all browser extensions to be fully featured in-browser experiences using Angular and TypeScript and handled all deployments for Chrome, Firefox, Edge and Safari including release processes and versioning."
+      "Rewrote the company's browser extensions in Angular and TypeScript as fully featured in-browser experiences, and ran releases and versioning across the Chrome, Firefox, Edge, and Safari stores.",
+      "Set the technical roadmap with product and executive leadership, turning business priorities into architecture decisions and delivery milestones.",
+      "Led frontend architecture (Django, SCSS, JavaScript), platform scalability, and release operations for a small, distributed remote team."
     ],
   },
   {
     role: "Senior Web Developer",
-    company: "Marlin Connections",
+    company: "Marlinco and The Alchemedia Project (now part of Marlin Connections)",
     company_link: "https://www.marlinconnections.net/",
     period: "Aug 2012 – Nov 2016",
-    description:
-      "Developed and maintained enterprise-level web applications for global clients across multiple industries.",
+    description: "Marlinco, Aug 2012 – Feb 2015; The Alchemedia Project, Feb 2015 – Nov 2016.",
     contributions: [
-      "Delivered scalable enterprise-level web applications for global clients, generating 22% increase in client revenue, by utilizing Microsoft and LAMP stacks (C#, PHP, Python/Django, SQL Server, IIS, Apache).",
-      "Achieved a 99% successful deployment rate, drastically minimizing the need for production rollbacks, by implementing automated deployment workflows and scalable backend architectures.",
+      "Built and launched a B2B e-commerce platform for Starbucks Branded Solutions from the ground up, used by businesses across the US to order custom coffee and products.",
+      "Created a self-service Angular and C# tool that generates branded PDF sales materials for Procter & Gamble's national sales team, cutting a multi-hour manual process to minutes.",
+      "Developed enterprise web applications for global clients on Microsoft and LAMP stacks (C#, PHP, Python/Django, SQL Server, IIS, Apache), contributing to a 22% increase in client revenue.",
+      "Automated deployment workflows and reached a 99% successful deployment rate.",
     ],
   },
   {
     role: "IT Programmer",
-    company: "Springfield ReManufacturing Corp.",
+    company: "Springfield ReManufacturing Corp. (part of SRC Holdings)",
     company_link: "https://www.srcreman.com/",
     period: "Aug 2011 – Aug 2012",
     description:
       "Developed internal tools and web applications to improve operational efficiency.",
     contributions: [
-      "Increased operational efficiency by 20%, saving hundreds of manual hours weekly, by building and deploying internal PHP, MySQL, and JavaScript tools on IIS Servers.",
-      "Achieved a 100% adoption rate among internal teams, measured by active daily users, by collaborating across departments to deliver business-critical solutions.",
+      "Built internal tools in PHP, MySQL, and JavaScript on IIS, adopted across departments and raising operational efficiency 20%.",
     ],
   },
   {
     role: "Web Developer Intern",
-    company: "Marlin Connections",
+    company: "The Alchemedia Project (now part of Marlin Connections)",
     company_link: "https://www.marlinconnections.net/",
     period: "Nov 2010 – Aug 2011",
     description:
       "Built MVC-based web applications using C# and gained foundational experience in full-stack development and software architecture.",
     contributions: [
-      "Developed MVC-based web applications using C#, SQL Server, IIS, JavaScript, and SCSS/SASS for multiple client engagements. Maintained a 100% on-time delivery record across 5 concurrent client web application projects.",
-      "Converted wireframes and visual designs into responsive, production-ready applications, improving delivery speed and frontend consistency across projects.",
+      "Built MVC web applications in C#, SQL Server, and JavaScript across five concurrent client projects.",
     ],
   },
 ];

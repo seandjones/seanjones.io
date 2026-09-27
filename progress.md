@@ -585,3 +585,52 @@
 
 ### Known follow-up (not addressed here)
 - The site-wide `--color-accent` / `--color-on-accent` pair measures ~4.15:1 in light theme, below WCAG AA 4.5:1 for small text. This affects primary buttons site-wide, not just the new badge, so it is a global token decision rather than a component fix.
+
+---
+
+## 2026-09-27: Experience copy synced to the engineer résumé (feat-taskriver-case-studies)
+
+### Completed
+- `src/components/WorkHistory.vue`:
+  - Director of Engineering: description and all four bullets replaced with the résumé versions (ai.price.com frontend, Lighthouse score, 20% load time cut with 10,000+ extension users, CI/CD). Removes "Architected and delivered an LLM-powered platform."
+  - TaskRiver.ai: removed "client engagements" from the description.
+  - Lead Software Engineer: bullets replaced with the résumé versions.
+  - Senior Web Developer: company is now "Marlinco and The Alchemedia Project (now part of Marlin Connections)", with per-company dates (Marlinco Aug 2012 – Feb 2015; The Alchemedia Project Feb 2015 – Nov 2016) in the description slot. Bullets replaced with the four résumé bullets, adding Starbucks Branded Solutions and P&G.
+  - IT Programmer and Web Developer Intern: company names match the résumé; each cut to its single résumé bullet, dropping the "hundreds of manual hours weekly", "100% adoption rate" and "100% on-time delivery" claims.
+- `src/components/SkillsSection.vue`: extension summary says 10,000+ users instead of millions; Application Management summary and "Team Leadership" tag reworded to sole technical lead / Technical Leadership.
+- `src/components/HeroSection.vue`: stamp and "Scaled teams" proof item reworded to sole technical lead.
+
+### Test updates
+- `WorkHistory.spec.ts`: added coverage for the résumé Director bullets (and absence of "LLM-powered") and for the Marlin company name, period, and per-company dates.
+
+### Verification
+- `npm run check` ✓
+  - tests: 54/54 passing
+  - type-check: passing
+  - production build: passing
+- Checked in-browser at desktop and 375px: new copy renders, no horizontal overflow, no console errors.
+
+### Known follow-up (not addressed here)
+- Case studies in `ProjectsSection.vue` still cite figures that are not on the résumé (3× deployment frequency, ~40% time-to-feature, 35% session duration, 28% conversion, 45% order volume, P&G 5× / 100% adoption).
+
+---
+
+## 2026-09-27: Case study figures synced to the résumé (feat-taskriver-case-studies)
+
+### Completed
+- `src/components/ProjectsSection.vue`:
+  - Price.com platform: "thousands of users" is now 590,000 monthly active users. Impact line now cites the résumé figures (Lighthouse score quadrupled, load times cut 20%, deployment time cut 25%) in place of 3× deployment frequency, ~40% time-to-feature, and the "18 months later" claim.
+  - ai.price.com: Impact line is now the résumé's 15% click-through lift on AI-driven recommendations. Dropped the 35% session duration and 28% conversion figures and the "agentic UI pattern" claim.
+  - Starbucks: Impact line removed; the résumé has no Starbucks figures.
+  - P&G: "4+ hours per rep" is now "a multi-hour manual process"; Impact is now "hours to minutes". Dropped 5×, under 20 minutes, 100% adoption within two months, and "capacity increased materially".
+- Resolves the case-study follow-up from the previous entry.
+
+### Test updates
+- `ProjectsSection.spec.ts`: opens every case study modal and asserts the only figures in the copy are 590,000, 20%, 25% and 15%.
+
+### Verification
+- `npm run check` ✓
+  - tests: 55/55 passing
+  - type-check: passing
+  - production build: passing
+- Starbucks modal checked in-browser with two details; no console errors.

@@ -14,7 +14,7 @@
         fetchpriority="high"
         decoding="async"
       />
-      <p class="hero__stamp">Leading engineering teams that ship measurable outcomes</p>
+      <p class="hero__stamp">Sole technical lead shipping measurable outcomes</p>
     </div>
 
     <!-- Identity -->
@@ -39,7 +39,7 @@
 
       <ul class="hero__proof" aria-label="Career highlights">
         <li class="hero__proof-item">15+ years building consumer platforms and APIs</li>
-        <li class="hero__proof-item">Scaled teams across product, platform, and AI delivery</li>
+        <li class="hero__proof-item">Sole technical lead across product, platform, and AI delivery</li>
         <li class="hero__proof-item">Execution-first leadership from architecture to launch</li>
       </ul>
     </div>

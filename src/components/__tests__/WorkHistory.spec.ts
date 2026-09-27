@@ -56,6 +56,40 @@ describe('WorkHistory', () => {
     expect(contributions).toContain('FSMA Radar')
   })
 
+  it('renders the Director contributions from the résumé', () => {
+    const wrapper = mount(WorkHistory)
+
+    const contributions = wrapper
+      .get('.featured-role')
+      .findAll('.featured-role__contribution')
+      .map(node => node.text())
+
+    expect(contributions).toHaveLength(4)
+    expect(contributions[0]).toContain('Built the frontend for ai.price.com')
+    expect(contributions.join(' ')).not.toContain('LLM-powered')
+  })
+
+  it('names both Marlin companies with their dates under Senior Web Developer', () => {
+    const wrapper = mount(WorkHistory)
+
+    const marlin = wrapper
+      .findAll('.timeline__card')
+      .find(card => card.get('.timeline__role').text() === 'Senior Web Developer')
+
+    expect(marlin).toBeDefined()
+    if (!marlin) {
+      return
+    }
+
+    expect(marlin.get('.timeline__company').text()).toBe(
+      'Marlinco and The Alchemedia Project (now part of Marlin Connections)',
+    )
+    expect(marlin.get('.timeline__period').text()).toBe('Aug 2012 – Nov 2016')
+    expect(marlin.get('.timeline__description').text()).toBe(
+      'Marlinco, Aug 2012 – Feb 2015; The Alchemedia Project, Feb 2015 – Nov 2016.',
+    )
+  })
+
   it('renders only previous roles in the timeline without current-role labeling', () => {
     const wrapper = mount(WorkHistory)
 
