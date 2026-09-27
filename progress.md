@@ -634,3 +634,23 @@
   - type-check: passing
   - production build: passing
 - Starbucks modal checked in-browser with two details; no console errors.
+
+---
+
+## 2026-09-27: TaskRiver moved from Experience to Case Studies (feat-taskriver-to-projects)
+
+### Completed
+- `src/components/WorkHistory.vue`: removed the "Founder, TaskRiver.ai" current-role card, so Price.com is the only current role, matching the résumé, which lists TaskRiver as a personal project. Restored the pre-TaskRiver Experience subheading. The multi-current-role rendering stays in place and works with one role.
+- `src/components/ProjectsSection.vue`: the TaskRiver case study now describes a product, not client work. The new description lists what it covers; the Solution line uses the résumé's wording (AI handling routine replies inside owner-approved rules); new Stack and Status lines. Removed "deployed as custom systems per client", the engagement-based Approach line, and the unbacked revenue/hours Impact claim.
+- WhatContractorsPay.com, The Family Shortlist and FSMA Radar keep their existing case study tiles; they are no longer listed as TaskRiver ventures in Experience.
+
+### Test updates
+- `WorkHistory.spec.ts`: two TaskRiver-role tests replaced with one asserting Price.com is the only current role and TaskRiver/Founder do not appear in Experience.
+- `ProjectsSection.spec.ts`: TaskRiver modal test now checks the product framing and fails on "client" or "engagement".
+
+### Verification
+- `npm run check` ✓
+  - tests: 54/54 passing
+  - type-check: passing
+  - production build: passing
+- Checked in-browser: Experience shows one current role with the restored subheading; TaskRiver tile and modal show the new copy.
