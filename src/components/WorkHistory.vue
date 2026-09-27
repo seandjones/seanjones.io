@@ -11,8 +11,7 @@
         <h2 id="work-heading" class="work__heading">Experience</h2>
         <p id="work-description" class="work__subheading">
           Combines deep technical expertise with product and engineering leadership to deliver
-          high-performance, scalable systems, both inside a venture-backed startup and across
-          independently built products.
+          high-performance, scalable systems.
         </p>
       </div>
 
@@ -127,22 +126,6 @@ const jobs: Job[] = [
       "Quadrupled the web app's Lighthouse performance score by reworking rendering, API call patterns, and frontend architecture.",
       "Cut load times 20% across the web app and browser extensions (10,000+ users on Chrome, Firefox, Safari, and Edge) through frontend and backend architecture work in TypeScript, Angular, Python, and AWS.",
       "Established CI/CD and release processes from scratch with GitHub Actions and Docker, standardizing development workflows and cutting deployment time 25%."
-    ],
-  },
-  {
-    role: "Founder",
-    company: "TaskRiver.ai",
-    company_link: "https://taskriver.ai",
-    period: "2026 – Present",
-    current: true,
-    description:
-      "Founded and run an automation practice that helps local service businesses replace repetitive manual work with reliable systems, alongside a portfolio of independently operated products.",
-    contributions: [
-      "Design and implement custom automation systems covering missed call recovery, lead capture and qualification, estimate follow-up, review request workflows, CRM synchronization, and appointment reminders.",
-      "Built and operate WhatContractorsPay.com, a construction software pricing database where every submitted figure is verified against a state contractor-license board before publication.",
-      "Building The Family Shortlist, a directory pairing Colorado dementia care facilities with CDPHE health inspection data for families comparing care options.",
-      "Publish FSMA Radar, a weekly regulatory digest for QA and food-safety managers, built on automated monitoring of the Federal Register, the eCFR, and FDA enforcement activity.",
-      "Own the full stack of each venture end to end: product definition, architecture, data pipelines, frontend, and go-to-market.",
     ],
   },
    {

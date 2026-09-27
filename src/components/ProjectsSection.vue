@@ -139,12 +139,12 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "Automation workflow builder showing triggers, actions, and an activity log",
     title: "TaskRiver.ai: Automation Platform for Local Service Businesses",
     description:
-      "Founded and built TaskRiver.ai, which designs and implements custom automation systems that help local service businesses improve customer communication, streamline operations, and cut manual administrative work.",
+      "Built TaskRiver.ai, an automation product for local service businesses covering missed-call recovery, lead capture, estimate follow-up, review requests, CRM sync, and appointment reminders.",
     details: [
       "Challenge: Local service businesses lose revenue to problems that are entirely mechanical. Calls go unanswered, estimates go un-followed-up, and reviews never get requested, because the owner is on a job site rather than at a desk.",
-      "Solution: Built a reusable automation platform covering missed call recovery, lead capture and qualification, estimate follow-up, customer communication, review request workflows, CRM synchronization, appointment reminders, and internal operational workflows, deployed as custom systems per client.",
-      "Approach: Each engagement starts with mapping the existing manual workflow, then replacing the highest-leverage steps with reliable automation rather than rebuilding the whole operation at once.",
-      "Impact: Recovers revenue that would otherwise be lost to slow response times and gives owners back hours per week without adding administrative headcount.",
+      "Solution: Responds to missed calls and new leads automatically, with AI handling routine replies inside owner-approved rules.",
+      "Stack: React and Vite on the frontend, FastAPI on the backend.",
+      "Status: Live at taskriver.ai as a personal project.",
     ],
   },
   {

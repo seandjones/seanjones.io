@@ -46,18 +46,22 @@ describe('ProjectsSection', () => {
     ])
   })
 
-  it('opens the TaskRiver modal with its automation detail list', async () => {
+  it('opens the TaskRiver modal framed as a product rather than client work', async () => {
     const wrapper = mount(ProjectsSection)
     await wrapper.findAll('.project-tile__button')[2].trigger('click')
 
     const title = document.body.querySelector('.project-modal__title')!.textContent?.trim()
+    const description = document.body.querySelector('.project-modal__description')!.textContent ?? ''
     const details = Array.from(document.body.querySelectorAll('.project-modal__detail'))
       .map(node => node.textContent ?? '')
       .join(' ')
 
     expect(title).toBe('TaskRiver.ai: Automation Platform for Local Service Businesses')
-    expect(details).toContain('missed call recovery')
-    expect(details).toContain('CRM synchronization')
+    expect(description).toContain('missed-call recovery')
+    expect(description).toContain('CRM sync')
+    expect(details).toContain('owner-approved rules')
+    expect(details).toContain('personal project')
+    expect(`${description} ${details}`).not.toMatch(/client|engagement/i)
 
     ;(document.body.querySelector('.project-modal__close') as HTMLButtonElement).click()
     await flushPromises()
