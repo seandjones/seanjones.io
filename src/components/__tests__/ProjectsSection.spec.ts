@@ -83,6 +83,24 @@ describe('ProjectsSection', () => {
     expect(document.body.querySelector('.project-modal__panel')).toBeNull()
   })
 
+  it('cites only résumé-backed figures across every case study', async () => {
+    const wrapper = mount(ProjectsSection)
+    const copy: string[] = []
+
+    for (const button of wrapper.findAll('.project-tile__button')) {
+      await button.trigger('click')
+      copy.push(document.body.querySelector('.project-modal__description')!.textContent ?? '')
+      document.body
+        .querySelectorAll('.project-modal__detail')
+        .forEach(node => copy.push(node.textContent ?? ''))
+      ;(document.body.querySelector('.project-modal__close') as HTMLButtonElement).click()
+      await flushPromises()
+    }
+
+    // Word boundary keeps the "2" in "B2B" from counting as a figure.
+    expect(copy.join(' ').match(/\b\d[\d,]*[%×+]?/g)).toEqual(['590,000', '20%', '25%', '15%'])
+  })
+
   it('manages keyboard focus when opening, tabbing inside, and closing modal', async () => {
     const wrapper = mount(ProjectsSection, { attachTo: document.body })
     const trigger = wrapper.findAll('.project-tile__button')[0]

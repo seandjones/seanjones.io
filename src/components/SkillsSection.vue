@@ -87,7 +87,7 @@ const skillGroups: SkillGroup[] = [
   {
     title: "Extension Development",
     summary:
-      "Shipped cross-browser extensions to millions of users across all major platforms.",
+      "Shipped cross-browser extensions to 10,000+ users across all major platforms.",
     skills: [
       "Chrome Extension",
       "Firefox Extension",
@@ -101,14 +101,14 @@ const skillGroups: SkillGroup[] = [
   {
     title: "Application Management",
     summary:
-      "Leading teams, setting architecture, and owning outcomes across the full product lifecycle.",
+      "Sole technical lead: setting architecture and owning outcomes across the full product lifecycle.",
     skills: [
       "System Architecture",
       "Agile / Scrum",
       "Deployment Pipelines",
       "Performance Optimization",
       "Code Review",
-      "Team Leadership",
+      "Technical Leadership",
     ],
   },
 
