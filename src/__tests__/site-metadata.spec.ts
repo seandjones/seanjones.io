@@ -25,4 +25,12 @@ describe('Site metadata and crawler files', () => {
     expect(sitemapXml).toContain('<loc>https://seanjones.io/</loc>')
     expect(sitemapXml).not.toContain('seanjones.io.ai')
   })
+
+  it('serves the résumé at /resume.pdf without listing it for search engines', () => {
+    const resume = readFileSync(join(process.cwd(), 'public/resume.pdf'))
+
+    expect(resume.subarray(0, 5).toString()).toBe('%PDF-')
+    expect(robotsTxt).toContain('Disallow: /resume.pdf')
+    expect(sitemapXml).not.toContain('resume')
+  })
 })

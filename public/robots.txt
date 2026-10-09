@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+# The résumé is shared by direct link only; keep it out of search results.
+Disallow: /resume.pdf
 
 Sitemap: https://seanjones.io/sitemap.xml

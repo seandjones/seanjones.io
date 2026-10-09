@@ -654,3 +654,23 @@
   - type-check: passing
   - production build: passing
 - Checked in-browser: Experience shows one current role with the restored subheading; TaskRiver tile and modal show the new copy.
+
+---
+
+## 2026-10-08: Résumé download at /resume.pdf (feat-resume-pdf)
+
+### Completed
+- `public/resume.pdf`: the current engineer résumé, served at https://seanjones.io/resume.pdf for sending to recruiters and hiring managers.
+- Nothing on the site links to it; it is shared by direct link only.
+- `public/robots.txt`: `Disallow: /resume.pdf` so search engines don't index it, since it carries the phone number and email that the site otherwise keeps behind the contact form. It is not added to the sitemap.
+- To update it later, replace `public/resume.pdf` and redeploy.
+
+### Test updates
+- `site-metadata.spec.ts`: checks that `public/resume.pdf` is a PDF, robots.txt disallows it, and the sitemap doesn't list it.
+
+### Verification
+- `npm run check` ✓
+  - tests: 55/55 passing
+  - type-check: passing
+  - production build: passing
+- `dist/resume.pdf` is byte-identical to the source file.
