@@ -674,3 +674,28 @@
   - type-check: passing
   - production build: passing
 - `dist/resume.pdf` is byte-identical to the source file.
+
+---
+
+## 2026-10-19: Price.com copy and résumé download updated to the new résumé (feat-price-redesign-copy)
+
+### Completed
+- `public/resume.pdf`: replaced with the current engineer résumé.
+- `src/components/WorkHistory.vue`:
+  - Director of Engineering: new description (adds 10,000+ extension users and "write code throughout") and five résumé bullets covering ai.price.com streaming, the redesign (about 90 Cotton components, about 70 Stimulus controllers), the Django rebuild (about 1,540 pytest tests), the Lighthouse/load-time work, and the CI/CD replacement for manual deploys.
+  - Lead Software Engineer: extension rewrite bullet now describes the before state and the component-based Angular app; dropped the "Led frontend architecture... small, distributed remote team" bullet, which is no longer on the résumé.
+- `src/components/ProjectsSection.vue`:
+  - Price.com platform case study rewritten from the résumé: Problem, Frontend, Backend, Extensions, Delivery and Impact lines. Removes the unsupported "shared component library" and "GitHub Flow" claims. Load time cut is now sitewide, not "across the web app and browser extensions".
+  - ai.price.com case study: description and Solution now use the résumé wording (Gemini-powered; streamed model responses over WebSockets). Removes "FastAPI" from the frontend stack and the "decision paralysis" line. Challenge line left as it was.
+- `src/components/SkillsSection.vue`: added pytest (Backend & APIs) and Stimulus, Lightning CSS, stylelint (Frontend Engineering).
+
+### Test updates
+- `WorkHistory.spec.ts`: Director bullet count 4 → 5; timeline bullet count 9 → 8.
+- `ProjectsSection.spec.ts`: ai.price.com modal now expects "Gemini-powered"; résumé-backed figure list now includes 10,000+, 90, 70 and 1,540.
+
+### Verification
+- `npm run check` ✓
+  - tests: 55/55 passing
+  - type-check: passing
+  - production build: passing
+- Checked in-browser: /resume.pdf serves the new file as application/pdf; Director card, platform case study modal, and Skills render correctly; no em dashes on the page; no console errors.
