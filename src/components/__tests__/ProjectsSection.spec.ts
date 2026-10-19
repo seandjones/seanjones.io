@@ -77,7 +77,7 @@ describe('ProjectsSection', () => {
     expect(dialog).not.toBeNull()
     expect(dialog!.getAttribute('aria-modal')).toBe('true')
     expect(document.body.querySelector('.project-modal__title')!.textContent?.trim()).toBe('Smart Shopping Assistant: ai.price.com')
-    expect(document.body.querySelector('.project-modal__description')!.textContent).toContain('LLM-powered')
+    expect(document.body.querySelector('.project-modal__description')!.textContent).toContain('Gemini-powered')
     expect(document.body.querySelectorAll('.project-modal__detail')).toHaveLength(3)
     expect(document.body.querySelectorAll('.project-modal__detail')[0].textContent).toContain('Challenge:')
 
@@ -102,7 +102,16 @@ describe('ProjectsSection', () => {
     }
 
     // Word boundary keeps the "2" in "B2B" from counting as a figure.
-    expect(copy.join(' ').match(/\b\d[\d,]*[%×+]?/g)).toEqual(['590,000', '20%', '25%', '15%'])
+    expect(copy.join(' ').match(/\b\d[\d,]*[%×+]?/g)).toEqual([
+      '590,000',
+      '10,000+',
+      '90',
+      '70',
+      '1,540',
+      '20%',
+      '25%',
+      '15%',
+    ])
   })
 
   it('manages keyboard focus when opening, tabbing inside, and closing modal', async () => {

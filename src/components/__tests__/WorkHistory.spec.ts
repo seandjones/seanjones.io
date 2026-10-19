@@ -31,7 +31,7 @@ describe('WorkHistory', () => {
       .findAll('.featured-role__contribution')
       .map(node => node.text())
 
-    expect(contributions).toHaveLength(4)
+    expect(contributions).toHaveLength(5)
     expect(contributions[0]).toContain('Built the frontend for ai.price.com')
     expect(contributions.join(' ')).not.toContain('LLM-powered')
   })
@@ -79,6 +79,6 @@ describe('WorkHistory', () => {
       'https://www.srcreman.com/',
       'https://www.marlinconnections.net/',
     ])
-    expect(timelineContributionItems).toHaveLength(9)
+    expect(timelineContributionItems).toHaveLength(8)
   })
 })

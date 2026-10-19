@@ -120,12 +120,13 @@ const jobs: Job[] = [
     period: "Nov 2022 – Present",
     current: true,
     description:
-      "Sole technical lead for a shopping platform with 590,000 monthly active users; own architecture, platform strategy, and engineering operations across web, backend, and browser extensions.",
+      "Sole technical lead for a shopping platform with 590,000 monthly active users and browser extensions with 10,000+ users; own architecture, platform strategy, and engineering operations, and write code throughout.",
     contributions: [
-      "Built the frontend for ai.price.com, a Gemini-powered shopping assistant for pricing, cash-back, and coupons, designing its state management and the WebSocket integration that renders model output; click-through on AI-driven recommendations rose 15% after launch.",
-      "Quadrupled the web app's Lighthouse performance score by reworking rendering, API call patterns, and frontend architecture.",
-      "Cut load times 20% across the web app and browser extensions (10,000+ users on Chrome, Firefox, Safari, and Edge) through frontend and backend architecture work in TypeScript, Angular, Python, and AWS.",
-      "Established CI/CD and release processes from scratch with GitHub Actions and Docker, standardizing development workflows and cutting deployment time 25%."
+      "Built the frontend for ai.price.com, a Gemini-powered shopping assistant for pricing, cash-back, and coupons. Streamed model responses over WebSockets so answers appear as they are generated, and designed the state management around them; click-through on AI-driven recommendations rose 15% after launch.",
+      "Implemented the price.com redesign end to end from the design files: about 90 server-rendered Cotton components in Django and about 70 strict TypeScript Stimulus controllers that download only when a page uses them, with no jQuery.",
+      "Rebuilt the Django side as thin views, a services layer, and presenter functions backed by about 1,540 pytest tests. Views fetch upstream data in parallel, every external call has timeouts and caching tuned to how fast its data changes, and a failed API call degrades one section instead of the whole page.",
+      "Quadrupled the site's Lighthouse performance score (measured on PageSpeed Insights to rule out local browser effects) and cut sitewide load times 20% by server-rendering above-the-fold content, inlining critical CSS, deferring non-critical JavaScript and CSS, and replacing large legacy stylesheets and scripts with modular ones.",
+      "Replaced manual deploys (SSH into EC2, git pull, collectstatic) with CI/CD on GitHub Actions and Docker that builds assets once, ships content-hashed files to S3 behind CloudFront, and fails the build on pytest, Vitest, TypeScript, or stylelint errors; deployment time fell 25%."
     ],
   },
    {
@@ -136,9 +137,8 @@ const jobs: Job[] = [
     description:
       "Led engineering efforts across frontend and browser extension development, driving architectural decisions and delivery milestones in a fast-paced startup environment.",
     contributions: [
-      "Rewrote the company's browser extensions in Angular and TypeScript as fully featured in-browser experiences, and ran releases and versioning across the Chrome, Firefox, Edge, and Safari stores.",
-      "Set the technical roadmap with product and executive leadership, turning business priorities into architecture decisions and delivery milestones.",
-      "Led frontend architecture (Django, SCSS, JavaScript), platform scalability, and release operations for a small, distributed remote team."
+      "Rewrote the company's browser extensions from static, unstructured JavaScript, CSS, and HTML into a component-based Angular and TypeScript app, effectively a full web app running inside the extension, and ran releases and versioning across the Chrome, Firefox, Edge, and Safari stores.",
+      "Set the technical roadmap with product and executive leadership, turning business priorities into architecture decisions and delivery milestones."
     ],
   },
   {

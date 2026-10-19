@@ -113,11 +113,14 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "Price.com platform architecture and delivery metrics dashboard interface",
     title: "Price.com Web Application and Extension Platform",
     description:
-      "Full ownership of the Price.com web application and browser extension platform, including a major frontend rewrite and sustained feature development across a Python/Django/TypeScript/Angular stack serving 590,000 monthly active users.",
+      "Sole technical lead for the Price.com web app, with 590,000 monthly active users, and its browser extensions, with 10,000+. Implemented the site redesign end to end and rebuilt the Django side underneath it.",
     details: [
-      "Problem: Legacy vanilla JS/CSS codebase was bottlenecking velocity; inconsistent architecture was compounding onboarding and scaling costs.",
-      "Solution: Led a full frontend rewrite to TypeScript/SCSS, introduced a shared component library, established GitHub Flow with automated CI/CD gates, and shipped backend improvements alongside the new frontend.",
-      "Impact: Quadrupled the web app's Lighthouse performance score, cut load times 20% across the web app and browser extensions, and reduced deployment time 25%.",
+      "Problem: Pages loaded large legacy stylesheets and scripts, the extensions were static, unstructured JavaScript, CSS, and HTML, and deploys were manual: SSH into EC2, git pull, collectstatic.",
+      "Frontend: Implemented the redesign from the design files as about 90 server-rendered Cotton components in Django and about 70 strict TypeScript Stimulus controllers that download only when a page uses them, with no jQuery.",
+      "Backend: Rebuilt the Django side as thin views, a services layer, and presenter functions backed by about 1,540 pytest tests. Upstream data is fetched in parallel, each external call has timeouts and caching tuned to how fast its data changes, and a failed API call degrades one section instead of the whole page.",
+      "Extensions: Rewrote them as a component-based Angular and TypeScript app, effectively a full web app running inside the extension, released across the Chrome, Firefox, Edge, and Safari stores.",
+      "Delivery: CI/CD on GitHub Actions and Docker builds assets once, ships content-hashed files to S3 behind CloudFront, and fails the build on pytest, Vitest, TypeScript, or stylelint errors.",
+      "Impact: Quadrupled the site's Lighthouse performance score on PageSpeed Insights and cut sitewide load times 20% by server-rendering above-the-fold content, inlining critical CSS, deferring non-critical JavaScript and CSS, and replacing the legacy stylesheets and scripts with modular ones. Deployment time fell 25%.",
     ],
   },
    {
@@ -126,10 +129,10 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "AI shopping assistant conversation interface with personalized deal recommendations",
     title: "Smart Shopping Assistant: ai.price.com",
     description:
-      "Frontend architecture and development of an LLM-powered pricing, cash-back, and coupon optimization assistant, helping consumers cut through decision paralysis and find the best deal, fast.",
+      "Built the frontend for ai.price.com, a Gemini-powered shopping assistant for pricing, cash-back, and coupons.",
     details: [
       "Challenge: Price comparison data is abundant but overwhelming, and users needed a conversational layer that surfaces what matters and explains trade-offs in plain language.",
-      "Solution: Built the frontend using FastAPI/WebSockets/TypeScript/SCSS, integrating LLM-generated insights for personalized deal recommendations and real-time pricing context.",
+      "Solution: Streamed model responses over WebSockets so answers appear as they are generated, and designed the frontend state management around them.",
       "Impact: Click-through on AI-driven recommendations rose 15% after launch.",
     ],
   },
