@@ -170,12 +170,12 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "Dementia care facility directory with map view and health inspection score panel",
     title: "The Family Shortlist: Colorado Dementia Care Directory",
     description:
-      "In-progress directory pairing Colorado dementia care facilities with CDPHE health inspection data, so families comparing options can see care quality alongside the listing itself.",
+      "A directory pairing Colorado dementia care facilities with CDPHE health inspection data, so families comparing options can see care quality alongside the listing itself.",
     details: [
       "Challenge: Families searching for dementia care are making a high-stakes decision under time pressure, and the inspection record that would inform it lives in a separate state dataset most people never find.",
-      "Solution: Joining facility listings to CDPHE health score data so inspection history sits directly on the listing rather than a database a family has to know exists.",
+      "Solution: Joins facility listings to CDPHE health score data so inspection history sits directly on the listing rather than a database a family has to know exists.",
       "Design priority: The audience is often making this decision during a crisis, so the interface favors plain language and scannable comparison over dense regulatory detail.",
-      "Status: Work in progress, currently focused on Colorado with the data model built to extend to additional states.",
+      "Status: Live at thefamilyshortlist.com, currently focused on Colorado with the data model built to extend to additional states.",
     ],
   },
   {

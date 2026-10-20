@@ -699,3 +699,27 @@
   - type-check: passing
   - production build: passing
 - Checked in-browser: /resume.pdf serves the new file as application/pdf; Director card, platform case study modal, and Skills render correctly; no em dashes on the page; no console errors.
+
+---
+
+## 2026-10-20: Résumé refresh, Skills synced to the résumé (feat-resume-ai-skills)
+
+### Completed
+- `public/resume.pdf`: replaced with the latest engineer résumé. The only text change from the previous version is the AI skills line, which adds "AI-assisted development (Claude Code)".
+- `src/components/SkillsSection.vue`:
+  - AI Engineering card now matches the résumé's AI line: LLM Integration (Gemini, Claude), RAG, Real-Time LLM Output (WebSockets), Prompt Engineering, AI-Assisted Development (Claude Code). Removed Harness Engineering, AI Product Strategy and Agentic Workflows, and replaced the "since before it was a job title" summary with "From streaming Gemini responses on ai.price.com to a RAG application on Claude."
+  - Added the remaining résumé skills to existing cards: ASP.NET (Backend & APIs); Next.js, Astro, Vitest (Frontend Engineering); AWS (EC2, S3, CloudFront), GitHub Actions, Docker, Vercel (Application Management, next to Deployment Pipelines).
+- `src/components/ProjectsSection.vue`: The Family Shortlist is live, so its description, Solution and Status lines no longer say it's in progress.
+
+### Test updates
+- `SkillsSection.spec.ts`: AI Engineering pill list updated to the résumé set.
+
+### Verification
+- `npm run check` ✓
+  - tests: 55/55 passing
+  - type-check: passing
+  - production build: passing
+- Checked in-browser at 375px: no skill pill overflows its card, no horizontal page scroll; /resume.pdf serves the new 45,357-byte file.
+
+### Known follow-up (not addressed here)
+- The résumé's RAG Application on Claude, VetSalary (vetsalary.org) and recipesfortheweek.com have no case studies on the site.
