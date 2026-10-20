@@ -36,10 +36,11 @@ describe('SkillsSection', () => {
     const pills = aiCard.findAll('.skill-pill').map(node => node.text())
 
     expect(pills).toEqual([
+      'LLM Integration (Gemini, Claude)',
+      'RAG',
+      'Real-Time LLM Output (WebSockets)',
       'Prompt Engineering',
-      'Harness Engineering',
-      'AI Product Strategy',
-      'Agentic Workflows',
+      'AI-Assisted Development (Claude Code)',
     ])
 
   })
