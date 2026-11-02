@@ -113,13 +113,13 @@ const defaultProjects: CaseStudy[] = [
     imageAlt: "Price.com platform architecture and delivery metrics dashboard interface",
     title: "Price.com Web Application and Extension Platform",
     description:
-      "Sole technical lead for the Price.com web app, with 590,000 monthly active users, and its browser extensions, with 10,000+. Implemented the site redesign end to end and rebuilt the Django side underneath it.",
+      "Sole technical lead for the Price.com web app, with 590,000 monthly active users. Implemented the site redesign end to end and rebuilt the Django side underneath it.",
     details: [
       "Problem: Pages loaded large legacy stylesheets and scripts, the extensions were static, unstructured JavaScript, CSS, and HTML, and deploys were manual: SSH into EC2, git pull, collectstatic.",
       "Frontend: Implemented the redesign from the design files as about 90 server-rendered Cotton components in Django and about 70 strict TypeScript Stimulus controllers that download only when a page uses them, with no jQuery.",
       "Backend: Rebuilt the Django side as thin views, a services layer, and presenter functions backed by about 1,540 pytest tests. Upstream data is fetched in parallel, each external call has timeouts and caching tuned to how fast its data changes, and a failed API call degrades one section instead of the whole page.",
-      "Extensions: Rewrote them as a component-based Angular and TypeScript app, effectively a full web app running inside the extension, released across the Chrome, Firefox, Edge, and Safari stores.",
-      "Delivery: CI/CD on GitHub Actions and Docker builds assets once, ships content-hashed files to S3 behind CloudFront, and fails the build on pytest, Vitest, TypeScript, or stylelint errors.",
+      "Extensions: Rewrote them as a component-based Angular and TypeScript app, effectively a full web app running inside the extension. Now oversee the outside development firm that builds them: direct and review their work when needed, and own releases to the Chrome, Firefox, Edge, and Safari stores.",
+      "Delivery: CI/CD on GitHub Actions and Docker builds assets once, ships content-hashed files to S3 behind CloudFront, and fails the build on pytest, Vitest, TypeScript, or stylelint errors. Later moved the containers and pipeline from EC2 to ECS, with smoke tests that run on every deploy.",
       "Impact: Quadrupled the site's Lighthouse performance score on PageSpeed Insights and cut sitewide load times 20% by server-rendering above-the-fold content, inlining critical CSS, deferring non-critical JavaScript and CSS, and replacing the legacy stylesheets and scripts with modular ones. Deployment time fell 25%.",
     ],
   },
@@ -132,7 +132,7 @@ const defaultProjects: CaseStudy[] = [
       "Built the frontend for ai.price.com, a Gemini-powered shopping assistant for pricing, cash-back, and coupons.",
     details: [
       "Challenge: Price comparison data is abundant but overwhelming, and users needed a conversational layer that surfaces what matters and explains trade-offs in plain language.",
-      "Solution: Streamed model responses over WebSockets so answers appear as they are generated, and designed the frontend state management around them.",
+      "Solution: Streamed model responses over WebSockets so answers appear as they are generated, and designed the frontend state management around them. Also made routing and smaller changes in its FastAPI backend.",
       "Impact: Click-through on AI-driven recommendations rose 15% after launch.",
     ],
   },

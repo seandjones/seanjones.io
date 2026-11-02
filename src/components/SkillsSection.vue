@@ -115,7 +115,7 @@ const skillGroups: SkillGroup[] = [
       "System Architecture",
       "Agile / Scrum",
       "Deployment Pipelines",
-      "AWS (EC2, S3, CloudFront)",
+      "AWS (EC2, ECS, S3, CloudFront)",
       "GitHub Actions",
       "Docker",
       "Vercel",

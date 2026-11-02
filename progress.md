@@ -723,3 +723,31 @@
 
 ### Known follow-up (not addressed here)
 - The résumé's RAG Application on Claude, VetSalary (vetsalary.org) and recipesfortheweek.com have no case studies on the site.
+
+---
+
+## 2026-11-02: Lead résumé replaces the Engineer version (feat-lead-resume)
+
+### Completed
+- `public/resume.pdf`: now the Lead version of the résumé (`Resume - CURRENT/Lead`). The Engineer version is no longer on the site.
+- `src/components/WorkHistory.vue`: Director of Engineering matches the Lead résumé. The description drops the extension user count; bullets are in the résumé's new order and add the EC2 to ECS move with smoke tests, the FastAPI routing work on ai.price.com, and a new bullet on overseeing the outside firm that now builds the extensions.
+- `src/components/HeroSection.vue`: bio now uses the Lead résumé's summary framing (engineering lead, works directly with the CEO and executive team, hands-on in the code).
+- `src/components/HeroSection.vue`: "sole technical lead" removed from the photo stamp (now "Shipping measurable outcomes") and the second highlight (now "Hands-on across product, platform, and AI delivery"), so the bio is the only place in the hero that says it.
+- `src/components/ProjectsSection.vue`:
+  - Price.com platform: description no longer calls him sole technical lead for the extensions; Extensions line now says he oversees the outside firm that builds them; Delivery line adds the ECS move and smoke tests.
+  - ai.price.com: Solution line adds the FastAPI routing and smaller backend changes.
+- `src/components/SkillsSection.vue`: AWS tag now includes ECS.
+
+### Test updates
+- `WorkHistory.spec.ts`: Director bullet count 5 → 6, first bullet is the Django rebuild, and the outside-firm bullet is present.
+- `ProjectsSection.spec.ts`: 10,000+ dropped from the figure list, since the platform case study description no longer cites it.
+
+### Verification
+- `npm run check` ✓
+  - tests: 55/55 passing
+  - type-check: passing
+  - production build: passing
+- Checked in-browser at desktop and 375px: hero bio fits, no horizontal scroll, Director card shows six bullets, /resume.pdf serves the new 45,525-byte file, no console errors.
+
+### Notes
+- The four tracked `dist/` files (index.html, favicon.ico, favicon.png, profile.webp) were already staged for removal from the repo before this work started; they carried over onto this branch untouched.
