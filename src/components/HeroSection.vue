@@ -14,7 +14,7 @@
         fetchpriority="high"
         decoding="async"
       />
-      <p class="hero__stamp">Sole technical lead shipping measurable outcomes</p>
+      <p class="hero__stamp">Shipping measurable outcomes</p>
     </div>
 
     <!-- Identity -->
@@ -29,7 +29,7 @@
         <span class="hero__company">since 2016</span>
       </p>
       <p class="hero__bio">
-       Engineering leader and full-stack architect with 15+ years of experience building scalable consumer platforms, browser extensions, and AI-powered web applications.
+       Engineering lead with 15+ years of experience. Director of Engineering and sole technical lead at Price.com, working directly with the CEO and executive team and staying hands-on in the code.
       </p>
 
       <div class="hero__cta">
@@ -39,7 +39,7 @@
 
       <ul class="hero__proof" aria-label="Career highlights">
         <li class="hero__proof-item">15+ years building consumer platforms and APIs</li>
-        <li class="hero__proof-item">Sole technical lead across product, platform, and AI delivery</li>
+        <li class="hero__proof-item">Hands-on across product, platform, and AI delivery</li>
         <li class="hero__proof-item">Execution-first leadership from architecture to launch</li>
       </ul>
     </div>

@@ -31,8 +31,10 @@ describe('WorkHistory', () => {
       .findAll('.featured-role__contribution')
       .map(node => node.text())
 
-    expect(contributions).toHaveLength(5)
-    expect(contributions[0]).toContain('Built the frontend for ai.price.com')
+    expect(contributions).toHaveLength(6)
+    expect(contributions[0]).toContain('Rebuilt the Django side')
+    expect(contributions.join(' ')).toContain('Built the frontend for ai.price.com')
+    expect(contributions.join(' ')).toContain('outside development firm')
     expect(contributions.join(' ')).not.toContain('LLM-powered')
   })
 

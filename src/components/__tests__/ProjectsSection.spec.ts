@@ -104,7 +104,6 @@ describe('ProjectsSection', () => {
     // Word boundary keeps the "2" in "B2B" from counting as a figure.
     expect(copy.join(' ').match(/\b\d[\d,]*[%×+]?/g)).toEqual([
       '590,000',
-      '10,000+',
       '90',
       '70',
       '1,540',
