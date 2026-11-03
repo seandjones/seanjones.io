@@ -1,323 +1,295 @@
 #!/usr/bin/env python3
 """
-Headless agent runner for the harness.
+Headless runner for the harness.
 
-Orchestrates Claude Code sessions to implement tasks from per-ticket plans,
-then runs verification and evaluation to ensure quality.
+Per task: record a diff base, run a generator session, then review the change
+(verify command, placeholder scan, independent evaluator). On FAIL the same
+generator session is resumed with the feedback, up to max_retries. The runner
+is the only thing that marks tasks complete, writes progress notes and commits.
 
 Usage:
-    python .harness/runner.py --plan .harness/plans/fix-csv-naming.json
-    python .harness/runner.py --plan .harness/plans/fix-csv-naming.json --loop
-    python .harness/runner.py --plan .harness/plans/fix-csv-naming.json --task 2
-    python .harness/runner.py --plan .harness/plans/fix-csv-naming.json --dry-run
-    python .harness/runner.py --plan .harness/plans/fix-csv-naming.json --skip-eval
-    python .harness/runner.py --plan .harness/plans/fix-csv-naming.json --eval-only 1
+    python3 .harness/runner.py --plan .harness/plans/fix-csv-naming.json   # next pending task
+    python3 .harness/runner.py --plan ... --loop        # every pending task
+    python3 .harness/runner.py --plan ... --task 2      # one specific task
+    python3 .harness/runner.py --plan ... --dry-run     # print generator prompts only
+    python3 .harness/runner.py --plan ... --skip-eval   # mechanical checks only, no evaluator
+
+In-session mode (the /harness skill implements, the scripts keep the books):
+    python3 .harness/runner.py --plan ... --task 2 --begin
+    python3 .harness/runner.py --plan ... --task 2 --complete --notes "what changed"
+
+Exit codes: 0 success, 1 a task failed review after retries, 2 harness error.
 """
 
 import argparse
+import copy
 import json
-import subprocess
 import sys
-import textwrap
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-PROGRESS_PATH = ROOT / ".harness" / "progress.md"
-FEEDBACK_DIR = ROOT / ".harness" / "eval_feedback"
-
-MAX_RETRIES = 2  # Max evaluator->generator retry cycles per task
-
-# ---------------------------------------------------------------------------
-# PLACEHOLDER: Configure these for your project
-# ---------------------------------------------------------------------------
-
-# Command to verify the project (lint + typecheck + test).
-# Examples: ["make", "check"], ["npm", "test"], ["./scripts/verify.sh"]
-VERIFY_CMD: list[str] = ["make", "check"]
-
-# Path to your project's CLAUDE.md (relative to ROOT). Set to None if not used.
-CLAUDE_MD_PATH: str | None = "CLAUDE.md"
-
-# Source directories to reference in prompts (for developer orientation).
-# Examples: ["src/", "lib/"], ["app/", "tests/"]
-SOURCE_DIRS: list[str] = ["src/"]
-
-
-# ---------------------------------------------------------------------------
-# Plan I/O
-# ---------------------------------------------------------------------------
-
-
-def load_plan(plan_path: Path) -> dict:
-    return json.loads(plan_path.read_text())
-
-
-def save_plan(plan: dict, plan_path: Path) -> None:
-    plan_path.write_text(json.dumps(plan, indent=2) + "\n")
-
+from common import (
+    HarnessError,
+    append_progress,
+    bullets,
+    changed_files,
+    commit_all,
+    deps_done,
+    find_task,
+    load_config,
+    load_plan,
+    next_task,
+    project_rules_line,
+    rel,
+    render,
+    resolve_plan_path,
+    run_claude,
+    run_verify,
+    save_plan,
+    snapshot,
+    task_label,
+    tasks_block,
+    update_plan_status,
+    verdict_path,
+    verify_cmd_str,
+)
+from evaluator import format_feedback, review
 
 # ---------------------------------------------------------------------------
-# Task finding
+# Task state
 # ---------------------------------------------------------------------------
 
 
-def find_next_task(plan: dict, task_id: str | None = None):
-    """Find next pending task. Returns (plan, task) or (None, None)."""
-    for task in plan["tasks"]:
-        if task_id and task["id"] != task_id:
-            continue
-        if task["status"] == "pending":
-            # Check depends_on — all dependencies must be complete
-            deps = task.get("depends_on", [])
-            if deps:
-                all_done = all(
-                    any(
-                        t["id"] == dep and t["status"] == "complete"
-                        for t in plan["tasks"]
-                    )
-                    for dep in deps
-                )
-                if not all_done:
-                    continue
-            return plan, task
-    return None, None
+def recover_interrupted(plan: dict, plan_path: Path) -> None:
+    stuck = [t for t in plan["tasks"] if t["status"] == "in_progress"]
+    for task in stuck:
+        print(
+            f"Task {task['id']} was left in_progress by an interrupted run. Resetting it "
+            "to pending; anything it changed is still in the working tree."
+        )
+        task["status"] = "pending"
+    if stuck:
+        update_plan_status(plan)
+        save_plan(plan, plan_path)
 
 
-def find_task(plan: dict, task_id: str):
-    """Find any task by ID."""
-    for task in plan["tasks"]:
-        if task["id"] == task_id:
-            return plan, task
-    return None, None
+def begin_task(plan: dict, plan_path: Path, task: dict) -> None:
+    base = snapshot()
+    task["status"] = "in_progress"
+    task["base"] = base
+    plan.setdefault("base", base)
+    update_plan_status(plan)
+    save_plan(plan, plan_path)
+
+
+def finish(
+    config: dict,
+    plan: dict,
+    plan_path: Path,
+    tasks: list[dict],
+    verdict: dict,
+    notes: str,
+    cost: float | None,
+) -> None:
+    for task in tasks:
+        task["status"] = "complete"
+    update_plan_status(plan)
+    save_plan(plan, plan_path)
+    append_progress(plan, tasks, verdict, notes, cost)
+    print(f"\n{task_label(tasks)}: complete.")
+    if config["auto_commit"]:
+        title = tasks[0]["title"] if len(tasks) == 1 else plan["title"]
+        commit_all(f"{plan['slug']}: {title}")
+
+
+def report_failure(plan: dict, tasks: list[dict], verdict: dict, scope: str) -> None:
+    print(
+        f"\n{task_label(tasks)} did not pass after {verdict['attempt']} attempt(s). "
+        f"Verdict: {rel(verdict_path(plan, scope))}\n"
+        "The changes are still in the working tree for you to review."
+    )
 
 
 # ---------------------------------------------------------------------------
-# Prompt building
+# Generate -> review -> fix
 # ---------------------------------------------------------------------------
 
 
-def build_prompt(plan: dict, task: dict, plan_path: Path) -> str:
-    """Build the prompt for a task."""
-    ac_text = "\n".join(f"- {ac}" for ac in task.get("acceptance_criteria", []))
-    files_text = "\n".join(f"- {f}" for f in task.get("files", []))
+def generator_prompt(config: dict, plan: dict, plan_path: Path, task: dict) -> str:
+    return render(
+        "generator.md",
+        task_id=task["id"],
+        task_title=task["title"],
+        plan_title=plan["title"],
+        slug=plan["slug"],
+        plan_type=plan["type"],
+        context=plan.get("context", ""),
+        plan_path=rel(plan_path),
+        acceptance_criteria=bullets(task.get("acceptance_criteria", [])),
+        files=bullets(task.get("files", []), "(not specified)"),
+        verify_mode=task.get("verify", "tests"),
+        verify_cmd=verify_cmd_str(config),
+        project_rules=project_rules_line(config),
+    )
 
-    claude_md_line = ""
-    if CLAUDE_MD_PATH:
-        claude_md_line = f"1. Read the {CLAUDE_MD_PATH} for project context and rules."
 
-    verify_cmd_str = " ".join(VERIFY_CMD)
+def fix_prompt(config: dict, plan: dict, plan_path: Path, tasks: list[dict], verdict: dict) -> str:
+    return render(
+        "fix.md",
+        scope=task_label(tasks),
+        plan_title=plan["title"],
+        slug=plan["slug"],
+        plan_path=rel(plan_path),
+        tasks=tasks_block(tasks),
+        feedback=format_feedback(verdict),
+        verify_cmd=verify_cmd_str(config),
+        project_rules=project_rules_line(config),
+    )
 
-    return textwrap.dedent(
-        f"""\
-        You are implementing task {task["id"]}: {task["title"]}
 
-        This is part of: {plan["title"]} ({plan["slug"]})
-        Type: {plan["type"]}
-        Context: {plan.get("context", "")}
+def iterate(
+    config: dict,
+    plan: dict,
+    plan_path: Path,
+    tasks: list[dict],
+    base: str,
+    *,
+    scope: str,
+    prompt: str | None,
+    use_llm: bool,
+) -> tuple[dict, str, float]:
+    """Generate (when given a prompt), then review and fix until PASS or retries run out.
 
-        ## Acceptance Criteria
-
-        {ac_text}
-
-        ## Files likely affected
-
-        {files_text}
-
-        ## Instructions
-
-        {claude_md_line}
-        2. Read the plan at {plan_path.relative_to(ROOT)} to understand the full scope.
-        3. Check git log --oneline -10 for recent changes.
-        4. Run `{verify_cmd_str}` to verify the baseline is clean before starting.
-        5. For backend changes: follow TDD — write failing tests first, then implement.
-           For frontend changes: implement directly, unit tests only for complex logic.
-        6. Run `{verify_cmd_str}` after implementation to verify everything passes.
-        7. Mark task {task["id"]} as "complete" in {plan_path.relative_to(ROOT)}.
-        8. Commit your changes with a descriptive message.
-        9. Append session notes to .harness/progress.md.
-
-        ## Task Focus
-
-        Implement ONLY task {task["id"]}: {task["title"]}
-        Do NOT work on other tasks. If you find bugs, note them in progress.md.
+    Fix attempts resume the generator's session so it keeps what it already built.
+    Returns (final verdict, the generator's summaries, total cost).
     """
+    session, notes, cost = None, [], 0.0
+    if prompt:
+        result = run_claude(prompt, config["generator"], label="generator")
+        session = result["session_id"]
+        notes.append(result.get("result", "").strip())
+        cost += result.get("total_cost_usd") or 0
+
+    max_attempts = config["max_retries"] + 1
+    for attempt in range(1, max_attempts + 1):
+        verdict = review(
+            config, plan, tasks, base, scope=scope, attempt=attempt, use_llm=use_llm
+        )
+        cost += verdict.get("cost_usd", 0)
+        if verdict["overall"] == "PASS" or attempt == max_attempts:
+            return verdict, "\n\n".join(n for n in notes if n), cost
+
+        print(f"\n── Retry {attempt}/{config['max_retries']}: sending feedback to the generator ──")
+        result = run_claude(
+            fix_prompt(config, plan, plan_path, tasks, verdict),
+            config["generator"],
+            label="generator",
+            resume=session,
+        )
+        session = result["session_id"]
+        notes.append(f"Fix {attempt}: {result.get('result', '').strip()}")
+        cost += result.get("total_cost_usd") or 0
+
+    raise AssertionError("unreachable")
+
+
+def run_per_task(config: dict, plan: dict, plan_path: Path, args) -> bool:
+    while task := next_task(plan, args.task):
+        print_header(f"Task {task['id']}: {task['title']}  ({plan['slug']})")
+        begin_task(plan, plan_path, task)
+        scope = f"task{task['id']}"
+        verdict, notes, cost = iterate(
+            config, plan, plan_path, [task], task["base"],
+            scope=scope,
+            prompt=generator_prompt(config, plan, plan_path, task),
+            use_llm=not args.skip_eval,
+        )
+        if verdict["overall"] != "PASS":
+            task["status"] = "pending"
+            update_plan_status(plan)
+            save_plan(plan, plan_path)
+            report_failure(plan, [task], verdict, scope)
+            return False
+        finish(config, plan, plan_path, [task], verdict, notes, cost)
+        if args.task or not args.loop:
+            break
+    return True
+
+
+def run_per_plan(config: dict, plan: dict, plan_path: Path, args) -> bool:
+    """Build every task against mechanical checks, then evaluate the whole change once."""
+    notes, cost = [], 0.0
+    while task := next_task(plan):
+        print_header(f"Build task {task['id']}: {task['title']}  ({plan['slug']})")
+        begin_task(plan, plan_path, task)
+        scope = f"task{task['id']}"
+        verdict, task_notes, task_cost = iterate(
+            config, plan, plan_path, [task], task["base"],
+            scope=scope,
+            prompt=generator_prompt(config, plan, plan_path, task),
+            use_llm=False,
+        )
+        cost += task_cost
+        if verdict["overall"] != "PASS":
+            task["status"] = "pending"
+            update_plan_status(plan)
+            save_plan(plan, plan_path)
+            report_failure(plan, [task], verdict, scope)
+            return False
+        task["status"] = "built"
+        save_plan(plan, plan_path)
+        notes.append(f"Task {task['id']}: {task_notes}")
+
+    built = [t for t in plan["tasks"] if t["status"] == "built"]
+    if not built:
+        return True
+
+    print_header(f"Evaluate {plan['slug']}: {task_label(built)}")
+    verdict, fix_notes, eval_cost = iterate(
+        config, plan, plan_path, built, plan["base"],
+        scope="plan",
+        prompt=None,
+        use_llm=not args.skip_eval,
     )
-
-
-def build_fix_prompt(plan: dict, task: dict, feedback: dict, plan_path: Path) -> str:
-    """Build fix prompt for evaluator feedback."""
-    issues_text = "\n".join(f"- {issue}" for issue in feedback.get("issues", []))
-    ac_text = "\n".join(f"- {ac}" for ac in task.get("acceptance_criteria", []))
-
-    claude_md_line = ""
-    if CLAUDE_MD_PATH:
-        claude_md_line = f"1. Read {CLAUDE_MD_PATH} for project context."
-
-    verify_cmd_str = " ".join(VERIFY_CMD)
-
-    return textwrap.dedent(
-        f"""\
-        You are fixing issues flagged by the evaluator for task {task["id"]}: {task["title"]}
-
-        This is part of: {plan["title"]} ({plan["slug"]})
-
-        ## Evaluator Feedback
-
-        The evaluator found the following issues:
-
-        {issues_text}
-
-        Verdict summary:
-        - make_check: {feedback.get("make_check", "UNKNOWN")}
-        - acceptance_criteria: {feedback.get("acceptance_criteria", "UNKNOWN")}
-        - test_coverage: {feedback.get("test_coverage", "UNKNOWN")}
-        - no_placeholders: {feedback.get("no_placeholders", "UNKNOWN")}
-
-        ## Acceptance Criteria
-
-        {ac_text}
-
-        ## Instructions
-
-        {claude_md_line}
-        2. Read the plan at {plan_path.relative_to(ROOT)}.
-        3. Fix EACH issue listed above. Do not skip any.
-        4. Run `{verify_cmd_str}` to verify everything passes.
-        5. Commit your fixes with a descriptive message.
-        6. Append notes about what you fixed to .harness/progress.md.
-
-        ## Task Focus
-
-        Fix ONLY the issues listed above for task {task["id"]}: {task["title"]}
-        Do NOT work on other tasks or refactor unrelated code.
-    """
-    )
-
-
-def build_verify_fix_prompt(task: dict, check_output: str, context_name: str) -> str:
-    """Build a prompt to fix verification failures."""
-    # Truncate output to avoid blowing context — keep the tail where errors are
-    max_chars = 4000
-    if len(check_output) > max_chars:
-        check_output = "...(truncated)...\n" + check_output[-max_chars:]
-
-    claude_md_line = ""
-    if CLAUDE_MD_PATH:
-        claude_md_line = f"1. Read {CLAUDE_MD_PATH} for project context."
-
-    verify_cmd_str = " ".join(VERIFY_CMD)
-
-    return textwrap.dedent(
-        f"""\
-        You are fixing verification failures (`{verify_cmd_str}`) for task {task["id"]}: {task["title"]}
-
-        This is part of {context_name}.
-
-        ## Verification Output
-
-        `{verify_cmd_str}` failed with the following output:
-
-        ```
-        {check_output}
-        ```
-
-        ## Instructions
-
-        {claude_md_line}
-        2. Analyze the errors above — identify which are lint, type, or test failures.
-        3. Fix EACH failure. Common fixes:
-           - Test failures: fix the implementation bug (not the test) unless the test is wrong.
-           - Type errors: add or correct type annotations.
-           - Lint errors: apply the formatting/style fix.
-        4. Run `{verify_cmd_str}` to verify everything passes.
-        5. Commit your fixes with a descriptive message.
-
-        ## Task Focus
-
-        Fix ONLY the `{verify_cmd_str}` failures for task {task["id"]}: {task["title"]}
-        Do NOT work on other tasks or refactor unrelated code.
-    """
-    )
+    cost += eval_cost
+    if fix_notes:
+        notes.append(f"After evaluation:\n{fix_notes}")
+    if verdict["overall"] != "PASS":
+        # Tasks stay "built" so the next run goes straight back to evaluation.
+        report_failure(plan, built, verdict, "plan")
+        return False
+    finish(config, plan, plan_path, built, verdict, "\n\n".join(notes), cost)
+    return True
 
 
 # ---------------------------------------------------------------------------
-# Execution helpers
+# In-session mode
 # ---------------------------------------------------------------------------
 
 
-def load_eval_feedback(task_id: str, slug: str | None = None) -> dict | None:
-    """Load evaluator feedback for a task, if it exists."""
-    if slug:
-        feedback_path = FEEDBACK_DIR / f"{slug}_{task_id}.json"
-        if feedback_path.exists():
-            return json.loads(feedback_path.read_text())
-    feedback_path = FEEDBACK_DIR / f"{task_id}.json"
-    if feedback_path.exists():
-        return json.loads(feedback_path.read_text())
-    return None
+def cmd_begin(plan: dict, plan_path: Path, task_id: str) -> None:
+    task = find_task(plan, task_id)
+    if task["status"] == "in_progress":
+        print(f"Task {task_id} is already in progress; keeping its recorded diff base.")
+        return
+    if task["status"] != "pending":
+        raise HarnessError(f"Task {task_id} is {task['status']}, not pending")
+    if not deps_done(plan, task):
+        raise HarnessError(f"Task {task_id} depends on unfinished tasks: {task['depends_on']}")
+    begin_task(plan, plan_path, task)
+    print(f"Task {task_id} started (diff base {task['base'][:12]}).")
 
 
-def run_verification() -> tuple[bool, str]:
-    """Run the verification command and return (passed, output)."""
-    cmd_str = " ".join(VERIFY_CMD)
-    print(f"\n── Verification: {cmd_str} ──")
-    result = subprocess.run(
-        VERIFY_CMD,
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
-    output = (result.stdout or "") + (result.stderr or "")
-    if output.strip():
-        print(output)
-    return result.returncode == 0, output
-
-
-def run_evaluator(
-    task_id: str, plan_path: Path, auto_fix: bool = False, verbose: bool = False
-) -> bool:
-    """Run the evaluator agent against the completed task."""
-    print(f"\n── Evaluator: task {task_id} ──")
-    cmd = [sys.executable, str(ROOT / ".harness" / "evaluator.py"), "--task", task_id]
-    cmd.extend(["--plan", str(plan_path)])
-    if auto_fix:
-        cmd.append("--fix")
-    if verbose:
-        cmd.append("--verbose")
-    result = subprocess.run(
-        cmd,
-        cwd=ROOT,
-        capture_output=False,
-    )
-    return result.returncode == 0
-
-
-def run_claude_session(prompt: str) -> int:
-    """Launch a headless Claude Code session with the given prompt."""
-    print("\n── Launching Claude Code session ──")
-    result = subprocess.run(
-        ["claude", "-p", prompt, "--allowedTools", "Bash,Read,Edit,Write,Glob,Grep"],
-        cwd=ROOT,
-        capture_output=False,
-    )
-    return result.returncode
-
-
-def update_plan_status(plan: dict) -> None:
-    """Update top-level status based on task completion."""
-    tasks = plan.get("tasks", [])
-    if all(t["status"] == "complete" for t in tasks):
-        plan["status"] = "complete"
-    elif any(t["status"] in ("in_progress", "complete") for t in tasks):
-        plan["status"] = "in_progress"
-
-
-def print_status(plan: dict) -> None:
-    """Print current task status."""
-    done = sum(1 for t in plan["tasks"] if t["status"] == "complete")
-    total = len(plan["tasks"])
-    status = "DONE" if done == total else f"{done}/{total}"
-    print(f"  {plan['slug']}: {plan['title']} [{status}]")
+def cmd_complete(config: dict, plan: dict, plan_path: Path, task_id: str, notes: str) -> None:
+    task = find_task(plan, task_id)
+    path = verdict_path(plan, f"task{task_id}")
+    if not path.exists():
+        raise HarnessError(f"No verdict for task {task_id}. Run evaluator.py first.")
+    verdict = json.loads(path.read_text())
+    if verdict["overall"] != "PASS":
+        raise HarnessError(f"The latest verdict for task {task_id} is {verdict['overall']}")
+    if changed_files(verdict["head"], snapshot()):
+        raise HarnessError("Code changed after the evaluator passed it. Run evaluator.py again.")
+    finish(config, plan, plan_path, [task], verdict, notes, verdict.get("cost_usd"))
 
 
 # ---------------------------------------------------------------------------
@@ -325,170 +297,73 @@ def print_status(plan: dict) -> None:
 # ---------------------------------------------------------------------------
 
 
+def print_header(text: str) -> None:
+    print(f"\n{'=' * 60}\n{text}\n{'=' * 60}")
+
+
+def dry_run(config: dict, plan: dict, plan_path: Path, args) -> None:
+    simulated = copy.deepcopy(plan)
+    run_all = args.loop or config["eval_mode"] == "plan"
+    while task := next_task(simulated, args.task):
+        print_header(f"[dry-run] Task {task['id']}: {task['title']}")
+        print(generator_prompt(config, simulated, plan_path, task))
+        task["status"] = "complete"
+        if args.task or not run_all:
+            break
+
+
 def main():
     parser = argparse.ArgumentParser(description="Agent harness runner")
     parser.add_argument("--plan", required=True, help="Path to plan file")
     parser.add_argument("--task", help="Run a specific task by ID (e.g., 2)")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would run")
-    parser.add_argument(
-        "--skip-eval", action="store_true", help="Skip evaluator after task"
-    )
-    parser.add_argument(
-        "--loop", action="store_true", help="Keep running tasks until done"
-    )
-    parser.add_argument(
-        "--eval-only", metavar="TASK_ID", help="Run evaluator on a task (no build)"
-    )
-    parser.add_argument(
-        "--fix", action="store_true", help="Allow evaluator to auto-fix issues"
-    )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Show full evaluator output"
-    )
+    parser.add_argument("--loop", action="store_true", help="Keep running tasks until done")
+    parser.add_argument("--dry-run", action="store_true", help="Print prompts, change nothing")
+    parser.add_argument("--skip-eval", action="store_true", help="Mechanical checks only")
+    parser.add_argument("--begin", action="store_true", help="In-session: start --task")
+    parser.add_argument("--complete", action="store_true", help="In-session: finish --task")
+    parser.add_argument("--notes", default="", help="Progress notes for --complete")
     args = parser.parse_args()
 
-    plan_path = Path(args.plan)
-    if not plan_path.is_absolute():
-        plan_path = ROOT / plan_path
+    if (args.begin or args.complete) and not args.task:
+        parser.error("--begin and --complete need --task")
 
-    if not plan_path.exists():
-        print(f"Plan file not found: {plan_path}")
-        sys.exit(1)
-
-    plan = load_plan(plan_path)
-
-    # --eval-only: just run the evaluator on an existing task
-    if args.eval_only:
-        _, task = find_task(plan, args.eval_only)
-        if not task:
-            print(f"Task {args.eval_only} not found in plan.")
-            sys.exit(1)
-        passed = run_evaluator(
-            args.eval_only, plan_path, auto_fix=args.fix, verbose=args.verbose
-        )
-        sys.exit(0 if passed else 1)
-
-    while True:
-        _, task = find_next_task(plan, task_id=args.task)
-        context_name = f"{plan['title']} ({plan['slug']})"
-
-        if not task:
-            print("No pending tasks found.")
-            break
-
-        task_label = f"Task {task['id']}: {task['title']}"
-        print(f"\n{'='*60}")
-        print(task_label)
-        print(f"Context: {context_name}")
-        print(f"{'='*60}")
-
-        if args.dry_run:
-            print("\n[dry-run] Would execute this task. Prompt:")
-            print(build_prompt(plan, task, plan_path))
-            if not args.loop:
-                break
-            task["status"] = "complete"
-            continue
-
-        # Mark task as in progress
-        task["status"] = "in_progress"
-        save_plan(plan, plan_path)
-
-        # Run the Claude session
-        prompt = build_prompt(plan, task, plan_path)
-        exit_code = run_claude_session(prompt)
-
-        if exit_code != 0:
-            print(f"\nClaude session exited with code {exit_code}")
-            task["status"] = "pending"
-            save_plan(plan, plan_path)
-            sys.exit(1)
-
-        # Run verification with retry loop
-        verify_passed, check_output = run_verification()
-        verify_retries = 0
-
-        while not verify_passed and verify_retries < MAX_RETRIES:
-            verify_retries += 1
-            print(
-                f"\n── Verify retry {verify_retries}/{MAX_RETRIES}: feeding output back to generator ──"
-            )
-
-            fix_prompt = build_verify_fix_prompt(task, check_output, context_name)
-            fix_exit = run_claude_session(fix_prompt)
-            if fix_exit != 0:
-                print(f"\nFix session exited with code {fix_exit}")
-                break
-
-            verify_passed, check_output = run_verification()
-
-        if not verify_passed:
-            print(
-                f"\nVerification still failing after {verify_retries} retries. Task NOT marked complete."
-            )
-            task["status"] = "pending"
-            save_plan(plan, plan_path)
-            sys.exit(1)
-
-        # Run evaluator with retry loop
-        if not args.skip_eval:
-            eval_passed = run_evaluator(
-                task["id"], plan_path, auto_fix=False, verbose=args.verbose
-            )
-            retries = 0
-            slug = plan.get("slug")
-
-            while not eval_passed and retries < MAX_RETRIES:
-                retries += 1
-                print(
-                    f"\n── Retry {retries}/{MAX_RETRIES}: feeding evaluator issues back to generator ──"
-                )
-
-                feedback = load_eval_feedback(task["id"], slug=slug)
-                if not feedback or not feedback.get("issues"):
-                    print("No actionable feedback found. Cannot retry.")
-                    break
-
-                fix_prompt = build_fix_prompt(plan, task, feedback, plan_path)
-                fix_exit = run_claude_session(fix_prompt)
-                if fix_exit != 0:
-                    print(f"\nFix session exited with code {fix_exit}")
-                    break
-
-                verify_ok, _ = run_verification()
-                if not verify_ok:
-                    print("\nVerification failed after fix attempt.")
-                    break
-
-                eval_passed = run_evaluator(
-                    task["id"], plan_path, auto_fix=False, verbose=args.verbose
-                )
-
-            if not eval_passed:
-                print(
-                    f"\nEvaluator still failing after {retries} retries. Task NOT marked complete."
-                )
-                task["status"] = "pending"
-                save_plan(plan, plan_path)
-                sys.exit(1)
-
-        # Mark complete
-        task["status"] = "complete"
-        update_plan_status(plan)
-        save_plan(plan, plan_path)
-        print(f"\nTask {task['id']} completed successfully.")
-
-        # Reload plan in case the agent modified it
+    try:
+        config = load_config()
+        if config["eval_mode"] not in ("task", "plan"):
+            raise HarnessError('eval_mode must be "task" or "plan"')
+        plan_path = resolve_plan_path(args.plan)
         plan = load_plan(plan_path)
 
-        if not args.loop:
-            break
-        if args.task:
-            break
+        if args.begin:
+            return cmd_begin(plan, plan_path, args.task)
+        if args.complete:
+            return cmd_complete(config, plan, plan_path, args.task, args.notes)
+        if args.dry_run:
+            return dry_run(config, plan, plan_path, args)
 
-    # Final status
-    plan = load_plan(plan_path)
-    print_status(plan)
+        recover_interrupted(plan, plan_path)
+        has_work = next_task(plan, args.task) or any(t["status"] == "built" for t in plan["tasks"])
+        if not has_work:
+            print("No pending tasks found.")
+            return
+        if config["eval_mode"] == "plan" and args.task:
+            raise HarnessError('--task is not supported with eval_mode "plan"')
+
+        # One baseline check for the whole run instead of one per session.
+        baseline_ok, _ = run_verify(config)
+        if not baseline_ok:
+            print("\nBaseline verification fails before any changes. Fix that first.")
+            sys.exit(1)
+
+        runner = run_per_plan if config["eval_mode"] == "plan" else run_per_task
+        passed = runner(config, plan, plan_path, args)
+    except HarnessError as exc:
+        print(f"\nHarness error: {exc}")
+        sys.exit(2)
+
+    done = sum(1 for t in plan["tasks"] if t["status"] == "complete")
+    print(f"\n{plan['slug']}: {done}/{len(plan['tasks'])} tasks complete")
+    sys.exit(0 if passed else 1)
 
 
 if __name__ == "__main__":

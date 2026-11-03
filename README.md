@@ -36,8 +36,9 @@ I build this site with Claude Code, using the agent harness in this repo:
 
 - `CLAUDE.md` and `docs/ARCHITECTURE.md` set the rules and structure every session starts from.
 - Each feature or fix gets a plan in `.harness/plans/`, broken into tasks with acceptance criteria.
-- Each task is implemented test first, then verified.
-- A separate evaluator, with no write access, reviews the work against the acceptance criteria. It checks that verification passes, that the tests are meaningful, and that nothing is left as a placeholder.
-- The workflow runs interactively through the `/harness` skill in `.claude/skills/harness/`, or headless through `.harness/runner.py` and `.harness/evaluator.py`.
+- Tasks that tests can prove are written test first. UI and styling tasks are checked by reading the code instead.
+- Every task has to pass the verify command in `.harness/config.json` (tests, type check, build, oxlint and ESLint) and a placeholder scan before review.
+- A separate evaluator session, with editing disabled, then reviews the diff against each acceptance criterion and returns a verdict with evidence. If it changes any file, the run stops.
+- The workflow runs interactively through the `/harness` skill in `.claude/skills/harness/`, or headless through `.harness/runner.py`.
 
-I review every change myself before it's committed.
+The harness never commits on its own (`auto_commit` is off). I review every change myself before it's committed.

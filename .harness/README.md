@@ -1,127 +1,100 @@
-# Agent Harness
+# Harness Reference
 
-Orchestration layer for implementing features, fixes, and improvements using Claude Code sessions.
-
-## How It Works
-
-```
-User feedback --> Triage --> Clarify --> Plan --> Execute (TDD) --> Evaluate --> Done
-```
-
-Use the `/harness` skill interactively, or the headless runner for batch processing.
+Scripts, prompts and state for executing plans. The `/harness` skill covers triage and planning; this is the reference for everything after the plan is approved.
 
 ## Files
 
-| File                | Purpose                                                   |
-| ------------------- | --------------------------------------------------------- |
-| `plans/{slug}.json` | Per-ticket plans with tasks and inline acceptance criteria |
-| `progress.md`       | Session notes appended after each work session            |
-| `runner.py`         | Headless executor + evaluator orchestrator                |
-| `evaluator.py`      | Skeptical evaluator agent                                 |
-| `eval_feedback/`    | Evaluator verdict JSONs                                   |
-
-## Interactive (Skill)
-
-The `/harness` skill guides the full workflow interactively:
-
-1. Auto-detects feedback/bugs and enters triage mode
-2. Clarifies requirements via AskUserQuestion
-3. Creates a plan at `.harness/plans/{slug}.json`
-4. Implements each task with TDD
-5. Evaluates against inline acceptance criteria via subagent
-
-```bash
-# Trigger explicitly
-/harness
-
-# Or just paste feedback — the skill auto-detects and enters triage mode
-```
-
-## Headless Runner
-
-The runner automates execute + evaluate loops for batch processing.
-
-```bash
-# Run next pending task
-python3 .harness/runner.py --plan .harness/plans/fix-csv-naming.json
-
-# Run all tasks sequentially
-python3 .harness/runner.py --plan .harness/plans/fix-csv-naming.json --loop
-
-# Run a specific task
-python3 .harness/runner.py --plan .harness/plans/fix-csv-naming.json --task 2
-
-# Preview what would run
-python3 .harness/runner.py --plan .harness/plans/fix-csv-naming.json --dry-run
-
-# Skip evaluator (faster, less safe)
-python3 .harness/runner.py --plan .harness/plans/fix-csv-naming.json --skip-eval
-```
-
-### Runner pipeline per task
-
-```
-1. Find next pending task (respects depends_on ordering)
-2. Mark task "in_progress", save plan
-3. Launch claude -p with task prompt (includes TDD instructions + ACs)
-4. Run verification command (lint + typecheck + test)
-5. Run evaluator (skeptical review against acceptance criteria)
-6. Mark task "complete", save plan
-```
-
-If any step fails, the task resets to "pending" and the runner exits with code 1. Up to 2 retry cycles per step.
-
-## Evaluator
-
-The evaluator spawns a separate Claude session that reviews completed work skeptically.
-
-### What it checks
-
-1. **Verification** — project verification command passes
-2. **Acceptance criteria** — read from inline `acceptance_criteria` in plan
-3. **Test coverage** — tests exist, are meaningful, cover edge cases
-4. **No placeholders** — no `TODO`, `FIXME`, `pass`, `NotImplementedError`
-5. **TDD compliance** — test files committed before/alongside implementation
-
-### Usage
-
-```bash
-# Evaluate a specific task
-python3 .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1
-python3 .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1 --fix --verbose
-```
+| Path                | Purpose                                                        |
+| ------------------- | -------------------------------------------------------------- |
+| `config.json`       | All project settings (see below)                               |
+| `prompts/`          | `generator.md`, `fix.md`, `evaluator.md`: the only copy of each |
+| `runner.py`         | Runs tasks: generate, review, fix, record                      |
+| `evaluator.py`      | Reviews a task or the whole plan; usable on its own            |
+| `common.py`         | Shared helpers: git snapshots, checks, Claude sessions         |
+| `plans/{slug}.json` | Per-ticket plans                                               |
+| `eval_feedback/`    | Latest verdict per task (`{slug}_task{id}.json`) or plan (`{slug}_plan.json`) |
+| `progress.md`       | Appended by the runner when a task completes                   |
 
 ## Setup
 
-Before using the harness, configure these placeholders in the runner and evaluator:
+Edit `config.json`:
 
-1. **`VERIFY_CMD`** in `runner.py` — your project's verification command (e.g., `["make", "check"]`, `["npm", "test"]`)
-2. **`CLAUDE_MD_PATH`** in `runner.py` — path to your project's CLAUDE.md (defaults to `CLAUDE.md`)
-3. **Source directories** in evaluator prompts — adjust search paths to match your project structure
+| Field             | Meaning                                                                                       |
+| ----------------- | --------------------------------------------------------------------------------------------- |
+| `verify_cmd`      | Lint + typecheck + test. A list runs directly; a string runs through the shell                 |
+| `claude_md`       | Project instructions file the generator reads first, or `null`                                 |
+| `eval_mode`       | `"task"`: evaluate after every task. `"plan"`: build all tasks, then evaluate the whole diff once |
+| `max_retries`     | Fix attempts after the first failed review                                                    |
+| `auto_commit`     | `true` commits after each passing task. `false` leaves changes in the working tree for review  |
+| `max_diff_chars`  | Diff size sent to the evaluator before it's told to read the files directly                   |
+| `test_patterns`   | Globs (matched on path and filename) that count as test files                                 |
+| `generator`, `evaluator` | `model` (null = CLI default), `max_budget_usd` per session, `allowed_tools`            |
 
-## Plan Format
+The budget defaults (10 and 3 USD per session) are starting guesses. Check the costs in `progress.md` after a few runs and adjust.
 
-Per-ticket plans use this structure:
+## Runner
 
-```json
-{
-  "slug": "fix-csv-naming",
-  "title": "Fix CSV download naming convention",
-  "type": "bug",
-  "created": "2026-03-26",
-  "status": "planned",
-  "context": "Why this work is needed",
-  "tasks": [
-    {
-      "id": "1",
-      "title": "Update filename format",
-      "status": "pending",
-      "acceptance_criteria": ["Filename follows DDMMYY HH:MM {Name} format"],
-      "files": ["src/components/TableViewer.tsx"],
-      "depends_on": []
-    }
-  ]
-}
+```bash
+python3 .harness/runner.py --plan .harness/plans/{slug}.json            # next pending task
+python3 .harness/runner.py --plan .harness/plans/{slug}.json --loop     # every pending task
+python3 .harness/runner.py --plan .harness/plans/{slug}.json --task 2   # one task
+python3 .harness/runner.py --plan .harness/plans/{slug}.json --dry-run  # print prompts only
+python3 .harness/runner.py --plan .harness/plans/{slug}.json --skip-eval  # mechanical checks only
 ```
 
-Plans are kept in `.harness/plans/` forever as historical record.
+What happens per run:
+
+```
+reset any task left in_progress by an interrupted run
+verify once (baseline); stop if it already fails
+for each pending task:
+  snapshot the working tree as the task's diff base
+  generator session (claude -p, budget-capped)
+  review:  verify + placeholder scan          (Python, no LLM)
+           evaluator session on the diff      (only if the above pass)
+  FAIL  -> resume the generator session with the feedback, review again
+  PASS  -> mark complete, append progress.md, commit if auto_commit
+```
+
+With `eval_mode: "plan"`, each task is built against the mechanical checks only and marked `built`; one evaluator session then reviews the whole plan's diff against every task's criteria.
+
+Exit codes: `0` success, `1` a task failed review after all retries (its changes stay in the working tree), `2` harness error such as a failed session, a hit budget, or an evaluator that edited files.
+
+## Evaluator
+
+```bash
+python3 .harness/evaluator.py --plan .harness/plans/{slug}.json --task 1
+python3 .harness/evaluator.py --plan .harness/plans/{slug}.json --all
+python3 .harness/evaluator.py --plan .harness/plans/{slug}.json --task 1 --base main
+```
+
+It diffs from the task's recorded base (or `--base`, or `HEAD`) to the current working tree, so uncommitted work is included. Python handles the mechanical checks:
+
+- **Verify command.** If it fails, the review stops there and no LLM session runs.
+- **Placeholders.** `TODO`, `FIXME`, `NotImplementedError` or "not implemented" in added lines of code files fail the task. Bare `pass` / `...` lines in Python are passed to the evaluator to judge, since they're often legitimate.
+- **Test files changed**, matched against `test_patterns`.
+
+The evaluator session then gets the diff and these results, runs with edit tools disabled, and returns a JSON verdict (`--json-schema`): a PASS/FAIL per acceptance criterion with evidence, test quality, and issues. The final PASS/FAIL is computed from those fields, so a passing verdict can't contain a failed criterion. If the evaluator changes any file it was reviewing, or commits, the run stops with a harness error.
+
+## Snapshots
+
+The harness never needs commits to diff a task. A snapshot writes the working tree (tracked and untracked files, minus ignored ones) to a git tree object through a temporary index file. Your staging area, HEAD and files are untouched. The tree IDs are stored as `base` in the plan and as `base`/`head` in each verdict, so you can inspect any task's change with:
+
+```bash
+git diff <base> <head>
+```
+
+Plans, verdicts and `progress.md` are excluded from every diff.
+
+## In-session mode
+
+When the skill implements a task itself, it uses the same scripts so the gate and records are identical:
+
+```bash
+python3 .harness/runner.py --plan {plan} --task 1 --begin
+# ... implement following prompts/generator.md ...
+python3 .harness/evaluator.py --plan {plan} --task 1
+python3 .harness/runner.py --plan {plan} --task 1 --complete --notes "what changed"
+```
+
+`--complete` refuses unless the latest verdict passed and the code hasn't changed since.

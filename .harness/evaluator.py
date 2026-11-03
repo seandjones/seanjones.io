@@ -1,367 +1,280 @@
 #!/usr/bin/env python3
 """
-Evaluator agent for the harness.
+Evaluator for the harness.
 
-Spawns a *separate* Claude Code session that reviews the implementation of a
-completed task against acceptance criteria. Designed to be skeptical — the
-evaluator's job is to find problems, not to praise.
+Runs the mechanical checks (verify command, placeholder scan, test-file
+detection) in Python, then hands the diff to a *separate*, read-only Claude
+session that judges each acceptance criterion and returns a JSON verdict.
+If the mechanical checks fail, no LLM session is started.
 
 Usage:
-    python .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1
-    python .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1 --fix
-    python .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1 --verbose
+    python3 .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1
+    python3 .harness/evaluator.py --plan .harness/plans/fix-csv.json --all
+    python3 .harness/evaluator.py --plan .harness/plans/fix-csv.json --task 1 --base HEAD~1
+
+Exit codes: 0 PASS, 1 FAIL, 2 harness error (no verdict was reached).
 """
 
 import argparse
 import json
-import re
-import subprocess
 import sys
-import textwrap
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-FEEDBACK_DIR = ROOT / ".harness" / "eval_feedback"
+from common import (
+    EMPTY_TREE,
+    FEEDBACK_DIR,
+    HarnessError,
+    bullets,
+    diff,
+    find_task,
+    git,
+    head_commit,
+    load_config,
+    load_plan,
+    mechanical_checks,
+    render,
+    resolve_plan_path,
+    run_claude,
+    run_verify,
+    snapshot,
+    tasks_block,
+    verdict_path,
+    verify_cmd_str,
+)
+
+VERDICT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "acceptance_criteria": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "task": {"type": "string"},
+                    "criterion": {"type": "string"},
+                    "status": {"type": "string", "enum": ["PASS", "FAIL"]},
+                    "evidence": {"type": "string"},
+                },
+                "required": ["task", "criterion", "status", "evidence"],
+            },
+        },
+        "test_quality": {"type": "string", "enum": ["PASS", "FAIL", "N/A"]},
+        "issues": {"type": "array", "items": {"type": "string"}},
+        "overall": {"type": "string", "enum": ["PASS", "FAIL"]},
+    },
+    "required": ["acceptance_criteria", "test_quality", "issues", "overall"],
+}
+
 
 # ---------------------------------------------------------------------------
-# PLACEHOLDER: Configure these for your project
+# Review
 # ---------------------------------------------------------------------------
 
-# Command to verify the project (must match runner.py's VERIFY_CMD).
-VERIFY_CMD: list[str] = ["make", "check"]
 
-# Source directories to search when evaluating (adjust to your project).
-# Examples: ["src/", "lib/"], ["app/", "packages/"]
-SOURCE_DIRS: list[str] = ["src/"]
+def review(
+    config: dict,
+    plan: dict,
+    tasks: list[dict],
+    base: str,
+    *,
+    scope: str,
+    attempt: int = 1,
+    use_llm: bool = True,
+) -> dict:
+    """Check the change from `base` to the current working tree. Saves and returns the verdict."""
+    verify_passed, verify_output = run_verify(config)
+    head = snapshot()
+    checks = mechanical_checks(config, base, head, verify_passed, verify_output)
+
+    verdict = {
+        "plan": plan["slug"],
+        "scope": scope,
+        "tasks": [t["id"] for t in tasks],
+        "attempt": attempt,
+        "base": base,
+        "head": head,
+        "checks": checks,
+        "acceptance_criteria": [],
+        "test_quality": "N/A",
+        "issues": [],
+        "overall": "FAIL",
+    }
+
+    if checks["verify"] == "FAIL":
+        verdict["issues"].append(f"`{verify_cmd_str(config)}` fails (output below).")
+    for hit in checks["placeholders"]:
+        verdict["issues"].append(f"Placeholder in new code: {hit}")
+
+    if verdict["issues"]:
+        verdict["llm_skipped"] = True
+    elif not use_llm:
+        verdict["llm_skipped"] = True
+        verdict["overall"] = "PASS"
+    else:
+        judged, cost = judge(config, plan, tasks, base, head, checks)
+        verdict.update(judged)
+        verdict["cost_usd"] = cost
+
+    FEEDBACK_DIR.mkdir(exist_ok=True)
+    verdict_path(plan, scope).write_text(json.dumps(verdict, indent=2) + "\n")
+    print_verdict(verdict)
+    return verdict
 
 
-def load_plan(plan_path: Path) -> dict:
-    return json.loads(plan_path.read_text())
-
-
-def find_task(plan: dict, task_id: str):
-    """Find a task by ID. Returns (plan, task) or (None, None)."""
-    for task in plan["tasks"]:
-        if task["id"] == task_id:
-            return plan, task
-    return None, None
-
-
-def build_ac_section(task: dict) -> str:
-    """Build AC section from inline acceptance_criteria."""
-    acs = task.get("acceptance_criteria", [])
-    if not acs:
-        return textwrap.dedent(
-            """\
-            ## Acceptance Criteria
-
-            This task has no explicit acceptance criteria.
-            Evaluate based on the task title, implementation quality, and test coverage.
-        """
+def judge(
+    config: dict, plan: dict, tasks: list[dict], base: str, head: str, checks: dict
+) -> tuple[dict, float]:
+    """Ask a fresh, read-only Claude session for a verdict on the diff."""
+    full_diff = diff(base, head)
+    limit = config["max_diff_chars"]
+    diff_note = ""
+    if len(full_diff) > limit:
+        full_diff = full_diff[:limit]
+        diff_note = (
+            f"The diff was cut off at {limit} characters. Read the changed files "
+            "directly for anything not shown."
         )
 
-    ac_list = "\n".join(f"- {ac}" for ac in acs)
-    return textwrap.dedent(
-        f"""\
-        ## Acceptance Criteria to Verify
-
-        This task must satisfy the following criteria:
-        {ac_list}
-
-        For EACH criterion listed above:
-        1. Find the code that implements it (use Grep to search for relevant functions)
-        2. Find the test(s) that verify it
-        3. Determine PASS or FAIL based on whether the implementation fully satisfies the AC
-    """
+    prompt = render(
+        "evaluator.md",
+        plan_title=plan["title"],
+        slug=plan["slug"],
+        context=plan.get("context", ""),
+        tasks=tasks_block(tasks),
+        verify_cmd=verify_cmd_str(config),
+        changed_files=bullets(checks["changed_files"]),
+        test_files_changed=bullets(checks["test_files_changed"]),
+        possible_stubs=bullets(checks["possible_stubs"]),
+        diff_stat=diff(base, head, "--stat").strip() or "(empty diff)",
+        diff=full_diff.strip() or "(empty diff)",
+        diff_note=diff_note,
     )
 
+    commit_before = head_commit()
+    result = run_claude(
+        prompt,
+        config["evaluator"],
+        label="evaluator",
+        schema=VERDICT_SCHEMA,
+        disallowed_tools="Edit,Write,NotebookEdit",
+    )
+    guard_read_only(head, commit_before)
 
-def build_eval_prompt(plan: dict, task: dict, auto_fix: bool) -> str:
-    """Build the evaluator prompt with skepticism calibration."""
-    ac_section = build_ac_section(task)
-    context_line = f"This is part of: {plan['title']} ({plan['slug']})"
-    source_dirs_str = ", ".join(f"`{d}`" for d in SOURCE_DIRS)
-    verify_cmd_str = " ".join(VERIFY_CMD)
+    raw = result.get("structured_output")
+    if not isinstance(raw, dict):
+        raise HarnessError("Evaluator returned no structured verdict")
 
-    fix_section = ""
-    if auto_fix:
-        fix_section = textwrap.dedent(
-            """
-            ## Auto-Fix Mode
+    failed_acs = [ac for ac in raw["acceptance_criteria"] if ac["status"] != "PASS"]
+    needs_tests = any(t.get("verify", "tests") == "tests" for t in tasks)
+    tests_failed = needs_tests and raw["test_quality"] == "FAIL"
+    # The final call is mechanical so a PASS can't coexist with a failed criterion.
+    overall = "FAIL" if raw["overall"] != "PASS" or failed_acs or tests_failed else "PASS"
+    if overall == "FAIL" and not raw["issues"] and not failed_acs:
+        raise HarnessError("Evaluator returned FAIL without any actionable issues")
 
-            If you find issues, fix them directly:
-            1. Edit the code to resolve the issue
-            2. Update or add tests as needed
-            3. Run the verification command to verify your fix
-            4. Commit the fix with a descriptive message
+    return {**raw, "overall": overall}, result.get("total_cost_usd") or 0.0
 
-            After fixing, re-evaluate and produce the final verdict.
-        """
+
+def guard_read_only(head: str, commit_before: str | None) -> None:
+    """The evaluator has Bash, so confirm it didn't change the code it was grading."""
+    if head_commit() != commit_before:
+        raise HarnessError("Evaluator created a commit. Review `git log` before continuing.")
+    after = snapshot()
+    if after == head:
+        return
+    modified = diff(head, after, "--name-only", "--diff-filter=MDR").splitlines()
+    if modified:
+        raise HarnessError(f"Evaluator modified files it was reviewing: {', '.join(modified)}")
+    added = diff(head, after, "--name-only", "--diff-filter=A").splitlines()
+    if added:
+        print(
+            "  Note: evaluator left new untracked files (add them to .gitignore if "
+            f"they are build output): {', '.join(added)}"
         )
 
-    return textwrap.dedent(
-        f"""\
-        You are a skeptical code evaluator. Your job is to find problems in the
-        implementation of task {task["id"]}: {task["title"]}
 
-        {context_line}
-
-        ## Your Mindset
-
-        You are NOT the implementer. You are the reviewer. Your default assumption
-        is that things are probably wrong or incomplete until you verify otherwise.
-        The implementer is biased toward marking things complete — your job is to
-        catch what they missed.
-
-        Common problems to watch for:
-        - Tests that pass but don't actually verify the acceptance criteria
-        - Tests that mock so aggressively they don't test real behavior
-        - Functions that exist but aren't wired into the actual request flow
-        - Stub implementations hidden behind interfaces that look complete
-        - Missing error handling paths that the AC specifies
-
-        ## Evaluation Steps
-
-        Do these IN ORDER. Do not skip steps.
-
-        ### Step 1: Run `{verify_cmd_str}`
-        Run `{verify_cmd_str}` and record whether it passes.
-
-        ### Step 2: Read the implementation
-        Find and read the source files for this task. Use Grep to search in {source_dirs_str}.
-
-        ### Step 3: Check for placeholders
-        Grep for `TODO`, `FIXME`, `pass`, `...` (Ellipsis), `NotImplementedError`
-        in the implementation files. Any of these is an automatic FAIL.
-
-        ### Step 4: Verify acceptance criteria
-        {ac_section}
-        ### Step 5: Assess test quality
-        Read the test files. For each test, ask:
-        - Does this test actually verify the behavior, or just that code runs without error?
-        - Are assertions specific (checking exact values) or vague (just `assert result`)?
-        - Are edge cases covered (empty input, error conditions, boundary values)?
-
-        ### Step 6: Check TDD compliance
-        Run: `git log --oneline --name-only -5`
-        Check whether test files were modified in commits BEFORE or ALONGSIDE
-        implementation files. If implementation was committed without corresponding
-        tests, note this as a TDD violation (warning, not automatic FAIL).
-
-        ## Output Format
-
-        You MUST end your response with EXACTLY this format (the verdict block).
-        Everything above it can be free-form analysis.
-
-        ```
-        VERDICT
-        task: {task["id"]}
-        title: {task["title"]}
-
-        make_check: PASS|FAIL
-        acceptance_criteria: PASS|FAIL|N/A
-        test_coverage: PASS|FAIL
-        no_placeholders: PASS|FAIL
-        tdd_compliance: PASS|WARN|FAIL
-
-        ac_checklist:
-        - [x] AC text: brief reason (PASS)
-        - [ ] AC text: what's missing (FAIL)
-
-        issues:
-        - issue 1 description
-        - issue 2 description
-
-        OVERALL: PASS|FAIL
-        ```
-
-        ## Scoring Rules
-
-        - OVERALL is FAIL if ANY of: make_check, acceptance_criteria, test_coverage,
-          or no_placeholders is FAIL.
-        - tdd_compliance WARN does not cause overall FAIL but should be noted.
-        - If acceptance_criteria is N/A (infrastructure task), it doesn't affect overall.
-        - When in doubt, FAIL. It is better to flag a false positive than to miss a real issue.
-
-        ## Few-shot Examples of FAIL Verdicts
-
-        Example 1 — Test exists but doesn't verify the AC:
-        ```
-        - [ ] AC: "On error, return 400 status" (FAIL — test mocks the error handler
-              and checks it was called, but doesn't verify the status code)
-        ```
-
-        Example 2 — Function exists but isn't wired in:
-        ```
-        - [ ] AC: "Paginate results for lists over 100" (FAIL — paginate() exists
-              and is tested in isolation, but the route handler never calls it.
-              The function is dead code.)
-        ```
-
-        Example 3 — Placeholder hiding behind interface:
-        ```
-        no_placeholders: FAIL
-        issues:
-        - src/services/manager.py:broadcast() contains `pass` — event broadcasting
-          is not implemented, just stubbed.
-        ```
-        {fix_section}
-    """
-    )
+# ---------------------------------------------------------------------------
+# Output
+# ---------------------------------------------------------------------------
 
 
-def parse_verdict(output: str) -> dict:
-    """Parse the VERDICT block from evaluator output."""
-    verdict_match = re.search(
-        r"VERDICT\s*\n(.+?)$",
-        output,
-        re.DOTALL,
-    )
-    if not verdict_match:
-        return {
-            "overall": "FAIL",
-            "parse_error": "Could not find VERDICT block in evaluator output",
-        }
-
-    verdict_text = verdict_match.group(1)
-
-    overall_match = re.search(r"OVERALL:\s*(PASS|FAIL)", verdict_text)
-    overall = overall_match.group(1) if overall_match else "FAIL"
-
-    result: dict = {"overall": overall}
-    for field in [
-        "make_check",
-        "acceptance_criteria",
-        "test_coverage",
-        "no_placeholders",
-        "tdd_compliance",
-    ]:
-        match = re.search(rf"{field}:\s*(PASS|FAIL|WARN|N/A)", verdict_text)
-        result[field] = match.group(1) if match else "UNKNOWN"
-
-    issues: list[str] = []
-    issues_match = re.search(r"issues:\s*\n((?:- .+\n?)+)", verdict_text)
-    if issues_match:
-        issues = [
-            line.strip("- ").strip()
-            for line in issues_match.group(1).strip().split("\n")
-            if line.strip().startswith("-")
-        ]
-    result["issues"] = issues
-
-    return result
-
-
-def print_verdict(verdict: dict, task_id: str, verbose: bool, raw_output: str) -> None:
-    """Print a formatted verdict summary."""
-    if verbose:
-        print(raw_output)
-        print()
-
-    overall = verdict["overall"]
-    icon = "PASS" if overall == "PASS" else "FAIL"
-    print(f"\n{'='*50}")
-    print(f"  Evaluator Verdict: {icon}  (task {task_id})")
-    print(f"{'='*50}")
-
-    for field in [
-        "make_check",
-        "acceptance_criteria",
-        "test_coverage",
-        "no_placeholders",
-        "tdd_compliance",
-    ]:
-        val = verdict.get(field, "UNKNOWN")
-        mark = (
-            "[ok]"
-            if val in ("PASS", "N/A")
-            else "[!!]" if val == "FAIL" else "[??]" if val == "UNKNOWN" else "[~~]"
+def format_feedback(verdict: dict) -> str:
+    """Turn a FAIL verdict into instructions for the generator."""
+    parts = []
+    failed = [ac for ac in verdict.get("acceptance_criteria", []) if ac["status"] != "PASS"]
+    if failed:
+        parts.append(
+            "Acceptance criteria not met:\n"
+            + bullets([f"Task {ac['task']}: {ac['criterion']} ({ac['evidence']})" for ac in failed])
         )
-        print(f"  {mark} {field}: {val}")
+    if verdict["issues"]:
+        parts.append("Issues:\n" + bullets(verdict["issues"]))
+    output = verdict["checks"].get("verify_output")
+    if output:
+        parts.append(f"Verification output:\n```\n{output}\n```")
+    return "\n\n".join(parts)
 
-    issues = verdict.get("issues", [])
-    if issues:
-        print(f"\n  Issues ({len(issues)}):")
-        for issue in issues:
+
+def print_verdict(verdict: dict) -> None:
+    checks = verdict["checks"]
+    print(f"\n{'=' * 56}")
+    print(f"  Verdict: {verdict['overall']}  ({verdict['scope']}, attempt {verdict['attempt']})")
+    print(f"{'=' * 56}")
+    print(f"  verify:          {checks['verify']}")
+    print(f"  placeholders:    {len(checks['placeholders']) or 'none'}")
+    print(f"  test files:      {len(checks['test_files_changed']) or 'none'} changed")
+    if verdict.get("llm_skipped"):
+        print("  evaluator:       skipped")
+    else:
+        print(f"  test quality:    {verdict['test_quality']}")
+        for ac in verdict["acceptance_criteria"]:
+            mark = "x" if ac["status"] == "PASS" else " "
+            print(f"  [{mark}] Task {ac['task']}: {ac['criterion']}")
+            if ac["status"] != "PASS":
+                print(f"        {ac['evidence']}")
+    if verdict["issues"]:
+        print(f"\n  Issues ({len(verdict['issues'])}):")
+        for issue in verdict["issues"]:
             print(f"    - {issue}")
-
-    if "parse_error" in verdict:
-        print(f"\n  Parse error: {verdict['parse_error']}")
-
     print()
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 
 
 def main():
     parser = argparse.ArgumentParser(description="Agent harness evaluator")
-    parser.add_argument(
-        "--task", required=True, help="Task ID to evaluate (e.g., 1)"
-    )
     parser.add_argument("--plan", required=True, help="Path to plan file")
-    parser.add_argument("--fix", action="store_true", help="Auto-fix issues found")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--task", help="Task ID to evaluate (e.g., 1)")
+    group.add_argument("--all", action="store_true", help="Evaluate every task together")
     parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Show full evaluator output",
+        "--base",
+        help="Git revision to diff from (defaults to the base recorded by --begin, else HEAD)",
     )
     args = parser.parse_args()
 
-    plan_path = Path(args.plan)
-    if not plan_path.is_absolute():
-        plan_path = ROOT / plan_path
+    try:
+        config = load_config()
+        plan = load_plan(resolve_plan_path(args.plan))
+        if args.all:
+            tasks, scope, recorded = plan["tasks"], "plan", plan.get("base")
+        else:
+            task = find_task(plan, args.task)
+            tasks, scope, recorded = [task], f"task{task['id']}", task.get("base")
+        base = args.base or recorded or "HEAD"
+        if base == "HEAD" and head_commit() is None:
+            base = EMPTY_TREE
+        base = git("rev-parse", f"{base}^{{tree}}").strip()
+        verdict = review(config, plan, tasks, base, scope=scope)
+    except HarnessError as exc:
+        print(f"\nHarness error: {exc}")
+        sys.exit(2)
 
-    if not plan_path.exists():
-        print(f"Plan file not found: {plan_path}")
-        sys.exit(1)
-
-    plan = load_plan(plan_path)
-    _, task = find_task(plan, args.task)
-
-    if not task:
-        print(f"Task {args.task} not found in plan.")
-        sys.exit(1)
-
-    print(f"\n── Evaluating task {task['id']}: {task['title']} ──")
-
-    prompt = build_eval_prompt(plan, task, auto_fix=args.fix)
-
-    allowed_tools = "Bash,Read,Glob,Grep"
-    if args.fix:
-        allowed_tools += ",Edit,Write"
-
-    result = subprocess.run(
-        [
-            "claude",
-            "-p",
-            prompt,
-            "--allowedTools",
-            allowed_tools,
-            "--output-format",
-            "text",
-        ],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
-
-    raw_output = result.stdout or ""
-    if result.returncode != 0:
-        print(f"Claude session failed (exit code {result.returncode})")
-        if result.stderr:
-            print(result.stderr)
-        sys.exit(1)
-
-    verdict = parse_verdict(raw_output)
-    print_verdict(verdict, args.task, verbose=args.verbose, raw_output=raw_output)
-
-    # Persist feedback
-    FEEDBACK_DIR.mkdir(exist_ok=True)
-    feedback_path = FEEDBACK_DIR / f"{plan['slug']}_{args.task}.json"
-    feedback_path.write_text(json.dumps(verdict, indent=2) + "\n")
-
-    if verdict["overall"] == "PASS":
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    if verdict["overall"] != "PASS":
+        print(format_feedback(verdict))
+    sys.exit(0 if verdict["overall"] == "PASS" else 1)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+{
+  "verify_cmd": "npm run check && npx oxlint . && npx eslint .",
+  "claude_md": "CLAUDE.md",
+  "eval_mode": "task",
+  "max_retries": 2,
+  "auto_commit": false,
+  "max_diff_chars": 50000,
+  "test_patterns": [
+    "test_*",
+    "*_test.*",
+    "*.test.*",
+    "*.spec.*",
+    "tests/*",
+    "*/tests/*",
+    "__tests__/*",
+    "*/__tests__/*"
+  ],
+  "generator": {
+    "model": null,
+    "max_budget_usd": 10,
+    "allowed_tools": "Bash,Read,Edit,Write,Glob,Grep"
+  },
+  "evaluator": {
+    "model": null,
+    "max_budget_usd": 3,
+    "allowed_tools": "Bash,Read,Glob,Grep"
+  }
+}

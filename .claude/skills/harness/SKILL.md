@@ -3,23 +3,23 @@ name: harness
 description: |
   Plan and execute feature requests, bug fixes, and improvements using the agent harness.
   Auto-detect when the user shares feedback, bug reports, or feature requests and enter
-  triage mode automatically. Create per-ticket plans with acceptance criteria, then use
-  the executor + evaluator pattern to implement and verify each task.
+  triage mode automatically. Create per-ticket plans with acceptance criteria, get the
+  user's approval, then implement with an independent evaluator gating every task.
   TRIGGER when: user shares feedback, bug reports, feature requests, improvement ideas,
   or says /harness.
 ---
 
 # Agent Harness
 
-Turn feedback, bugs, and feature requests into verified implementations via structured planning and TDD.
+Turn feedback, bugs, and feature requests into verified implementations.
 
 ```
-Intake --> Triage --> Clarify --> Plan --> Execute --> Evaluate
+Intake --> Triage --> Clarify --> Plan --> Approve --> Execute (runner or in-session)
 ```
 
-## Workflow
+The first four steps need the user. Execution doesn't, and the scripts in `.harness/` own all bookkeeping: diff bases, verdicts, task status, progress notes and commits. Never edit task status in the plan JSON by hand.
 
-### 1. Intake & Triage
+## 1. Intake & Triage
 
 Read all feedback items before acting. For each item:
 
@@ -28,87 +28,67 @@ Read all feedback items before acting. For each item:
 3. Propose priority order: bugs first, then blocking items, then small wins, then large efforts
 4. Present the triage as a numbered list with category, priority, and rationale
 
-### 2. Clarify
+## 2. Clarify
 
-Use the `AskUserQuestion` tool to interrogate the user with clarifying questions to turn vague feedback into testable requirements.
+Use `AskUserQuestion` to turn vague feedback into testable requirements.
 
-- Batch related questions (max 4 per call)
-- Provide concrete options — don't make the user think from scratch
+- Batch related questions (max 4 per call) and offer concrete options
 - Use previews for UI questions (ASCII mockups)
-- One round is usually enough. Two max.
-- Skip clarification when the requirement is already specific or the answer is obvious from the codebase
+- One round is usually enough, two at most
+- Skip it when the requirement is already specific or the codebase answers it
 
-### 3. Plan
+## 3. Plan
 
-Create `.harness/plans/{slug}.json`. See [references/plan-format.md](references/plan-format.md) for the schema.
+Write `.harness/plans/{slug}.json` following [references/plan-format.md](references/plan-format.md).
 
-- Auto-generate slug from description: lowercase, hyphenated, max 40 chars
-- Include `acceptance_criteria` on every task — the evaluator reads them
+- Every task needs specific, testable `acceptance_criteria`; the evaluator checks each one against the diff
+- Set `verify` per task: `tests` when the criteria can be proven by automated tests, `review` when they can only be checked by reading the code (most UI work)
 - Each task should be completable in one focused session
-- Print a summary of all tasks with ACs for user review
 
-### 4. Execute
+## 4. Approve
 
-For each pending task, follow the session protocol. See [references/session-protocol.md](references/session-protocol.md).
+Show each task with its criteria and `verify` mode, then ask with `AskUserQuestion`:
 
-Summary:
+- **Run with the runner (Recommended)**: headless, one fresh generator session per task
+- **Work through it in this session**: you implement, the scripts evaluate and record
+- **Change the plan**
 
-1. Orient — read plan, progress notes, recent git history
-2. Verify baseline — run the verification command before changing anything
-3. Implement — backend: TDD (write failing tests first, then implement). Frontend: implement directly, unit tests only for complex logic.
-4. Run verification to confirm implementation
-5. **Evaluate** — spawn evaluator subagent (see S5). This is a hard gate.
-6. Update state — mark task complete **only after evaluator returns PASS**, commit using `/commit`, append to progress.md
+Don't start implementing until the user picks one.
 
-### 5. Evaluate (mandatory — subagent)
+## 5a. Execute with the runner
 
-After implementing each task, you MUST spawn a subagent to evaluate the work before marking the task complete. Do NOT self-evaluate — the executor is biased toward passing its own work.
-
-**How to spawn the evaluator:**
-
-Use the Agent tool to launch a general-purpose subagent with this prompt template:
-
-```
-You are a skeptical code evaluator. Your job is to find problems, not praise.
-
-Follow the evaluation steps in .claude/skills/harness/references/evaluator-guide.md exactly.
-
-Evaluate task {task_id}: "{task_title}" from plan .harness/plans/{slug}.json
-
-Do NOT fix anything. Only read code, run the verification command, and produce a VERDICT.
-```
-
-**Hard gate rules:**
-
-- Do NOT mark a task complete until the evaluator subagent returns `OVERALL: PASS`
-- If the evaluator returns `OVERALL: FAIL`, fix the issues it identified, then spawn a **new** evaluator subagent to re-evaluate
-- Maximum 2 retry cycles (implement -> evaluate -> fix -> evaluate -> fix -> evaluate). If still failing after 2 retries, stop and ask the user
-- The evaluator subagent must NOT have write access — it is read-only + Bash (for verification)
-
-## Headless Runner
-
-Automate the execute + evaluate loop for batch processing:
+Run it in the background:
 
 ```bash
-# Run next pending task from a specific plan
-python3 .harness/runner.py --plan .harness/plans/{slug}.json
-
-# Run all tasks in a plan
 python3 .harness/runner.py --plan .harness/plans/{slug}.json --loop
-
-# Run a specific task
-python3 .harness/runner.py --plan .harness/plans/{slug}.json --task 2
-
-# Dry run
-python3 .harness/runner.py --plan .harness/plans/{slug}.json --dry-run
 ```
 
-## File Locations
+When it exits, report the result from the exit code and the verdicts in `.harness/eval_feedback/`:
 
-| File                         | Purpose                                    |
-| ---------------------------- | ------------------------------------------ |
-| `.harness/plans/{slug}.json` | Per-ticket plan with tasks and inline ACs  |
-| `.harness/progress.md`       | Session notes across all work              |
-| `.harness/runner.py`         | Headless executor + evaluator orchestrator |
-| `.harness/evaluator.py`      | Skeptical evaluator agent                  |
-| `.harness/eval_feedback/`    | Evaluator verdict JSONs                    |
+- `0`: all tasks passed. Summarize each task from `.harness/progress.md`.
+- `1`: a task failed review after all retries. Show its unmet criteria and issues. The changes are still in the working tree.
+- `2`: harness error (session failed, budget hit, evaluator touched files). Show the message; don't retry blindly.
+
+## 5b. Execute in this session
+
+For each task, in `depends_on` order:
+
+1. `python3 .harness/runner.py --plan {plan} --task {id} --begin` records the diff base.
+2. Read `.harness/prompts/generator.md` and follow it for this task. Fill its placeholders from the plan and `.harness/config.json`.
+3. `python3 .harness/evaluator.py --plan {plan} --task {id}` runs verification and a separate, read-only evaluator session. Don't evaluate your own work.
+4. Exit `1` (FAIL): fix every item it printed, then run step 3 again. After `max_retries` failed fixes (from config), stop and ask the user. Exit `2`: report the harness error.
+5. Exit `0` (PASS): `python3 .harness/runner.py --plan {plan} --task {id} --complete --notes "<what changed, decisions, bugs noticed>"`. It refuses if the code changed after the evaluator passed it.
+
+Commits happen only if `auto_commit` is true in `.harness/config.json`. Otherwise leave the changes for the user to review.
+
+## Files
+
+| Path                         | Purpose                                         |
+| ---------------------------- | ----------------------------------------------- |
+| `.harness/config.json`       | Verify command, eval mode, retries, budgets     |
+| `.harness/prompts/`          | Generator, fix and evaluator prompts            |
+| `.harness/plans/{slug}.json` | Per-ticket plan                                 |
+| `.harness/eval_feedback/`    | Latest verdict per task (or per plan)           |
+| `.harness/progress.md`       | Notes appended when a task completes            |
+
+See `.harness/README.md` for runner options and config fields.
