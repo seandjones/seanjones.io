@@ -1,7 +1,3 @@
 # Detector Ignore List
 
-## False Positives
-
-### side-tab pattern — ProjectsSection.vue:351
-`border-right: 1px solid var(--color-border)` is a neutral 1px divider between
-the tab list and tab panel, not a decorative side-tab accent. Safe to ignore.
+No active critique ignores. The previous side-tab entry pointed at ProjectsSection.vue, which was removed in the 2026-11 System Map redesign. Detector ignores now live in .impeccable/config.json.

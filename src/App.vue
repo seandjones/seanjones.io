@@ -1,879 +1,578 @@
 <template>
-  <div :data-theme="theme" class="app">
-    <a href="#main-content" class="skip-link" aria-label="Skip to main content. Press ? for keyboard shortcuts">Skip to main content</a>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#work" class="skip-link">Skip to the work</a>
 
-    <!-- ─── Keyboard Help Modal ─────────────────────────────────────── -->
-    <Teleport to="body">
-      <transition name="help-modal">
-        <div
-          v-if="showKeyboardHelp"
-          class="keyboard-help-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="keyboard-help-title"
-          @click.self="closeKeyboardHelp"
+  <header class="masthead" :class="{ 'masthead--open': mobileNavOpen }">
+    <div class="masthead__inner">
+      <a href="#" class="masthead__brand" aria-label="Sean Jones, back to top" @click="goTop">
+        <img class="masthead__mark" src="/favicon.png" alt="" aria-hidden="true" width="28" height="28" />
+        <span class="masthead__name">Sean Jones</span>
+      </a>
+
+      <button
+        type="button"
+        class="masthead__menu"
+        :aria-expanded="mobileNavOpen"
+        aria-controls="site-nav"
+        @click="mobileNavOpen = !mobileNavOpen"
+      >
+        {{ mobileNavOpen ? 'Close' : 'Menu' }}
+      </button>
+
+      <nav id="site-nav" class="masthead__nav" :class="{ 'masthead__nav--open': mobileNavOpen }" aria-label="Site">
+        <a
+          v-for="item in nav"
+          :key="item.href"
+          :href="item.href"
+          class="masthead__link"
+          :aria-current="activeSection === item.href ? 'location' : undefined"
+          @click="onNav($event, item.href)"
         >
-          <div class="keyboard-help-panel">
-            <button
-              ref="keyboardHelpCloseBtn"
-              type="button"
-              class="keyboard-help__close"
-              aria-label="Close keyboard help"
-              @click="closeKeyboardHelp"
-            >
-              ✕
-            </button>
-            <h2 id="keyboard-help-title" class="keyboard-help__title">Keyboard Shortcuts</h2>
-            <div class="keyboard-help__content">
-              <div class="keyboard-help__group">
-                <h3 class="keyboard-help__group-title">Navigation</h3>
-                <ul class="keyboard-help__list" aria-label="Navigation shortcuts">
-                  <li><kbd>g</kbd><span>Go to Case Studies</span></li>
-                  <li><kbd>s</kbd><span>Go to Skills</span></li>
-                  <li><kbd>w</kbd><span>Go to Experience</span></li>
-                  <li><kbd>c</kbd><span>Go to Contact</span></li>
-                  <li><kbd>h</kbd><span>Go to Home (Hero)</span></li>
-                </ul>
-              </div>
-              <div class="keyboard-help__group">
-                <h3 class="keyboard-help__group-title">Other</h3>
-                <ul class="keyboard-help__list" aria-label="Other shortcuts">
-                  <li><kbd>?</kbd><span>Show this help</span></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </Teleport>
-
-    <!-- ─── Navigation ─────────────────────────────────────────────────── -->
-    <header class="navbar" :class="{ 'navbar--scrolled': scrolled, 'navbar--nav-open': mobileNavOpen }" role="banner">
-      <div class="navbar__inner">
-        <a href="#" class="navbar__brand" aria-label="Sean Jones, home">
-          <img class="navbar__brand-mark" src="/favicon.png" alt="" aria-hidden="true" />
-          <span class="navbar__brand-name">Sean Jones</span>
+          {{ item.label }}
         </a>
+      </nav>
 
-        <button
-          type="button"
-          class="navbar__hamburger"
-          :aria-expanded="mobileNavOpen"
-          aria-controls="site-nav"
-          :aria-label="mobileNavOpen ? 'Close navigation' : 'Open navigation'"
-          @click="mobileNavOpen = !mobileNavOpen"
-        >
-          <span class="navbar__hamburger-bar"></span>
-          <span class="navbar__hamburger-bar"></span>
-          <span class="navbar__hamburger-bar"></span>
-        </button>
+      <ThemeToggle :is-dark="theme === 'dark'" @toggle="toggleTheme" />
+    </div>
+  </header>
 
-        <nav id="site-nav" class="navbar__nav" :class="{ 'navbar__nav--open': mobileNavOpen }" aria-label="Site navigation">
-          <a href="#skills" class="navbar__link" @click="handleNavLinkClick($event, '#skills')">Skills</a>
-          <a href="#projects" class="navbar__link" @click="handleNavLinkClick($event, '#projects')">Case Studies</a>
-          <a href="#work" class="navbar__link" @click="handleNavLinkClick($event, '#work')">Experience</a>
-          <a href="#contact" class="navbar__link" @click="handleNavLinkClick($event, '#contact')">Contact</a>
-        </nav>
+  <main id="main-content" tabindex="-1">
+    <SystemMap />
+    <WorkSection />
+    <ExperienceLine />
+    <ProjectsBranch />
+    <ContactForm />
+  </main>
 
-        <ThemeToggle :is-dark="theme === 'dark'" @toggle="toggleTheme" />
+  <footer class="footer">
+    <div class="footer__inner">
+      <p>&copy; {{ currentYear }} Sean Jones</p>
+      <div class="footer__links">
+        <button type="button" class="footer__shortcuts" @click="openHelp">Keyboard shortcuts</button>
+        <a :href="profile.github" target="_blank" rel="noopener noreferrer" aria-label="Sean Jones on GitHub (opens in a new tab)">GitHub</a>
+        <a :href="profile.linkedin" target="_blank" rel="noopener noreferrer" aria-label="Sean Jones on LinkedIn (opens in a new tab)">LinkedIn</a>
       </div>
-    </header>
+    </div>
+  </footer>
 
-    <!-- ─── Main ─────────────────────────────────────────────────────── -->
-    <main id="main-content">
-      <HeroSection />
-      <SkillsSection />
-      <ProjectsSection />
-      <WorkHistory />
-      <ContactForm />
-    </main>
-
-    <!-- ─── Footer ───────────────────────────────────────────────────── -->
-    <footer class="footer" role="contentinfo">
-      <div class="footer__inner">
-        <p class="footer__copy">
-          &copy; {{ currentYear }} Sean Jones. All rights reserved.
-        </p>
-        <div class="footer__links">
-          <a
-            href="https://github.com/seandjones"
-            class="footer__link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/sean-jones-301439b0/"
-            class="footer__link"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-        </div>
-      </div>
-    </footer>
-  </div>
+  <dialog ref="helpDialog" class="help" aria-labelledby="help-title" @close="onHelpClosed" @click="onDialogClick">
+    <div class="help__panel">
+      <h2 id="help-title" class="t-title">Keyboard shortcuts</h2>
+      <label class="help__toggle">
+        <input v-model="shortcutsOn" type="checkbox" class="help__check" />
+        <span>
+          <span class="help__toggle-label">Use single-key shortcuts</span>
+          <span class="help__hint">Turn these off if you use speech input or the keys get in the way.</span>
+        </span>
+      </label>
+      <dl class="help__list" :class="{ 'help__list--off': !shortcutsOn }">
+        <div v-for="s in shortcuts" :key="s.key"><dt><kbd>{{ s.key }}</kbd></dt><dd>{{ s.label }}</dd></div>
+      </dl>
+      <form method="dialog"><button class="btn btn--outline help__close">Close</button></form>
+    </div>
+  </dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import ThemeToggle from "./components/ThemeToggle.vue";
-import HeroSection from "./components/HeroSection.vue";
-import SkillsSection from "./components/SkillsSection.vue";
-import ProjectsSection from "./components/ProjectsSection.vue";
-import WorkHistory from "./components/WorkHistory.vue";
-import ContactForm from "./components/ContactForm.vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import ThemeToggle from './components/ThemeToggle.vue'
+import SystemMap from './components/SystemMap.vue'
+import WorkSection from './components/WorkSection.vue'
+import ExperienceLine from './components/ExperienceLine.vue'
+import ProjectsBranch from './components/ProjectsBranch.vue'
+import ContactForm from './components/ContactForm.vue'
+import { profile } from './content/site'
 
-// ─── Theme ───────────────────────────────────────────────────────────────────
+const nav = [
+  { href: '#work', label: 'Work' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#contact', label: 'Contact' },
+]
 
-type Theme = "light" | "dark";
-const STORAGE_KEY = "sj-theme";
+// ─── Theme (set on <html> so teleported and top-layer UI follow it) ─────────
 
-function getPreferredTheme(): Theme {
-  const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
-  if (saved === "dark" || saved === "light") return saved;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+type Theme = 'light' | 'dark'
+const STORAGE_KEY = 'sj-theme'
+
+function readTheme(): Theme {
+  const attr = document.documentElement.dataset.theme
+  if (attr === 'dark' || attr === 'light') return attr
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved === 'dark' || saved === 'light') return saved
+  } catch {
+    /* storage unavailable */
+  }
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-const theme = ref<Theme>("dark");
+const theme = ref<Theme>(readTheme())
+
+function applyTheme(value: Theme) {
+  document.documentElement.dataset.theme = value
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', value === 'dark' ? '#0f1114' : '#ffffff')
+}
 
 function toggleTheme() {
-  theme.value = theme.value === "dark" ? "light" : "dark";
-  localStorage.setItem(STORAGE_KEY, theme.value);
-}
-
-onMounted(() => {
-  theme.value = getPreferredTheme();
-});
-
-// ─── Scroll-aware navbar ─────────────────────────────────────────────────────
-
-const scrolled = ref(false);
-
-function onScroll() {
-  scrolled.value = window.scrollY > 24;
-}
-
-onMounted(() => {
-  window.addEventListener("scroll", onScroll, { passive: true });
-});
-onUnmounted(() => {
-  window.removeEventListener("scroll", onScroll);
-});
-
-// ─── Keyboard Shortcuts ──────────────────────────────────────────────────────
-
-const showKeyboardHelp = ref(false);
-const mobileNavOpen = ref(false);
-const keyboardHelpCloseBtn = ref<HTMLButtonElement | null>(null);
-let keyboardHelpTriggerEl: HTMLElement | null = null;
-
-function closeKeyboardHelp() {
-  showKeyboardHelp.value = false;
-  keyboardHelpTriggerEl?.focus();
-}
-
-function handleNavLinkClick(event: MouseEvent, targetSelector: string) {
-  event.preventDefault();
-  mobileNavOpen.value = false;
-
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const target = document.querySelector(targetSelector);
-  target?.scrollIntoView({ behavior: prefersReducedMotion ? 'instant' : 'smooth', block: 'start' });
-
-  // Keep URL hash in sync for deep-link semantics.
-  if (window.location.hash !== targetSelector) {
-    history.replaceState(null, "", targetSelector);
+  theme.value = theme.value === 'dark' ? 'light' : 'dark'
+  applyTheme(theme.value)
+  try {
+    localStorage.setItem(STORAGE_KEY, theme.value)
+  } catch {
+    /* storage unavailable */
   }
 }
 
-function isShortcutSuppressedTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  if (target.isContentEditable) return true;
+// ─── Navigation ──────────────────────────────────────────────────────────────
 
-  const blockedInteractive = target.closest(
-    'input, textarea, select, button, a, [contenteditable="true"], [role="textbox"], [role="combobox"], [role="listbox"], [role="menuitem"], [data-shortcuts="off"]'
-  );
+const mobileNavOpen = ref(false)
 
-  return blockedInteractive !== null;
+// "You are here": mark the nav link for the section crossing the upper third of the viewport.
+const activeSection = ref<string | null>(null)
+let sectionObserver: IntersectionObserver | null = null
+
+function watchSections() {
+  if (typeof IntersectionObserver === 'undefined') return
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        const id = `#${entry.target.id}`
+        if (entry.isIntersecting) activeSection.value = id
+        else if (activeSection.value === id) activeSection.value = null
+      }
+    },
+    { rootMargin: '-30% 0px -65% 0px' },
+  )
+  for (const item of nav) {
+    const el = document.querySelector(item.href)
+    if (el) sectionObserver.observe(el)
+  }
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+}
+
+/** A link may point inside a closed disclosure (a station into "Full case study"); open it first. */
+function revealTarget(target: Element) {
+  let details = target.closest('details')
+  while (details) {
+    details.open = true
+    details = details.parentElement?.closest('details') ?? null
+  }
+}
+
+function onHashChange() {
+  const hash = window.location.hash
+  if (!hash || hash.length < 2) return
+  let target: Element | null = null
+  try {
+    target = document.querySelector(hash)
+  } catch {
+    return
+  }
+  if (!target || !target.closest('details:not([open])')) return
+  revealTarget(target)
+  target.scrollIntoView({ behavior: prefersReducedMotion() ? 'instant' : 'smooth', block: 'start' })
+}
+
+function scrollToTarget(selector: string) {
+  const target = document.querySelector<HTMLElement>(selector)
+  if (!target) return
+  revealTarget(target)
+  target.scrollIntoView({ behavior: prefersReducedMotion() ? 'instant' : 'smooth', block: 'start' })
+  history.replaceState(null, '', selector)
+}
+
+function onNav(event: MouseEvent, href: string) {
+  event.preventDefault()
+  mobileNavOpen.value = false
+  scrollToTarget(href)
+}
+
+function goTop(event: MouseEvent) {
+  event.preventDefault()
+  mobileNavOpen.value = false
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+  history.replaceState(null, '', window.location.pathname)
+}
+
+// ─── Keyboard shortcuts ──────────────────────────────────────────────────────
+
+const shortcuts = [
+  { key: 'w', label: 'Work', target: '#work' },
+  { key: 'e', label: 'Experience', target: '#experience' },
+  { key: 'p', label: 'Projects', target: '#projects' },
+  { key: 'c', label: 'Contact', target: '#contact' },
+  { key: 't', label: 'Back to top', target: 'top' },
+  { key: '?', label: 'Show this help', target: 'help' },
+]
+
+const SHORTCUTS_KEY = 'sj-shortcuts'
+
+function readShortcutsOn(): boolean {
+  try {
+    return localStorage.getItem(SHORTCUTS_KEY) !== 'off'
+  } catch {
+    return true
+  }
+}
+
+const shortcutsOn = ref(readShortcutsOn())
+
+watch(shortcutsOn, (on) => {
+  try {
+    localStorage.setItem(SHORTCUTS_KEY, on ? 'on' : 'off')
+  } catch {
+    /* storage unavailable */
+  }
+})
+
+const helpDialog = ref<HTMLDialogElement | null>(null)
+let helpTrigger: HTMLElement | null = null
+
+function openHelp() {
+  helpTrigger = document.activeElement as HTMLElement | null
+  helpDialog.value?.showModal?.()
+}
+
+function onHelpClosed() {
+  helpTrigger?.focus()
+}
+
+function onDialogClick(event: MouseEvent) {
+  if (event.target === helpDialog.value) helpDialog.value?.close()
+}
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+  if (target.isContentEditable) return true
+  // Letters still work while a link or button has focus; only text entry and the dialog opt out.
+  return target.closest('input, textarea, select, dialog, [contenteditable="true"]') !== null
 }
 
 function handleKeydown(event: KeyboardEvent) {
-  if (event.metaKey || event.ctrlKey || event.altKey) {
-    return;
+  if (event.key === 'Escape' && mobileNavOpen.value) {
+    mobileNavOpen.value = false
+    return
   }
+  if (!shortcutsOn.value) return
+  if (event.metaKey || event.ctrlKey || event.altKey) return
+  if (isTypingTarget(event.target)) return
 
-  // Escape closes modal or mobile nav
-  if (event.key === "Escape") {
-    if (showKeyboardHelp.value) {
-      event.preventDefault();
-      closeKeyboardHelp();
-      return;
-    }
-    if (mobileNavOpen.value) {
-      mobileNavOpen.value = false;
-      return;
-    }
+  const shortcut = shortcuts.find((s) => s.key === event.key.toLowerCase() || s.key === event.key)
+  if (!shortcut) return
+  event.preventDefault()
+
+  if (shortcut.target === 'help') openHelp()
+  else if (shortcut.target === 'top') window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'instant' : 'smooth' })
+  else scrollToTarget(shortcut.target)
+}
+
+// Shared links (for example /#work-ai-price) arrive before the app renders,
+// so the browser's own jump finds nothing. Scroll once the target exists.
+async function scrollToInitialHash() {
+  const hash = window.location.hash
+  if (!hash || hash.length < 2) return
+  await nextTick()
+  let target: Element | null = null
+  try {
+    target = document.querySelector(hash)
+  } catch {
+    return // not a valid selector
   }
-
-  // Focus trap inside keyboard help modal
-  if (showKeyboardHelp.value && event.key === "Tab") {
-    const panel = document.querySelector(".keyboard-help-panel");
-    if (!panel) return;
-    const focusable = Array.from(
-      panel.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
-    ).filter((el) => !el.hasAttribute("disabled"));
-    if (focusable.length === 0) return;
-    const first = focusable[0]!;
-    const last = focusable[focusable.length - 1]!;
-    if (event.shiftKey) {
-      if (document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    }
-    return;
-  }
-
-  // Ignore shortcuts while focus is in interactive/editable contexts.
-  if (isShortcutSuppressedTarget(event.target)) {
-    return;
-  }
-
-  const key = event.key.toLowerCase();
-  const routes: Record<string, string> = {
-    g: "#projects",
-    s: "#skills",
-    w: "#work",
-    c: "#contact",
-    h: "#",
-  };
-
-  if (key === "?") {
-    event.preventDefault();
-    if (!showKeyboardHelp.value) {
-      keyboardHelpTriggerEl = document.activeElement as HTMLElement | null;
-      showKeyboardHelp.value = true;
-      // focus close button on next tick
-      setTimeout(() => keyboardHelpCloseBtn.value?.focus(), 0);
-    } else {
-      closeKeyboardHelp();
-    }
-    return;
-  }
-
-  if (key in routes) {
-    event.preventDefault();
-    const target = routes[key] as string;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (target === "#") {
-      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'instant' : 'smooth' });
-    } else {
-      const element = document.querySelector(target);
-      element?.scrollIntoView({ behavior: prefersReducedMotion ? 'instant' : 'smooth', block: 'start' });
-    }
-    showKeyboardHelp.value = false;
-  }
+  if (!target) return
+  revealTarget(target)
+  target.scrollIntoView({ block: 'start' })
 }
 
 onMounted(() => {
-  window.addEventListener("keydown", handleKeydown);
-});
+  applyTheme(theme.value)
+  window.addEventListener('keydown', handleKeydown)
+  window.addEventListener('hashchange', onHashChange)
+  scrollToInitialHash()
+  watchSections()
+})
 
 onUnmounted(() => {
-  window.removeEventListener("keydown", handleKeydown);
-});
+  sectionObserver?.disconnect()
+  window.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('hashchange', onHashChange)
+})
 
-// ─── Static data ─────────────────────────────────────────────────────────────
-
-const currentYear = new Date().getFullYear();
+const currentYear = new Date().getFullYear()
 </script>
 
 <style lang="scss">
 @use './assets/main.scss';
-
-html {
-  scroll-padding-top: 80px;
-}
-
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-bg);
-  position: relative;
-  isolation: isolate;
-  // Decorative fields must remain behind all content. Avoid global child z-index overrides.
-
-  &::before {
-    content: '';
-    position: fixed;
-    inset: -16rem -22vw auto auto;
-    width: min(66vw, 920px);
-    height: clamp(220px, 30vw, 420px);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
-    transform: rotate(-8deg);
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  &::after {
-    content: '';
-    position: fixed;
-    inset: auto auto -14rem -20vw;
-    width: min(60vw, 760px);
-    height: clamp(180px, 24vw, 300px);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
-    transform: rotate(10deg);
-    pointer-events: none;
-    z-index: -1;
-  }
-}
-
-.app > main > * {
-  scroll-margin-top: 80px;
-  animation: section-reveal 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
-
-  &:nth-child(1) {
-    animation-delay: 70ms;
-  }
-
-  &:nth-child(2) {
-    animation-delay: 120ms;
-  }
-
-  &:nth-child(3) {
-    animation-delay: 170ms;
-  }
-
-  &:nth-child(4) {
-    animation-delay: 220ms;
-  }
-
-  &:nth-child(5) {
-    animation-delay: 270ms;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .app > main > * {
-    animation: none;
-  }
-}
 
 .skip-link {
   position: fixed;
   left: 0.75rem;
   top: 0.5rem;
   z-index: 200;
-  display: inline-flex;
-  width: max-content;
-  background: var(--color-bg-card);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 0.55rem 0.8rem;
-  transform: translateY(-140%);
-  transition: transform var(--transition-base);
+  padding: 0.6rem 0.9rem 0.45rem;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 700;
+  transform: translateY(-160%);
 
   &:focus-visible {
-    transform: translateY(0);
-    box-shadow: var(--focus-ring);
+    transform: none;
   }
 }
 
-// ─── Navbar ───────────────────────────────────────────────────────────────────
+main:focus {
+  outline: none;
+}
 
-.navbar {
-  position: fixed;
+// ─── Masthead ─────────────────────────────────────────────────────────────────
+
+.masthead {
+  position: sticky;
   top: 0;
-  inset-inline: 0;
-  z-index: 220;
-  padding: 0 1.5rem;
-  height: 60px;
+  z-index: 100;
+  background: var(--ground);
+  border-bottom: 2px solid var(--rule-strong);
+  padding: 0 var(--gutter);
+}
+
+.masthead__inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  min-height: 60px;
   display: flex;
   align-items: center;
-  transition: background var(--transition-theme), border-color var(--transition-base),
-    box-shadow var(--transition-base), transform var(--transition-base);
-  border-bottom: 1px solid transparent;
+  gap: 1.5rem;
+}
 
-  @media (min-width: 768px) {
-    padding: 0 2rem;
-    height: 64px;
+.masthead__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: var(--fs-body);
+  letter-spacing: -0.01em;
+
+  :root[data-theme='light'] & img {
+    mix-blend-mode: multiply;
   }
 
-  @media (max-width: 600px) {
-    height: 60px;
-    padding: 0 0.85rem;
-  }
-
-  &--scrolled {
-    background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-    border-bottom-color: color-mix(in srgb, var(--color-border) 76%, var(--color-accent) 24%);
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 80%, var(--color-accent) 20%),
-      0 10px 28px color-mix(in srgb, var(--color-text-primary) 6%, transparent);
-
-    @media (max-width: 768px) {
-      background: var(--color-bg);
-    }
-  }
-
-  &__inner {
-    width: 100%;
-    max-width: 1220px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-
-    @media (max-width: 600px) {
-      flex-wrap: nowrap;
-      gap: 0.5rem;
-      align-items: center;
-    }
-  }
-
-  &__brand {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.62rem;
-    border-radius: 999px;
-    text-decoration: none;
-    color: var(--color-text-primary);
-    transition: color var(--transition-theme);
-
-    &:hover {
-      color: var(--color-text-primary);
-      background: color-mix(in srgb, var(--color-toggle-bg) 76%, transparent);
-    }
-    @media (max-width: 600px) {
-      padding: 0.25rem 0.15rem;
-      border-radius: 12px;
-    }
-  }
-
-  &__brand-mark {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    border-radius: 20px;
-    display: block;
-    object-fit: cover;
-    border: 1.2px solid color-mix(in srgb, var(--color-border) 78%, var(--color-accent) 22%);
-    flex-shrink: 0;
-
-    [data-theme='light'] & {
-      mix-blend-mode: multiply;
-    }
-  }
-
-  &__brand-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: -0.015em;
-
-    @media (max-width: 600px) {
-      display: none;
-    }
-  }
-
-  &__hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--color-text-secondary);
-    flex-shrink: 0;
-    border-radius: 8px;
-    transition: background var(--transition-base);
-
-    &:hover {
-      background: var(--color-toggle-bg);
-    }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-    }
-
-    @media (max-width: 600px) {
-      display: flex;
-      order: 2;
-      margin-left: auto;
-    }
-  }
-
-  &__hamburger-bar {
-    display: block;
-    width: 20px;
-    height: 1.5px;
-    background: currentColor;
-    border-radius: 2px;
-    transition: transform var(--transition-base), opacity var(--transition-base);
-
-    .navbar--nav-open &:nth-child(1) {
-      transform: translateY(6.5px) rotate(45deg);
-    }
-    .navbar--nav-open &:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-    .navbar--nav-open &:nth-child(3) {
-      transform: translateY(-6.5px) rotate(-45deg);
-    }
-  }
-
-  &__nav {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-left: auto;
-
-    @media (max-width: 600px) {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0;
-      margin-left: 0;
-      background: var(--color-bg);
-      border-bottom: 1px solid var(--color-border);
-      box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
-      z-index: 260;
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-4px);
-      transition: max-height var(--transition-base), opacity var(--transition-base),
-        transform var(--transition-base), visibility var(--transition-base);
-      pointer-events: none;
-
-      &--open {
-        max-height: 320px;
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-        pointer-events: auto;
-      }
-    }
-  }
-
-  &__link {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 0.9rem;
-    border-radius: 100px;
-    font-size: 0.82rem;
-    font-weight: 680;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-    text-decoration: none;
-    transition: color var(--transition-base), background var(--transition-base);
-
-    &:hover {
-      color: var(--color-text-primary);
-      background: var(--color-toggle-bg);
-    }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-    }
-
-    @media (max-width: 600px) {
-      width: 100%;
-      justify-content: flex-start;
-      padding: 0.85rem 1.25rem;
-      font-size: 0.82rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-radius: 0;
-
-      &:not(:last-child) {
-        border-bottom: 1px solid var(--color-border);
-      }
-
-      &:hover {
-        background: var(--color-toggle-bg);
-        color: var(--color-text-primary);
-      }
-    }
+  :root[data-theme='dark'] & img {
+    filter: invert(1);
   }
 }
 
-@keyframes section-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.masthead__mark {
+  width: 28px;
+  height: 28px;
 }
 
-// ─── Buttons ─────────────────────────────────────────────────────────────────
+.masthead__name {
+  white-space: nowrap;
+}
 
-.btn {
+.masthead__nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.masthead__link {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.625rem 1.5rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background var(--transition-base), color var(--transition-base),
-    box-shadow var(--transition-base), border-color var(--transition-base);
-  white-space: nowrap;
+  min-height: 44px;
+  padding: 0.1rem 0.85rem 0;
+  font-size: var(--fs-label);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
-  border: 1.5px solid transparent;
 
-  &--primary {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+  &:hover {
+    background: var(--ground-2);
+  }
 
-    &:hover {
-      background: var(--color-accent-hover);
-      color: var(--color-on-accent);
-      box-shadow: var(--shadow-accent-hover);
-    }
+  &[aria-current] {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.45em;
+  }
+}
 
-    &:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring), var(--shadow-accent-hover);
+.masthead__menu {
+  display: none;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 0.1rem 1rem 0;
+  border: 2px solid var(--ink);
+  background: none;
+  font-size: var(--fs-label);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 719px) {
+  .masthead__inner {
+    gap: 0.75rem;
+  }
+
+  .masthead__menu {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .masthead__nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem var(--gutter) 1rem;
+    background: var(--ground);
+    border-bottom: 2px solid var(--rule-strong);
+
+    &--open {
+      display: flex;
     }
   }
 
-  &--ghost {
-    background: transparent;
-    color: var(--color-accent);
-    border-color: var(--color-accent);
-
-    &:hover {
-      background: var(--color-pill-bg);
-      color: var(--color-accent);
-    }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-    }
+  .masthead__link {
+    padding: 0.1rem 0 0;
+    border-bottom: 1px solid var(--rule);
   }
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
 .footer {
-  margin-top: auto;
-  padding: 1.5rem;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
-  transition: background var(--transition-theme), border-color var(--transition-theme);
-
-  &__inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  &__copy {
-    font-size: 0.8125rem;
-    color: var(--color-text-secondary);
-  }
-
-  &__links {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  &__link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    color: var(--color-text-secondary);
-    transition: color var(--transition-base), background var(--transition-base);
-    text-decoration: none;
-
-    &:hover {
-      color: var(--color-text-primary);
-      background: var(--color-toggle-bg);
-    }
-
-    &:focus-visible {
-      outline: none;
-      box-shadow: var(--focus-ring);
-    }
-  }
+  padding: 1.5rem var(--gutter);
+  border-top: 2px solid var(--rule-strong);
+  font-size: var(--fs-label);
+  color: var(--ink-2);
 }
 
-// ─── Keyboard Help Modal ──────────────────────────────────────────────────────
-
-.keyboard-help-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
+.footer__inner {
+  max-width: var(--max);
+  margin: 0 auto;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  gap: 1rem;
 }
 
-.keyboard-help-panel {
-  position: relative;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  padding: 2rem;
-  max-width: 380px;
-  max-height: 70vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow-modal);
-}
-
-.keyboard-help__close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
+.footer__shortcuts {
+  min-height: 44px;
+  padding: 0;
   border: none;
-  font-size: 1.25rem;
+  background: none;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
   cursor: pointer;
-  color: var(--color-text-secondary);
-  transition: color var(--transition-base);
-
-  &:hover {
-    color: var(--color-text-primary);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
 }
 
-.keyboard-help__title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: var(--color-text-primary);
-}
-
-.keyboard-help__group {
-  margin-bottom: 1.5rem;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.keyboard-help__group-title {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  margin-bottom: 0.75rem;
-}
-
-.keyboard-help__list {
-  list-style: none;
+.footer__links {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+}
+
+// ─── Keyboard help (native dialog: top layer, inert background, Esc) ─────────
+
+.help {
+  margin: auto;
+  border: 2px solid var(--rule-strong);
+  background: var(--ground);
+  color: var(--ink);
+  padding: 0;
+  max-width: min(26rem, calc(100vw - 2rem));
+
+  &::backdrop {
+    background: var(--scrim);
+  }
+}
+
+.help__panel {
+  padding: 1.75rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.help__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+}
+
+.help__check {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0.1rem;
+  accent-color: var(--ink);
+  flex-shrink: 0;
+}
+
+.help__toggle-label {
+  display: block;
+  font-weight: 700;
+}
+
+.help__hint {
+  display: block;
+  font-size: var(--fs-label);
+  color: var(--ink-2);
+}
+
+.help__list--off {
+  opacity: 0.5;
+}
+
+.help__list {
+  display: grid;
   gap: 0.6rem;
 
-  li {
+  div {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 0.9375rem;
-    color: var(--color-text-primary);
+    gap: 0.9rem;
+  }
 
-    kbd {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 32px;
-      height: 28px;
-      padding: 0 0.5rem;
-      background: var(--color-bg);
-      border: 1px solid var(--color-border);
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      color: var(--color-text-secondary);
-      flex-shrink: 0;
-    }
-
-    span {
-      flex: 1;
-    }
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0.15rem 0.5rem 0;
+    border: 2px solid var(--ink);
+    font-family: var(--font);
+    font-weight: 800;
   }
 }
 
-// ─── Transitions ──────────────────────────────────────────────────────────────
-
-.help-modal-enter-active,
-.help-modal-leave-active {
-  transition: opacity var(--transition-base);
-
-  .keyboard-help-panel {
-    transition: transform var(--transition-base), opacity var(--transition-base);
-  }
-}
-
-.help-modal-enter-from,
-.help-modal-leave-to {
-  opacity: 0;
-
-  .keyboard-help-panel {
-    transform: scale(0.95);
-    opacity: 0;
-  }
+.help__close {
+  justify-self: start;
 }
 </style>

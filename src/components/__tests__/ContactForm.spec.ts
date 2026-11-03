@@ -13,23 +13,23 @@ async function fillValidFields(wrapper: ReturnType<typeof mount>) {
 // ─── Validation ───────────────────────────────────────────────────────────────
 
 describe('ContactForm — field validation', () => {
-  it('shows "Name is required" when name field is blurred empty', async () => {
+  it('shows the name error when name field is blurred empty', async () => {
     const wrapper = mount(ContactForm)
     await wrapper.find('#cf-name').trigger('blur')
-    expect(wrapper.find('#cf-name-error').text()).toBe('Name is required.')
+    expect(wrapper.find('#cf-name-error').text()).toBe('Enter your name.')
   })
 
-  it('shows "Email is required" when email field is blurred empty', async () => {
+  it('shows the email error when email field is blurred empty', async () => {
     const wrapper = mount(ContactForm)
     await wrapper.find('#cf-email').trigger('blur')
-    expect(wrapper.find('#cf-email-error').text()).toBe('Email is required.')
+    expect(wrapper.find('#cf-email-error').text()).toBe('Enter your email address.')
   })
 
   it('shows format error for an invalid email address', async () => {
     const wrapper = mount(ContactForm)
     await wrapper.find('#cf-email').setValue('not-an-email')
     await wrapper.find('#cf-email').trigger('blur')
-    expect(wrapper.find('#cf-email-error').text()).toBe('Please enter a valid email address.')
+    expect(wrapper.find('#cf-email-error').text()).toBe("That email address doesn't look right. Check for a typo.")
   })
 
   it('clears the email error when a valid email is entered', async () => {
@@ -39,10 +39,10 @@ describe('ContactForm — field validation', () => {
     expect(wrapper.find('#cf-email-error').exists()).toBe(false)
   })
 
-  it('shows "Message is required" when message field is blurred empty', async () => {
+  it('shows the message error when message field is blurred empty', async () => {
     const wrapper = mount(ContactForm)
     await wrapper.find('#cf-message').trigger('blur')
-    expect(wrapper.find('#cf-message-error').text()).toBe('Message is required.')
+    expect(wrapper.find('#cf-message-error').text()).toBe('Write a short message.')
   })
 
   it('shows all three field errors when form is submitted with empty fields', async () => {
@@ -128,6 +128,7 @@ describe('ContactForm — submission', () => {
     await wrapper.find('form').trigger('submit')
     await flushPromises()
     expect(wrapper.find('.contact__success').exists()).toBe(true)
+    expect(wrapper.find('.contact__success').text()).toContain("I'll reply to sean@example.com.")
     // Verify the correct HTTP request was made
     expect(fetchSpy).toHaveBeenCalledWith(
       'https://formspree.io/f/test',
@@ -146,7 +147,7 @@ describe('ContactForm — submission', () => {
     await fillValidFields(wrapper)
     await wrapper.find('form').trigger('submit')
     await flushPromises()
-    expect(wrapper.find('.form-error--submit').exists()).toBe(true)
+    expect(wrapper.find('.contact__submit-error').exists()).toBe(true)
   })
 
   it('shows an error message when fetch throws a network error', async () => {
@@ -156,7 +157,7 @@ describe('ContactForm — submission', () => {
     await fillValidFields(wrapper)
     await wrapper.find('form').trigger('submit')
     await flushPromises()
-    expect(wrapper.find('.form-error--submit').exists()).toBe(true)
+    expect(wrapper.find('.contact__submit-error').exists()).toBe(true)
   })
 
   it('disables the submit button while the request is in-flight', async () => {
@@ -181,6 +182,87 @@ describe('ContactForm — submission', () => {
     await fillValidFields(wrapper)
     await wrapper.find('form').trigger('submit')
     await flushPromises()
-    expect(wrapper.find('.form-error--submit').exists()).toBe(true)
+    expect(wrapper.find('.contact__submit-error').exists()).toBe(true)
+  })
+})
+
+describe('ContactForm — recovery copy', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
+  })
+
+  it('names the public email address when the form is not configured', async () => {
+    vi.useFakeTimers()
+    vi.stubEnv('VITE_FORMSPREE_ENDPOINT', '')
+    const wrapper = mount(ContactForm)
+    vi.advanceTimersByTime(3000)
+    await fillValidFields(wrapper)
+    await wrapper.find('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.find('.contact__submit-error').text()).toContain('hello@seanjones.io')
+  })
+
+  it('shows the email address and LinkedIn beside the form', () => {
+    const wrapper = mount(ContactForm)
+    expect(wrapper.find('a[href="mailto:hello@seanjones.io"]').exists()).toBe(true)
+    expect(wrapper.find('.contact__linkedin').attributes('href')).toContain('linkedin.com')
+  })
+
+  it('does not use the owner name as a placeholder', () => {
+    const wrapper = mount(ContactForm)
+    expect(wrapper.find('#cf-name').attributes('placeholder')).toBeUndefined()
+  })
+})
+
+describe('ContactForm — hardening', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
+  })
+
+  it('caps field lengths and tells people the message limit', () => {
+    const wrapper = mount(ContactForm)
+    expect(wrapper.find('#cf-name').attributes('maxlength')).toBe('100')
+    expect(wrapper.find('#cf-email').attributes('maxlength')).toBe('254')
+    expect(wrapper.find('#cf-message').attributes('maxlength')).toBe('5000')
+    expect(wrapper.find('#cf-message-hint').text()).toBe('Up to 5,000 characters.')
+  })
+
+  it('gives up on a hung request and shows the network message with the email', async () => {
+    vi.useFakeTimers()
+    vi.stubEnv('VITE_FORMSPREE_ENDPOINT', 'https://formspree.io/f/test')
+    vi.spyOn(globalThis, 'fetch').mockImplementation((_url, init) =>
+      new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')))
+      }),
+    )
+    const wrapper = mount(ContactForm)
+    vi.advanceTimersByTime(3000)
+    await fillValidFields(wrapper)
+    await wrapper.find('form').trigger('submit')
+    vi.advanceTimersByTime(15000)
+    await flushPromises()
+    expect(wrapper.find('.contact__submit-error').text()).toContain("Your message didn't send. Check your connection")
+    expect(wrapper.find('.contact__submit-error').text()).toContain('hello@seanjones.io')
+    expect((wrapper.find('button[type="submit"]').element as HTMLButtonElement).disabled).toBe(false)
+  })
+})
+
+describe('ContactForm — availability', () => {
+  it('states location and reply time beside the form', () => {
+    const wrapper = mount(ContactForm)
+    const facts = wrapper.find('.contact__facts').text()
+    expect(facts).toContain('Remote, or hybrid in the Denver area.')
+    expect(facts).toContain('I usually reply within a day.')
+  })
+})
+
+describe('ContactForm — positioning', () => {
+  it('names the role level at the terminus', () => {
+    const wrapper = mount(ContactForm)
+    expect(wrapper.get('.contact__line').text()).toBe('Open to conversations about Staff, Principal and engineering-lead roles.')
   })
 })

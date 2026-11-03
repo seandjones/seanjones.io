@@ -1,73 +1,141 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { enableAutoUnmount, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import App from '../App.vue'
-import appSource from '../App.vue?raw'
+
+enableAutoUnmount(afterEach)
 
 beforeEach(() => {
+  document.documentElement.removeAttribute('data-theme')
   vi.stubGlobal('matchMedia', vi.fn().mockImplementation(() => ({
     matches: false,
-    media: '(prefers-color-scheme: dark)',
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
+    media: '',
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
   })))
 })
 
-describe('App navbar branding', () => {
-  it('renders favicon as the navbar brand mark image and mounts all sections', async () => {
-    const wrapper = mount(App, {
-      global: {
-        stubs: {
-          ThemeToggle: true,
-        },
-      },
-    })
+describe('App shell', () => {
+  it('mounts every section in reading order', async () => {
+    const wrapper = mount(App, { attachTo: document.body })
     await nextTick()
-
-    const brandMark = wrapper.get('.navbar__brand-mark')
-    expect(brandMark.element.tagName).toBe('IMG')
-    expect(brandMark.attributes('src')).toBe('/favicon.png')
-    expect(brandMark.attributes('aria-hidden')).toBe('true')
-    expect(brandMark.attributes('alt')).toBe('')
-    expect(wrapper.find('section.hero').exists()).toBe(true)
-    expect(wrapper.find('section#skills').exists()).toBe(true)
-    expect(wrapper.find('section#projects').exists()).toBe(true)
-    expect(wrapper.find('section#work').exists()).toBe(true)
-    expect(wrapper.find('section#contact').exists()).toBe(true)
+    const ids = wrapper.findAll('main > section').map((s) => s.attributes('id') ?? s.classes()[0])
+    expect(ids).toEqual(['hero', 'work', 'experience', 'projects', 'contact'])
     expect(wrapper.find('.skip-link').attributes('href')).toBe('#main-content')
+    expect(wrapper.find('.skip-link').attributes('aria-label')).toBeUndefined()
+    wrapper.unmount()
   })
 
-  it('toggles mobile navigation open state from hamburger control', async () => {
-    const wrapper = mount(App, {
-      global: {
-        stubs: {
-          ThemeToggle: true,
-        },
-      },
-    })
-
-    const menuButton = wrapper.get('.navbar__hamburger')
-    const nav = wrapper.get('#site-nav')
-
-    expect(menuButton.attributes('aria-expanded')).toBe('false')
-    expect(nav.classes()).not.toContain('navbar__nav--open')
-
-    await menuButton.trigger('click')
-
-    expect(menuButton.attributes('aria-expanded')).toBe('true')
-    expect(nav.classes()).toContain('navbar__nav--open')
-
-    await menuButton.trigger('click')
-
-    expect(menuButton.attributes('aria-expanded')).toBe('false')
-    expect(nav.classes()).not.toContain('navbar__nav--open')
+  it('points every nav link at a section that exists', async () => {
+    const wrapper = mount(App, { attachTo: document.body })
+    await nextTick()
+    for (const link of wrapper.findAll('#site-nav a')) {
+      expect(document.querySelector(link.attributes('href')!)).not.toBeNull()
+    }
+    wrapper.unmount()
   })
 
-  it('does not reintroduce global z-index override on app children', () => {
-    expect(appSource).not.toContain('.app > :not(.skip-link)')
+  it('toggles the mobile navigation', async () => {
+    const wrapper = mount(App)
+    const button = wrapper.get('.masthead__menu')
+    expect(button.attributes('aria-expanded')).toBe('false')
+    await button.trigger('click')
+    expect(button.attributes('aria-expanded')).toBe('true')
+    expect(wrapper.get('#site-nav').classes()).toContain('masthead__nav--open')
+  })
+
+  it('sets the theme on <html> so top-layer UI follows it', async () => {
+    const wrapper = mount(App)
+    await nextTick()
+    expect(document.documentElement.dataset.theme).toBe('light')
+    await wrapper.get('.theme-toggle').trigger('click')
+    expect(document.documentElement.dataset.theme).toBe('dark')
+  })
+})
+
+describe('App hardening', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    Element.prototype.scrollIntoView = vi.fn()
+  })
+
+  it('lets visitors turn single-key shortcuts off, and remembers it (WCAG 2.1.4)', async () => {
+    const wrapper = mount(App, { attachTo: document.body })
+    await nextTick()
+    const scroll = Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'w' }))
+    expect(scroll).toHaveBeenCalledTimes(1)
+
+    await wrapper.get('.help__check').setValue(false)
+    expect(localStorage.getItem('sj-shortcuts')).toBe('off')
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'w' }))
+    expect(scroll).toHaveBeenCalledTimes(1)
+    wrapper.unmount()
+  })
+
+  it('opens shortcut settings from a footer button, without needing a key', () => {
+    const wrapper = mount(App)
+    expect(wrapper.get('.footer__shortcuts').text()).toBe('Keyboard shortcuts')
+  })
+
+  it('scrolls to a shared deep link once the page has rendered', async () => {
+    window.history.replaceState(null, '', '#work-ai-price')
+    const wrapper = mount(App, { attachTo: document.body })
+    await nextTick()
+    await nextTick()
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled()
+    window.history.replaceState(null, '', window.location.pathname)
+    wrapper.unmount()
+  })
+})
+
+describe('App keyboard path', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    Element.prototype.scrollIntoView = vi.fn()
+  })
+
+  it('offers a second skip link straight to the work', () => {
+    const wrapper = mount(App)
+    const skips = wrapper.findAll('.skip-link').map((a) => [a.attributes('href'), a.text()])
+    expect(skips).toEqual([
+      ['#main-content', 'Skip to main content'],
+      ['#work', 'Skip to the work'],
+    ])
+  })
+
+  it('runs shortcuts while a link has focus, but not while typing', async () => {
+    const wrapper = mount(App, { attachTo: document.body })
+    await nextTick()
+    const link = wrapper.get('#site-nav a').element as HTMLAnchorElement
+    link.focus()
+    link.dispatchEvent(new KeyboardEvent('keydown', { key: 'c', bubbles: true }))
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1)
+
+    const input = wrapper.get('#cf-name').element as HTMLInputElement
+    input.focus()
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'c', bubbles: true }))
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('App deep links into disclosures', () => {
+  beforeEach(() => {
+    Element.prototype.scrollIntoView = vi.fn()
+  })
+
+  it('opens the closed "Full case study" a station link points into', async () => {
+    const wrapper = mount(App, { attachTo: document.body })
+    await nextTick()
+    const details = document.querySelector('#price-frontend')!.closest('details')!
+    expect(details.open).toBe(false)
+    window.history.replaceState(null, '', '#price-frontend')
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+    expect(details.open).toBe(true)
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled()
+    window.history.replaceState(null, '', window.location.pathname)
+    wrapper.unmount()
   })
 })

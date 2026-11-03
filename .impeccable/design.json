@@ -1,175 +1,597 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-05-17T12:00:00.000Z",
-  "title": "Design System: Sean Jones Portfolio",
+  "generatedAt": "2026-11-03T18:00:00Z",
+  "title": "Design System: seanjones.io",
   "extensions": {
     "colorMeta": {
-      "accent-blue": {
-        "role": "primary",
-        "displayName": "Signal Blue",
-        "canonical": "#0071e3",
-        "tonalRamp": ["#081a2e", "#0e2f52", "#154476", "#1b5a99", "#0071e3", "#3e8fe9", "#7ab3f0", "#d9ebfb"]
-      },
-      "accent-blue-hover": {
-        "role": "primary",
-        "displayName": "Signal Blue Hover",
-        "canonical": "#0077ed",
-        "tonalRamp": ["#081b32", "#0f3158", "#15477d", "#1b5ea3", "#0077ed", "#4698f1", "#84bcf5", "#deeffd"]
-      },
-      "accent-blue-dark": {
-        "role": "secondary",
-        "displayName": "Sky Edge Blue",
-        "canonical": "#2997ff",
-        "tonalRamp": ["#0b1f31", "#143a5b", "#1c5684", "#2471ad", "#2997ff", "#63b3ff", "#99ceff", "#e0f2ff"]
-      },
-      "surface-base": {
+      "ground": {
         "role": "neutral",
-        "displayName": "Slate Mist",
-        "canonical": "#f5f5f7",
-        "tonalRamp": ["#1c1d21", "#34363b", "#4c4f55", "#676a71", "#9498a1", "#bec2cb", "#dde0e6", "#f5f5f7"]
-      },
-      "surface-secondary": {
-        "role": "neutral",
-        "displayName": "Paper Surface",
+        "displayName": "Map White",
         "canonical": "#ffffff",
-        "tonalRamp": ["#222326", "#3a3b3f", "#53555a", "#6d7077", "#989ca3", "#c2c6ce", "#e2e6ee", "#ffffff"]
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
       },
-      "surface-dark": {
+      "ground-2": {
         "role": "neutral",
-        "displayName": "Graphite Surface",
-        "canonical": "#1c1c1e",
-        "tonalRamp": ["#121214", "#1c1c1e", "#28282b", "#34343a", "#4a4a52", "#6a6a74", "#8f8f9a", "#bfbfc8"]
+        "displayName": "Platform Grey",
+        "canonical": "#f3f4f5",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242526",
+          "#414243",
+          "#606162",
+          "#818283",
+          "#a4a5a6",
+          "#c8c9ca",
+          "#edeeef"
+        ]
       },
-      "error-red": {
-        "role": "tertiary",
-        "displayName": "Alert Red",
-        "canonical": "#d93025",
-        "tonalRamp": ["#2f0c0a", "#541613", "#7a201c", "#a12a24", "#d93025", "#e05f56", "#ea9089", "#f7d6d3"]
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#16181c",
+        "tonalRamp": [
+          "#090b0f",
+          "#232529",
+          "#404247",
+          "#5f6166",
+          "#808288",
+          "#a2a5aa",
+          "#c6c9cf",
+          "#eceef4"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Grey",
+        "canonical": "#4a4f57",
+        "tonalRamp": [
+          "#080b11",
+          "#21252c",
+          "#3d424a",
+          "#5c626a",
+          "#7d838b",
+          "#a0a5af",
+          "#c4cad3",
+          "#e9eff9"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#d5d8dc",
+        "tonalRamp": [
+          "#090b0e",
+          "#232528",
+          "#404245",
+          "#5f6165",
+          "#808286",
+          "#a2a5a9",
+          "#c6c9cd",
+          "#eceff3"
+        ]
+      },
+      "line-ai": {
+        "role": "secondary",
+        "displayName": "Signal Amber (AI line)",
+        "canonical": "#8f5a00",
+        "tonalRamp": [
+          "#1c0300",
+          "#401900",
+          "#663400",
+          "#885400",
+          "#ac752c",
+          "#d19852",
+          "#f0bf86",
+          "#ffe7bb"
+        ]
+      },
+      "line-platform": {
+        "role": "secondary",
+        "displayName": "Route Red (Platform line)",
+        "canonical": "#c2302a",
+        "tonalRamp": [
+          "#2d0000",
+          "#5a0000",
+          "#8a0000",
+          "#b21d1b",
+          "#db493f",
+          "#ff6f61",
+          "#ffa091",
+          "#ffd0c3"
+        ]
+      },
+      "line-frontend": {
+        "role": "secondary",
+        "displayName": "Route Blue (Frontend line)",
+        "canonical": "#1f5fc7",
+        "tonalRamp": [
+          "#000039",
+          "#001969",
+          "#00379c",
+          "#1a5ac2",
+          "#3e7ee9",
+          "#60a3ff",
+          "#91c9ff",
+          "#c3f0ff"
+        ]
+      },
+      "line-extensions": {
+        "role": "secondary",
+        "displayName": "Route Green (Extensions line)",
+        "canonical": "#137a46",
+        "tonalRamp": [
+          "#001300",
+          "#00320b",
+          "#005322",
+          "#067441",
+          "#3a9761",
+          "#60bb83",
+          "#94ddac",
+          "#c6ffd8"
+        ]
+      },
+      "line-leadership": {
+        "role": "secondary",
+        "displayName": "Leadership line (ink)",
+        "canonical": "#16181c",
+        "tonalRamp": [
+          "#090b0f",
+          "#232529",
+          "#404247",
+          "#5f6166",
+          "#808288",
+          "#a2a5aa",
+          "#c6c9cf",
+          "#eceef4"
+        ]
+      },
+      "focus": {
+        "role": "state",
+        "displayName": "Focus Ink",
+        "canonical": "#16181c",
+        "tonalRamp": [
+          "#090b0f",
+          "#232529",
+          "#404247",
+          "#5f6166",
+          "#808288",
+          "#a2a5aa",
+          "#c6c9cf",
+          "#eceef4"
+        ]
+      },
+      "target": {
+        "role": "state",
+        "displayName": "Target Wash",
+        "canonical": "#fff4d6",
+        "tonalRamp": [
+          "#0f0b01",
+          "#2b2411",
+          "#4a4128",
+          "#6a6147",
+          "#8c8267",
+          "#afa488",
+          "#d1c9b1",
+          "#f5eedb"
+        ]
+      },
+      "error": {
+        "role": "state",
+        "displayName": "Error Red",
+        "canonical": "#b3261e",
+        "tonalRamp": [
+          "#2c0000",
+          "#590000",
+          "#880000",
+          "#b0221b",
+          "#d84c3f",
+          "#ff7161",
+          "#ffa291",
+          "#ffd2c3"
+        ]
+      },
+      "ground-night": {
+        "role": "neutral",
+        "displayName": "Night Ground",
+        "canonical": "#0f1114",
+        "tonalRamp": [
+          "#090b0e",
+          "#232528",
+          "#404246",
+          "#5f6165",
+          "#808287",
+          "#a2a5a9",
+          "#c6c9ce",
+          "#eceff3"
+        ]
+      },
+      "ground-2-night": {
+        "role": "neutral",
+        "displayName": "Night Platform Grey",
+        "canonical": "#171a1e",
+        "tonalRamp": [
+          "#090b0f",
+          "#22252a",
+          "#3f4247",
+          "#5e6266",
+          "#7f8388",
+          "#a1a5ab",
+          "#c5c9cf",
+          "#eaeff5"
+        ]
+      },
+      "ink-night": {
+        "role": "primary",
+        "displayName": "Night Ink",
+        "canonical": "#eceef0",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606163",
+          "#818284",
+          "#a3a5a7",
+          "#c7c9cb",
+          "#edeff1"
+        ]
+      },
+      "ink-2-night": {
+        "role": "neutral",
+        "displayName": "Night Ink Grey",
+        "canonical": "#b4b9c0",
+        "tonalRamp": [
+          "#080b10",
+          "#22252b",
+          "#3e4248",
+          "#5d6268",
+          "#7e8389",
+          "#a1a5ac",
+          "#c4cad1",
+          "#eaeff6"
+        ]
+      },
+      "rule-night": {
+        "role": "neutral",
+        "displayName": "Night Hairline",
+        "canonical": "#30343a",
+        "tonalRamp": [
+          "#080b10",
+          "#22252b",
+          "#3e4249",
+          "#5d6268",
+          "#7e838a",
+          "#a0a5ad",
+          "#c4c9d1",
+          "#eaeff7"
+        ]
+      },
+      "line-ai-night": {
+        "role": "secondary",
+        "displayName": "Night Signal Amber",
+        "canonical": "#f2b33d",
+        "tonalRamp": [
+          "#1e0200",
+          "#421700",
+          "#6a3200",
+          "#8c5300",
+          "#b17500",
+          "#d6980f",
+          "#f4c067",
+          "#ffe8a6"
+        ]
+      },
+      "line-platform-night": {
+        "role": "secondary",
+        "displayName": "Night Route Red",
+        "canonical": "#ff7468",
+        "tonalRamp": [
+          "#2b0000",
+          "#570000",
+          "#860000",
+          "#ae2724",
+          "#d64f46",
+          "#fe7468",
+          "#ffa396",
+          "#ffd2c7"
+        ]
+      },
+      "line-frontend-night": {
+        "role": "secondary",
+        "displayName": "Night Route Blue",
+        "canonical": "#74a7ff",
+        "tonalRamp": [
+          "#000430",
+          "#001f5c",
+          "#0e3c8a",
+          "#2f5eaf",
+          "#5080d5",
+          "#71a4fc",
+          "#9ecaff",
+          "#cdf0ff"
+        ]
+      },
+      "line-extensions-night": {
+        "role": "secondary",
+        "displayName": "Night Route Green",
+        "canonical": "#44c487",
+        "tonalRamp": [
+          "#001400",
+          "#00340b",
+          "#005622",
+          "#007841",
+          "#009b61",
+          "#3fc083",
+          "#80e1ad",
+          "#b9ffd8"
+        ]
+      },
+      "line-leadership-night": {
+        "role": "secondary",
+        "displayName": "Night Leadership line",
+        "canonical": "#eceef0",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606163",
+          "#818284",
+          "#a3a5a7",
+          "#c7c9cb",
+          "#edeff1"
+        ]
+      },
+      "focus-night": {
+        "role": "state",
+        "displayName": "Night Focus Ink",
+        "canonical": "#eceef0",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606163",
+          "#818284",
+          "#a3a5a7",
+          "#c7c9cb",
+          "#edeff1"
+        ]
+      },
+      "target-night": {
+        "role": "state",
+        "displayName": "Night Target Wash",
+        "canonical": "#2b2615",
+        "tonalRamp": [
+          "#0e0b03",
+          "#292517",
+          "#474230",
+          "#67614e",
+          "#88826f",
+          "#aba590",
+          "#cec9b8",
+          "#f3efe1"
+        ]
+      },
+      "error-night": {
+        "role": "state",
+        "displayName": "Night Error Red",
+        "canonical": "#ff8a80",
+        "tonalRamp": [
+          "#270000",
+          "#500000",
+          "#7d0e13",
+          "#a33733",
+          "#ca5b53",
+          "#f27e75",
+          "#ffaaa0",
+          "#ffd7ce"
+        ]
+      },
+      "scrim": {
+        "role": "state",
+        "displayName": "Scrim",
+        "canonical": "rgba(22, 24, 28, 0.55)"
+      },
+      "scrim-night": {
+        "role": "state",
+        "displayName": "Night Scrim",
+        "canonical": "rgba(0, 0, 0, 0.72)"
       }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Hero identity and major opening statement." },
-      "headline": { "displayName": "Headline", "purpose": "Section anchors and high-level content segmentation." },
-      "title": { "displayName": "Title", "purpose": "Card and modal titles in content clusters." },
-      "body": { "displayName": "Body", "purpose": "Narrative copy and explanatory text blocks." },
-      "label": { "displayName": "Label", "purpose": "Eyebrows and compact metadata labels." }
-    },
-    "shadows": [
-      {
-        "name": "surface-ambient",
-        "value": "0 2px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)",
-        "purpose": "Default depth for cards and panels."
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name on the signage panel and section headings."
       },
-      {
-        "name": "surface-hover",
-        "value": "0 6px 32px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.06)",
-        "purpose": "Interactive hover elevation."
+      "title": {
+        "displayName": "Title",
+        "purpose": "Case study, role, project and dialog titles; legend figures and contact email at 800."
       },
-      {
-        "name": "modal-depth",
-        "value": "0 20px 64px rgba(0, 0, 0, 0.35)",
-        "purpose": "Dialog separation from page context."
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text at a 58ch measure, buttons at 800; tabular numerals."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase part headings, sign role line, masthead links, toggle; caption and footer size."
       }
-    ],
+    },
+    "shadows": [],
     "motion": [
       {
-        "name": "ease-standard",
-        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "purpose": "Theme and base transition timing."
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The only easing; all transitions and the line draw-in."
       },
       {
-        "name": "modal-enter",
-        "value": "transform 0.22s ease, opacity 0.22s ease",
-        "purpose": "Modal grow-in and fade-in sequence."
+        "name": "state-change",
+        "value": "160ms",
+        "purpose": "Button fills, map line dimming to 0.16 opacity, theme toggle knob."
+      },
+      {
+        "name": "line-draw",
+        "value": "900ms, 90ms stagger per line",
+        "purpose": "Each map line draws in once on load; skipped under prefers-reduced-motion: reduce."
       }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "600px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1050px" },
-      { "name": "xl", "value": "1100px" }
+      {
+        "name": "branch-vertical",
+        "value": "639px"
+      },
+      {
+        "name": "nav-collapse",
+        "value": "719px"
+      },
+      {
+        "name": "career-stack",
+        "value": "759px"
+      },
+      {
+        "name": "contact-stack",
+        "value": "859px"
+      },
+      {
+        "name": "strip-maps",
+        "value": "959px"
+      },
+      {
+        "name": "projects-two-up",
+        "value": "1099px"
+      }
     ]
   },
   "components": [
     {
-      "name": "Primary Button",
+      "name": "Solid Button",
       "kind": "button",
-      "refersTo": "button-primary",
-      "description": "Primary action control for hero, contact, and key navigation prompts.",
-      "html": "<button class=\"ds-btn-primary\">View Case Study</button>",
-      "css": ".ds-btn-primary { background: var(--color-accent); color: var(--color-on-accent); border: 1.5px solid transparent; border-radius: var(--radius-pill); padding: 10px 24px; font: 600 0.92rem/1.2 var(--font-sans); cursor: pointer; transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; } .ds-btn-primary:hover { background: var(--color-accent-hover); box-shadow: 0 4px 16px rgba(0, 113, 227, 0.35); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }"
+      "refersTo": "button-solid",
+      "description": "Primary action on the ground, such as Send message.",
+      "html": "<button class=\"ds-btn ds-btn-solid\">Send message</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0.15rem 1.4rem 0;font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);font-size:1.0625rem;font-weight:800;text-decoration:none;border:2px solid currentColor;border-radius:0;background:transparent;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16,1,0.3,1),color 160ms cubic-bezier(0.16,1,0.3,1);} .ds-btn:focus-visible{outline:3px solid var(--focus,#16181c);outline-offset:3px;} .ds-btn-solid{background:var(--ink,#16181c);border-color:var(--ink,#16181c);color:var(--ground,#ffffff);} .ds-btn-solid:hover{background:var(--ink-2,#4a4f57);border-color:var(--ink-2,#4a4f57);}"
     },
     {
-      "name": "Ghost Button",
+      "name": "Outline Button",
       "kind": "button",
-      "refersTo": "button-ghost",
-      "description": "Secondary action control that preserves emphasis on the primary path.",
-      "html": "<button class=\"ds-btn-ghost\">Get in Touch</button>",
-      "css": ".ds-btn-ghost { background: transparent; color: var(--color-accent); border: 1.5px solid var(--color-accent); border-radius: var(--radius-pill); padding: 10px 24px; font: 600 0.92rem/1.2 var(--font-sans); cursor: pointer; transition: background 0.2s ease, color 0.2s ease; } .ds-btn-ghost:hover { background: var(--color-pill-bg); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }"
+      "refersTo": "button-outline",
+      "description": "Secondary action on the ground.",
+      "html": "<button class=\"ds-btn ds-btn-outline\">Close</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0.15rem 1.4rem 0;font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);font-size:1.0625rem;font-weight:800;text-decoration:none;border:2px solid currentColor;border-radius:0;background:transparent;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16,1,0.3,1),color 160ms cubic-bezier(0.16,1,0.3,1);} .ds-btn:focus-visible{outline:3px solid var(--focus,#16181c);outline-offset:3px;} .ds-btn-outline{color:var(--ink,#16181c);} .ds-btn-outline:hover{background:var(--ground-2,#f3f4f5);}"
     },
     {
-      "name": "Top Navigation Link",
-      "kind": "nav",
-      "refersTo": "card-surface",
-      "description": "Compact pill link used in fixed top navigation for section jumps.",
-      "html": "<a href=\"#\" class=\"ds-nav-link\">Case Studies</a>",
-      "css": ".ds-nav-link { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding: 6px 12px; border-radius: 999px; color: var(--color-text-secondary); text-decoration: none; font: 500 0.875rem/1 var(--font-sans); transition: color 0.2s ease, background 0.2s ease; } .ds-nav-link:hover { color: var(--color-text-primary); background: var(--color-toggle-bg); } .ds-nav-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }"
-    },
-    {
-      "name": "Project Tile",
+      "name": "Signage Panel with Sign Buttons",
       "kind": "card",
-      "refersTo": "card-surface",
-      "description": "Summary card for case studies with image, concise outcome framing, and CTA.",
-      "html": "<article class=\"ds-project-tile\"><img class=\"ds-project-image\" src=\"/project-placeholder.svg\" alt=\"Case study preview\" /><div class=\"ds-project-body\"><h3 class=\"ds-project-title\">Case Study Title</h3><p class=\"ds-project-desc\">Brief summary with concrete scope and impact signal.</p><button class=\"ds-project-action\">View Case Study</button></div></article>",
-      "css": ".ds-project-tile { background: var(--color-bg-card); color: var(--color-text-primary); border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; box-shadow: var(--shadow-card); transition: transform 0.2s ease, box-shadow 0.2s ease; } .ds-project-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(0,0,0,0.14), 0 2px 10px rgba(0,0,0,0.06); } .ds-project-image { width: 100%; aspect-ratio: 16/9; object-fit: cover; } .ds-project-body { padding: 16px; display: grid; gap: 10px; } .ds-project-title { margin: 0; font: 700 1.05rem/1.25 var(--font-sans); } .ds-project-desc { margin: 0; font: 400 0.92rem/1.6 var(--font-sans); color: var(--color-text-secondary); } .ds-project-action { justify-self: start; border: 1px solid var(--color-accent); border-radius: 999px; background: color-mix(in srgb, var(--color-accent) 10%, transparent); color: var(--color-accent); padding: 8px 12px; font: 600 0.82rem/1.2 var(--font-sans); cursor: pointer; }"
+      "refersTo": "signage-panel",
+      "description": "The solid ink hero sign: name, role line, one line, and the two sign buttons.",
+      "html": "<div class=\"ds-sign\"><h1 class=\"ds-sign-name\">Sean Jones</h1><p class=\"ds-sign-role\">Engineering Lead, Price.com</p><p class=\"ds-sign-line\">Hands-on engineering lead behind the Price.com platform.</p><div class=\"ds-sign-actions\"><a href=\"#\" class=\"ds-btn ds-btn-sign-solid\">Get in touch</a><a href=\"#\" class=\"ds-btn ds-btn-sign-outline\">See the work</a></div></div>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0.15rem 1.4rem 0;font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);font-size:1.0625rem;font-weight:800;text-decoration:none;border:2px solid currentColor;border-radius:0;background:transparent;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16,1,0.3,1),color 160ms cubic-bezier(0.16,1,0.3,1);} .ds-btn:focus-visible{outline:3px solid var(--focus,#16181c);outline-offset:3px;} .ds-sign{background:var(--ink,#16181c);color:var(--on-ink,#ffffff);padding:clamp(1.25rem,2.5vw,1.75rem) clamp(1.25rem,3vw,2.25rem);font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);} .ds-sign-name{margin:0;font-size:clamp(2.5rem,1.6rem + 3.2vw,4.25rem);font-weight:800;line-height:1;letter-spacing:-0.03em;} .ds-sign-role{margin:0.85rem 0 0;font-size:0.8125rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;opacity:0.86;} .ds-sign-line{margin:0.75rem 0 0;max-width:52ch;line-height:1.5;} .ds-sign-actions{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1.5rem;} .ds-btn-sign-solid{background:var(--on-ink,#ffffff);border-color:var(--on-ink,#ffffff);color:var(--ink,#16181c);} .ds-btn-sign-solid:hover{background:var(--ground-2,#f3f4f5);border-color:var(--ground-2,#f3f4f5);} .ds-btn-sign-outline{color:var(--on-ink,#ffffff);} .ds-btn-sign-outline:hover{background:color-mix(in srgb,var(--on-ink,#ffffff) 14%,transparent);} .ds-sign .ds-btn:focus-visible{outline-color:var(--on-ink,#ffffff);}"
     },
     {
-      "name": "Form Input",
+      "name": "Line Bullets",
+      "kind": "chip",
+      "refersTo": "bullet-platform",
+      "description": "Square line-coloured plates that name a line off the map.",
+      "html": "<div class=\"ds-bullets\"><span class=\"ds-bullet ds-bullet-ai\">AI</span><span class=\"ds-bullet ds-bullet-platform\">Platform</span><span class=\"ds-bullet ds-bullet-frontend\">Frontend</span><span class=\"ds-bullet ds-bullet-extensions\">Extensions</span><span class=\"ds-bullet ds-bullet-leadership\">Leadership</span></div>",
+      "css": ".ds-bullets{display:flex;flex-wrap:wrap;gap:0.4rem;} .ds-bullet{display:inline-flex;align-items:center;height:1.6rem;padding:0.1rem 0.6rem 0;font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);font-size:0.8125rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--on-line,#ffffff);white-space:nowrap;border-radius:0;} .ds-bullet-ai{background:var(--line-ai,#8f5a00);color:var(--on-line-ai,#ffffff);} .ds-bullet-platform{background:var(--line-platform,#c2302a);} .ds-bullet-frontend{background:var(--line-frontend,#1f5fc7);} .ds-bullet-extensions{background:var(--line-extensions,#137a46);} .ds-bullet-leadership{background:var(--line-leadership,#16181c);color:var(--on-ink,#ffffff);}"
+    },
+    {
+      "name": "Text Field",
       "kind": "input",
-      "refersTo": "input-default",
-      "description": "Default text-input style for contact and other form surfaces.",
-      "html": "<label class=\"ds-input-wrap\">Email<input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\" /></label>",
-      "css": ".ds-input-wrap { display: grid; gap: 6px; font: 600 0.875rem/1.3 var(--font-sans); color: var(--color-text-primary); } .ds-input { width: 100%; padding: 10px 14px; background: var(--color-bg-card); color: var(--color-text-primary); border: 1.5px solid var(--color-border); border-radius: 10px; font: 400 0.9375rem/1.4 var(--font-sans); transition: border-color 0.2s ease, box-shadow 0.2s ease; } .ds-input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent); } .ds-input:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }"
+      "refersTo": "field-input",
+      "description": "Square 2px-bordered field with label above.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Email</span><input class=\"ds-field-input\" type=\"email\" placeholder=\"you@company.com\"></label>",
+      "css": ".ds-field{display:grid;gap:0.4rem;font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);font-size:1.0625rem;color:var(--ink,#16181c);} .ds-field-label{font-weight:700;} .ds-field-input{width:100%;min-height:48px;padding:0.65rem 0.85rem 0.5rem;font:inherit;background:var(--ground,#ffffff);border:2px solid var(--ink-2,#4a4f57);border-radius:0;color:var(--ink,#16181c);} .ds-field-input::placeholder{color:var(--ink-2,#4a4f57);opacity:1;} .ds-field-input:hover{border-color:var(--ink,#16181c);} .ds-field-input:focus-visible{border-color:var(--focus,#16181c);outline:3px solid var(--focus,#16181c);outline-offset:2px;}"
+    },
+    {
+      "name": "Masthead Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sticky masthead with label-style links over a 2px ink rule.",
+      "html": "<nav class=\"ds-mast\"><a class=\"ds-mast-brand\" href=\"#\">Sean Jones</a><div class=\"ds-mast-nav\"><a class=\"ds-mast-link\" href=\"#\">Work</a><a class=\"ds-mast-link\" href=\"#\">Experience</a><a class=\"ds-mast-link\" href=\"#\">Contact</a></div></nav>",
+      "css": ".ds-mast{display:flex;align-items:center;gap:1.5rem;min-height:60px;padding:0 1.5rem;background:var(--ground,#ffffff);color:var(--ink,#16181c);border-bottom:2px solid var(--rule-strong,#16181c);font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);} .ds-mast-brand{font-weight:800;font-size:1.0625rem;letter-spacing:-0.01em;text-decoration:none;color:inherit;} .ds-mast-nav{display:flex;gap:0.25rem;margin-left:auto;} .ds-mast-link{display:inline-flex;align-items:center;min-height:44px;padding:0.1rem 0.85rem 0;font-size:0.8125rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:inherit;} .ds-mast-link:hover{background:var(--ground-2,#f3f4f5);} .ds-mast a:focus-visible{outline:3px solid var(--focus,#16181c);outline-offset:3px;}"
+    },
+    {
+      "name": "Strip Map",
+      "kind": "custom",
+      "description": "One line on narrow screens: bullet heading, 8px spine in the line colour, white ink-outlined ticks, ringed interchange stop.",
+      "html": "<section class=\"ds-strip\"><h3 class=\"ds-bullet\">Platform</h3><ol class=\"ds-strip-stations\"><li><a href=\"#\">590k monthly users</a></li><li class=\"ds-ix\"><a href=\"#\">Shared search API<span>Change for Frontend</span></a></li><li><a href=\"#\">Deploys down 25%</a></li></ol></section>",
+      "css": ".ds-strip{--lc:var(--line-platform,#c2302a);font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);color:var(--ink,#16181c);} .ds-bullet{display:inline-flex;align-items:center;height:1.6rem;margin:0;padding:0.1rem 0.6rem 0;font-size:0.8125rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--on-line,#ffffff);background:var(--lc);} .ds-strip-stations{list-style:none;margin:0.5rem 0 0 0.6rem;padding:0;border-left:8px solid var(--lc);} .ds-strip-stations li{position:relative;padding-left:1.1rem;} .ds-strip-stations li::before{content:'';position:absolute;left:-14px;top:50%;width:20px;height:10px;background:var(--ground,#ffffff);border:2.5px solid var(--ink,#16181c);transform:translateY(-50%);box-sizing:border-box;} .ds-strip-stations li.ds-ix::before{left:-17px;width:26px;height:26px;border-width:4px;border-radius:50%;} .ds-strip-stations a{display:flex;flex-direction:column;justify-content:center;min-height:44px;font-weight:600;line-height:1.3;text-decoration:none;color:inherit;} .ds-strip-stations a:hover{text-decoration:underline;} .ds-strip-stations a:focus-visible{outline:3px solid var(--focus,#16181c);outline-offset:3px;} .ds-strip-stations span{font-size:0.8125rem;font-weight:700;color:var(--ink-2,#4a4f57);}"
+    },
+    {
+      "name": "Section Head and Terminus",
+      "kind": "custom",
+      "description": "Display heading on a 2px ink rule; the contact section opens with the 10px ink line ending in a terminus bar.",
+      "html": "<div class=\"ds-term\"><span class=\"ds-term-line\"></span><span class=\"ds-term-bar\"></span></div><header class=\"ds-head\"><h2>Get in touch</h2></header>",
+      "css": ".ds-term{display:flex;align-items:center;margin-bottom:1.5rem;} .ds-term-line{flex:1;height:10px;background:var(--ink,#16181c);} .ds-term-bar{width:10px;height:44px;background:var(--ink,#16181c);} .ds-head{padding-bottom:1.25rem;border-bottom:2px solid var(--rule-strong,#16181c);font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);color:var(--ink,#16181c);} .ds-head h2{margin:0;font-size:clamp(2.5rem,1.6rem + 3.2vw,4.25rem);font-weight:800;line-height:1;letter-spacing:-0.03em;}"
+    },
+    {
+      "name": "Branch Line",
+      "kind": "custom",
+      "description": "Independent projects hanging from a 5px dashed ink branch line, one ink tick per stop.",
+      "html": "<ol class=\"ds-branch\"><li><span class=\"ds-tick\"></span><h3>Project one</h3><p>Built and run on my own time.</p></li><li><span class=\"ds-tick\"></span><h3>Project two</h3><p>Built and run on my own time.</p></li></ol>",
+      "css": ".ds-branch{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin:0;padding:2.25rem 0 0;position:relative;font-family:var(--font,'Overpass Variable','Overpass',system-ui,sans-serif);color:var(--ink,#16181c);background:var(--ground-2,#f3f4f5);} .ds-branch::before{content:'';position:absolute;top:0;left:0;right:0;border-top:5px dashed var(--ink,#16181c);} .ds-branch li{position:relative;} .ds-tick{position:absolute;top:-2.25rem;left:0;width:5px;height:1.1rem;background:var(--ink,#16181c);} .ds-branch h3{margin:0;font-size:1.375rem;font-weight:700;line-height:1.2;letter-spacing:-0.01em;} .ds-branch p{margin:0.75rem 0 0;color:var(--ink-2,#4a4f57);}"
     }
   ],
   "narrative": {
-    "northStar": "Technical Atelier",
-    "overview": "This system presents engineering leadership through evidence, not theater. The layout is structured for fast scanning, then deeper verification through projects, work history, and contact intent. Visual decisions prioritize credibility, readability, and execution clarity.\n\nInteraction behavior is explicit and controlled. State changes are quick, depth is functional, and accents are reserved for action and navigation. Typography carries hierarchy through weight and proportion, not ornament.\n\nThis system explicitly rejects the anti-references in PRODUCT.md: Template SaaS card-grid look with generic icon blocks and repetitive scaffolding, and Corporate sterile resume-page aesthetic that feels static and low-signal.",
+    "northStar": "The System Map",
+    "overview": "The site is drawn as a transit map of the Price.com platform. Each workstream is a line, each station is a real result, and the page is a ride from the map at the top to a terminus bar at contact. Everything below the map borrows the same signage: the career is a line diagram, independent projects hang off a dashed branch line, and section heads sit on a heavy ink rule like a platform sign.\n\nThe material is printed wayfinding. White map ground, ink type, one stroke weight, square corners, no shadows, and colour used only to tell lines apart. Density is high but legible: a small set of type sizes, generous measure limits, and hairline rules between rows rather than boxes around them. A \"Night map\" theme (set by `data-theme=\"dark\"` on `<html>`, chosen before first paint from storage or `prefers-color-scheme`) swaps the ground to near-black and lifts every line colour so it keeps contrast; the geometry does not change.\n\nThe direction rejects the dark glowing developer portfolio with a card grid and a skills wall, and PRODUCT.md rejects template SaaS card grids with icon blocks.",
     "keyCharacteristics": [
-      "Evidence-first structure with strong heading and content separation",
-      "Slate-and-cyan palette with one dominant action accent",
-      "Always-layered surfaces with subtle ambient depth",
-      "Measured interaction states with clear feedback",
-      "Consistent section grammar optimized for scan-then-deepen behavior"
+      "Colour carries line identity: AI, Platform, Frontend, Extensions, Leadership.",
+      "Octilinear map geometry at one 10px stroke weight, with 45° jogs into shared lanes at interchanges.",
+      "Overpass, a highway signage face, at four sizes with tabular numerals.",
+      "Square corners everywhere; only interchange capsules and career rings are round.",
+      "Flat. Depth comes from solid ink panels and 2px ink rules, never shadow."
     ],
     "rules": [
       {
-        "name": "The Signal Discipline Rule",
-        "body": "The primary accent is reserved for actions and key wayfinding. It is never used as decorative background fill.",
+        "name": "The Line Identity Rule",
+        "body": "A line colour means that line and nothing else. Never use a line colour for decoration, emphasis, a CTA, or a category that is not one of the five lines. State colours (focus, error, target) are the only other hues.",
         "section": "colors"
       },
       {
-        "name": "The Contrast Ladder Rule",
-        "body": "Adjacent hierarchy steps must remain visually distinct through both size and weight contrast. Flat scales are prohibited.",
+        "name": "The Night Map Rule",
+        "body": "Every colour token has a night value; components reference the custom property, never a hex, so the theme switch needs no component changes.",
+        "section": "colors"
+      },
+      {
+        "name": "The Four Sizes Rule",
+        "body": "There are four type sizes (`--fs-display`, `--fs-title`, `--fs-body`, `--fs-label`). New text picks one of them and varies weight, case or colour instead of adding a size.",
         "section": "typography"
       },
       {
-        "name": "The Ambient Depth Rule",
-        "body": "Elevation exists to separate layers and states, not to create decorative spectacle.",
+        "name": "The Tabular Rule",
+        "body": "Numerals are tabular site-wide (`font-variant-numeric: tabular-nums` on body), so figures and dates align like a timetable.",
+        "section": "typography"
+      },
+      {
+        "name": "The Printed Map Rule",
+        "body": "Surfaces are flat at rest and in every state. Hover changes fill (ink to ink grey, transparent to Platform Grey), never elevation.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do keep interaction emphasis tied to Signal Blue and reserve it for actions, links, and active states.",
-      "Do maintain senior-level readability with clear hierarchy and restrained component ornament.",
-      "Do preserve ambient depth layering so cards, forms, and dialogs read as distinct interaction planes.",
-      "Do keep section copy concise and outcome-oriented, so evidence remains primary."
+      "Do reference colour through the custom properties (`var(--ink)`, `var(--line-ai)`) so the night map works without component changes.",
+      "Do pick one of the four type sizes and vary weight or case instead of adding a size.",
+      "Do draw new map or diagram strokes at the 10px stroke weight (8px for strip and career spines), octilinear, with butt caps.",
+      "Do keep corners square; use a ring or capsule only for an interchange or a station.",
+      "Do mark structure with 2px ink rules and 1px hairlines rather than boxes.",
+      "Do give every interactive target at least 44px of height and keep the 3px focus outline.",
+      "Do keep motion to 160ms state changes on `--ease-out` and remove it under reduced motion."
     ],
     "donts": [
-      "Don't drift into Template SaaS card-grid look with generic icon blocks and repetitive scaffolding.",
-      "Don't allow a Corporate sterile resume-page aesthetic that feels static and low-signal.",
-      "Don't add decorative gradients, side-stripe accents, or default glass effects that do not carry meaning.",
-      "Don't flatten hierarchy through near-identical type steps or interchangeable section structures."
+      "Don't use a line colour for anything that is not that line.",
+      "Don't add shadows, glows, or elevation on hover.",
+      "Don't wrap content in rounded cards or use rounded chips and pill buttons; bullets are square plates.",
+      "Don't introduce a second typeface or a fifth type size.",
+      "Don't use a dashed line except for a branch route.",
+      "Don't add a second load animation; the line draw-in is the one authored moment."
     ]
   }
 }

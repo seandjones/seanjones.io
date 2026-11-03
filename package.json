@@ -17,6 +17,7 @@
     "deploy": "npm run build && gh-pages -d dist --cname seanjones.io"
   },
   "dependencies": {
+    "@fontsource-variable/overpass": "^5.3.0",
     "vue": "^3.5.31"
   },
   "devDependencies": {

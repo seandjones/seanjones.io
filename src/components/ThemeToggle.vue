@@ -1,24 +1,13 @@
 <template>
   <button
+    type="button"
     class="theme-toggle"
-    :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-    :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+    aria-label="Night map"
+    :aria-pressed="isDark"
     @click="$emit('toggle')"
   >
-    <span class="theme-toggle__track" aria-hidden="true">
-      <span class="theme-toggle__icon theme-toggle__icon--sun">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-        </svg>
-      </span>
-      <span class="theme-toggle__icon theme-toggle__icon--moon">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </span>
-      <span class="theme-toggle__thumb" :class="{ 'theme-toggle__thumb--dark': isDark }"></span>
-    </span>
+    <span class="theme-toggle__label">Night<span class="theme-toggle__label-rest"> map</span></span>
+    <span class="theme-toggle__switch" aria-hidden="true"><span class="theme-toggle__knob"></span></span>
   </button>
 </template>
 
@@ -29,90 +18,54 @@ defineEmits<{ toggle: [] }>()
 
 <style lang="scss" scoped>
 .theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 6px;
-  border-radius: 100px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0 0.25rem;
+  border: none;
+  background: none;
+  font-size: var(--fs-label);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
   flex-shrink: 0;
 
-  @media (max-width: 600px) {
-    order: 2;
-    margin-left: auto;
-    padding: 3px;
-  }
+  // On narrow screens the label shortens to "Night" rather than disappearing.
+  @media (max-width: 719px) {
+    gap: 0.4rem;
 
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-
-  &__track {
-    position: relative;
-    width: 56px;
-    height: 32px;
-    background: var(--color-toggle-bg);
-    border-radius: 100px;
-    display: flex;
-    align-items: center;
-    padding: 0 7px;
-    justify-content: space-between;
-    border: 1px solid var(--color-border);
-    transition: background var(--transition-theme), border-color var(--transition-theme);
-
-    @media (max-width: 600px) {
-      width: 50px;
-      height: 28px;
-      padding: 0 5px;
+    .theme-toggle__label-rest {
+      display: none;
     }
   }
+}
 
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-secondary);
-    z-index: 1;
-    transition: color var(--transition-theme);
+.theme-toggle__switch {
+  position: relative;
+  width: 2.5rem;
+  height: 1.4rem;
+  border: 2px solid var(--ink);
+}
 
-    &--sun {
-      color: var(--color-icon-sun);
-    }
+.theme-toggle__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.4rem - 8px);
+  height: calc(1.4rem - 8px);
+  background: var(--ink);
+  transition: transform 160ms var(--ease-out);
 
-    &--moon {
-      color: var(--color-icon-moon);
-    }
+  [aria-pressed='true'] & {
+    transform: translateX(1.1rem);
   }
+}
 
-  &__thumb {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 24px;
-    height: 24px;
-    background: var(--color-bg-secondary);
-    border-radius: 100px;
-    box-shadow: var(--shadow-toggle-thumb);
-    transition: transform var(--transition-theme), background var(--transition-theme), box-shadow var(--transition-theme);
-
-    @media (max-width: 600px) {
-      top: 3px;
-      left: 3px;
-      width: 20px;
-      height: 20px;
-    }
-
-    &--dark {
-      transform: translateX(24px);
-
-      @media (max-width: 600px) {
-        transform: translateX(20px);
-      }
-    }
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle__knob {
+    transition: none;
   }
 }
 </style>

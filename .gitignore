@@ -40,3 +40,10 @@ __screenshots__/
 
 # Python (harness scripts)
 __pycache__/
+
+# Impeccable working files: critique snapshots, design comps, review screenshots
+.impeccable/critique/*
+!.impeccable/critique/ignore.md
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/live/

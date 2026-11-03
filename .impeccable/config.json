@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/components/SystemMap.vue"
+        ],
+        "createdAt": "2026-11-03T17:43:06.314Z",
+        "reason": "Claude triage: .strip__stations border-left is the strip map's vertical transit line on phones (System Map direction), not a card accent"
+      }
+    ]
+  }
+}

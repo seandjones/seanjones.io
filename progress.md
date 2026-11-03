@@ -751,3 +751,217 @@
 
 ### Notes
 - The four tracked `dist/` files (index.html, favicon.ico, favicon.png, profile.webp) were already staged for removal from the repo before this work started; they carried over onto this branch untouched.
+
+## 2026-11-03: System Map redesign (full site)
+
+### Context
+- Impeccable audit scored the site 12/20 and the critique 23/36: proof buried behind claims, generic dark dev-portfolio visuals, no email on the contact ending, modals ignored dark mode.
+- Sean chose a full redesign in the "System Map" direction (the Price.com platform drawn as a transit map), positioning as a hands-on lead, open to conversations. Copy deck `docs/redesign-copy.md` approved by Sean before the build.
+
+### Completed
+- New single-page structure: system map (first viewport), Work, Experience, Independent projects, Contact.
+- `src/content/site.ts`: all copy in one module. Every map station links to a real anchor (case study part or role).
+- `src/components/SystemMap.vue`: SVG map with five lines, stations and interchanges as links, hover/focus line highlighting, one-time line draw-in (skipped under reduced motion); strip maps below 960px; signage panel with Get in touch and See the work; results legend.
+- `WorkSection.vue`: case studies as page sections with their own anchors and a copy-link control (no modal). Problem / What I did / Result.
+- `ExperienceLine.vue`: career as a line diagram, Price.com roles joined as an interchange; Stack as one line.
+- `ProjectsBranch.vue`: independent projects on a dashed branch line with live links and "How it works" disclosure.
+- `ContactForm.vue`: hello@seanjones.io and LinkedIn beside the form, approved copy for every state, failures name the email, focus moves to the first error.
+- `App.vue`: theme set on `<html>` (inline script in `index.html` prevents a flash), native `<dialog>` for keyboard help, shortcuts remapped to w/e/p/c/t/?.
+- Self-hosted Overpass via `@fontsource-variable/overpass`.
+- Fresh screenshots captured 2026-11-03 and approved by Sean in `public/work/` (720w and 1200w WebP, origin embedded).
+- Removed: HeroSection, SkillsSection, ProjectsSection, WorkHistory, CursorFollower and their tests.
+
+### Tests
+- New: `SystemMap.spec.ts` (station anchors resolve, legend figures, single h1), `Sections.spec.ts`, rewritten `App.spec.ts`; `ContactForm.spec.ts` updated to approved copy.
+- `npm run check`: 39/39 tests, type-check and build passing.
+
+### Still open
+- Harden step: keyboard shortcuts need a modifier or off switch (WCAG 2.1.4); stale `.impeccable/critique/ignore.md` entry; unused old assets in `public/`.
+- DESIGN.md to be rewritten from the built system.
+
+## 2026-11-03: Harden pass (after the System Map build)
+
+### Completed
+- Keyboard shortcuts (WCAG 2.1.4): the help dialog has a "Use single-key shortcuts" switch, on by default and remembered in localStorage (`sj-shortcuts`). A footer "Keyboard shortcuts" button opens the dialog without a key press.
+- Deep links: shared links such as `/#work-ai-price` now scroll to their target after the app renders (the browser's own jump fires before the content exists).
+- Contact form: maxlength 100 / 254 / 5000 with a visible message hint; requests abort after 15 seconds and show the network message with the email; an in-flight request is aborted on unmount; focus moves to the success heading.
+- Timers cleared on unmount in SystemMap and WorkSection.
+- `index.html`: `<noscript>` fallback with name, role, email and LinkedIn; the inline theme script also sets `theme-color` before first paint.
+- Focus ring and text selection moved from the Frontend line blue to ink, so line colours only mean lines. DESIGN.md and `.impeccable/design.json` updated to match.
+- Removed unused assets: two old screenshots, `starbucksbrandedsolutions.jpg`, `profile.webp`, nine `project-*.svg`, `src/assets/logo.svg`. Cleared the stale entry in `.impeccable/critique/ignore.md`.
+- Brand name in the header no longer wraps at 200% zoom.
+- Copy deck updated with every new string.
+
+### Tests
+- `npm run check`: 44/44 tests, type-check and build passing. New tests cover the shortcut off switch, footer entry, deep-link scroll, field limits and the request timeout.
+
+### Not covered (out of scope for this site)
+- RTL and translation: the site is English only (`lang="en"`).
+- Server-side validation and rate limiting belong to Formspree.
+
+## 2026-11-03: Polish pass
+
+### Checked
+- Desktop 1440, 1024, 768 and mobile 390, light and night map; keyboard help dialog; 200% zoom (720px).
+- Console: no errors or warnings. Broken images: none. Horizontal overflow: 0px. Layout shift: 0.001.
+- `oxlint` and `eslint`: clean.
+
+### Fixed
+- Nav now marks the section you are in (`aria-current="location"`, underlined), and clears it when you scroll back above the sections.
+- Map station labels render larger below 1200px so they stay readable (about 13px or more on screen) when the map scales down.
+- The 590k legend entry uses a hollow station-tick key, since "whole system" is not a line and should not borrow the Leadership ink.
+- Senior Web Developer sub-line: proper spacing around the middle dot.
+- Removed the unused `.bullet--system` style.
+
+### Tests
+- `npm run check`: 44/44 tests, type-check and build passing.
+
+## 2026-11-03: Starbucks image and map hit areas
+
+### Completed
+- Starbucks Branded Solutions case study now has a screenshot supplied by Sean (`public/work/starbucks-720.webp`, `starbucks-1200.webp`), cropped to 16:10 from the top, origin recorded.
+- Map station click areas: fixed-width hit boxes overlapped their neighbours (the "Deploy time −25%" terminus covered half of "EC2 to ECS", so hovering "to ECS" highlighted the wrong station). Hit areas are now built from each label's measured box plus its tick, re-measured after the font loads and at the 1200px label-size breakpoint.
+
+### Verification
+- In Chrome at 1440, 1200, 1024 and 960px: 19 stations, zero overlapping hit areas; both halves of the "EC2 to ECS" label hit that station.
+- `npm run check`: 44/44 tests, type-check and build passing.
+
+## 2026-11-03: Distill pass (final critique P1)
+
+### Completed
+- Experience no longer repeats the case studies. Director of Engineering keeps its scope line and one bullet with the facts found only here (roadmap work with the CEO and executive team; oversight of the extension firm, 10,000+ users, store releases), then links to the Price.com platform and ai.price.com case studies.
+- Senior Web Developer drops the two bullets that repeated the Starbucks and P&G case studies, keeps the client-revenue and deployment-rate bullets, and links to both case studies.
+- New `seeAlso` field on roles; copy deck updated.
+
+### Effect
+- Page height: about 8,410 to 8,000px at 1440, and about 14,640 to 13,450px at 390.
+
+### Tests
+- `npm run check`: 45/45 tests (new: Experience links to the case studies and no longer contains the repeated deploy story), type-check and build passing.
+
+## 2026-11-03: Clarify pass (final critique P2: contact and the Lighthouse figure)
+
+### Completed
+- Hero results legend leads with "−20% sitewide load time" instead of "4× Lighthouse performance score" (a bare 64 sits in Lighthouse's "needs improvement" band; Sean preferred leading with load time if so).
+- The verified scores Sean supplied (16 to 64 on PageSpeed Insights) now appear where there is context: the Frontend terminus station ("Lighthouse 16 → 64, load time −20%") and the Price.com case study result.
+- Contact: "Remote, or hybrid in the Denver area." and "I usually reply within a day." under the opening line.
+- Copy deck updated.
+
+### Verification
+- Map hit areas re-checked in Chrome at 1440 and 1024: 19 stations, no overlaps.
+- `npm run check`: 46/46 tests, type-check and build passing.
+
+## 2026-11-03: Keyboard path (final critique P2)
+
+### Completed
+- Map: one tab stop per line (roving tabindex). Arrow left/right move along a line, up/down jump to the nearest other station on the next line, Home/End go to a line's ends. Interchanges belong to both of their lines. The focused line is highlighted and the others dim, as on hover.
+- Phone strip maps: one tab stop per strip, up/down arrows inside it.
+- Hint "Tab moves between lines. Arrow keys move between stations." appears while the map has focus and is the map's accessible description.
+- Second skip link: "Skip to the work".
+- Shortcuts now run while a link or button has focus; they stay off in form fields and the dialog.
+- Focus listeners moved from the SVG to the surrounding figure: Chromium makes any SVG element with a focus listener tabbable, which had added the svg and each line group to the tab order.
+
+### Verification
+- Real key presses in Chrome at 1440: 5 Tabs cross the map (one per line), the sixth reaches Work (was 20+). At 720px: 5 Tabs across the strips.
+- `npm run check`: 53/53 tests, type-check and build passing; oxlint clean.
+
+## 2026-11-03: Layout pass (final critique P3: first viewport on short laptops)
+
+### Problem
+- The hero needed about 820 to 870px of height whatever the screen, because the map's height came only from its width. "Get in touch" fell below the fold on 1366x768 and 1280x720.
+
+### Completed
+- Map max-height is now `max(16rem, calc(100svh - 25rem))`, so it gives up height on short screens; `preserveAspectRatio="xMinYMid meet"` keeps it left-aligned with the panel.
+- Map labels use the larger label size below 820px tall as well as below 1200px wide, and hit areas re-measure on either change.
+- Name panel padding tightens slightly on desktop screens under 820px tall.
+- DESIGN.md and the sidecar updated with the new map height rule.
+
+### Verification (Chrome, measured)
+- CTA bottom inside the viewport at 1280x720 (704), 1366x768 (754), 1024x768 (710), 1280x800, 1440x900, 1536x864, 1920x1080.
+- No overlapping station hit areas at 1366x768 and 1280x720.
+- Layout-scoped detector: 0 findings on source and at 1366x768, 1280x720, 390x844.
+- `npm run check`: 53/53 tests, type-check and build passing.
+
+## 2026-11-03: Final polish (critique minor items)
+
+### Completed
+- Projects section heading is now "Projects" to match the nav; the intro reads "Independent products I've built and run on my own time."
+- Starbucks case study has a Result, taken from Sean's existing copy: "Launched and used by businesses across the US to order custom coffee and products."
+- Price.com and ai.price.com case studies link to the live products ("Visit price.com", "Visit ai.price.com"), ahead of Copy link.
+- Theme switch keeps a visible label on phones ("Night"), with a stable accessible name of "Night map".
+- Copy deck updated.
+
+### Verification
+- Phone headers fit at 390 and 360px. Console: no errors; no horizontal overflow.
+- `npm run check`: 56/56 tests, type-check and build passing; oxlint clean.
+
+## 2026-11-03: Distill Work (re-critique P1)
+
+### Completed
+- Each case study now leads with its Result (always visible, set at title size) and keeps Problem and What I did behind a "Full case study" disclosure.
+- Starbucks and P&G moved to an "Earlier work, 2012–2016" group with a compact row layout.
+- The four "Copy link to this case study" text buttons became one drawn link icon beside each title (accessible name "Copy link to {title}"); "Link copied" is shown and announced without reflowing the title row.
+- Map stations that point into Problem or What I did open the disclosure first and then scroll (hashchange handler in App.vue, plus the existing nav and initial-hash paths).
+- Shared `.disclosure` style with a drawn chevron in main.scss; the Projects "How it works" disclosure uses it too, which restores its marker.
+- Copy deck Work section rewritten to match the build (the old card and modal strings are gone).
+
+### Effect
+- Page height: about 8,000 to 7,344px at 1440, and about 13,450 to 11,821px at 390.
+
+### Verification
+- A real mouse click on the "About 90 Cotton components" station in Chrome opened the Price.com disclosure and scrolled to the Frontend paragraph.
+- `npm run check`: 60/60 tests, type-check and build passing; oxlint clean.
+
+## 2026-11-03: Positioning on the first screen (re-critique P1)
+
+### Completed
+- Name panel: "Open to Staff, Principal and engineering-lead roles. Remote, or hybrid in the Denver area." (bold, above the actions; wording chosen by Sean).
+- Contact: the opening line now reads "Open to conversations about Staff, Principal and engineering-lead roles." and is bold, matching the facts below it.
+- Map caption: "Each line is a workstream I own; each station links to the result behind it."
+- No-JS fallback mentions the same roles and location.
+- To keep the actions in the first viewport with the taller panel: map height reserve 25rem to 28.5rem, panel padding tightens below 920px tall, slightly tighter spacing above the actions. A trial 18px label size on short screens caused a label overlap and was reverted.
+- Copy deck, DESIGN.md and sidecar updated.
+
+### Verification (Chrome, measured)
+- CTA bottom inside the viewport at 1280x720 (696), 1366x768 (745), 1024x768, 1280x800, 1440x900 (877), 1536x864, 1920x1080, 390x844 (481), 360x740.
+- No overlapping station hit areas at 1280x720, 1366x768, 1024x768, 1440x900.
+- `npm run check`: 63/63 tests, type-check and build passing; oxlint clean.
+
+## 2026-11-03: Map interaction fixes (re-critique P2)
+
+### Completed
+- Interchanges stay lit when either of their lines is highlighted (hover or keyboard); before, every interchange dimmed.
+- The keyboard hint no longer shifts the page. On desktop it takes the caption's line while the map has focus; on strip maps it has a reserved line. A first attempt placed it in the map's top-left corner, but it covered AI station labels on short screens, so it moved to the caption line.
+- On an interchange, Up/Down switch to its other line without moving focus (the line highlight follows), and Left/Right then travel that line. Before, ArrowDown on Extension releases jumped to the far Leadership terminus.
+
+### Verification (Chrome)
+- Hovering Platform: Redesign interchange opacity 1, Extension releases interchange and other lines 0.16.
+- Sign panel top identical before and after keyboard focus at 1440x900 (575) and 1280x720 (395); hint box equals the caption box and sits below the map.
+- Keys: Extensions → interchange → Down (stays, Leadership active) → Right lands on "Sole technical lead since 2022".
+- `npm run check`: 64/64 tests, type-check and build passing; oxlint clean.
+
+## 2026-11-03: Results legend (re-critique P2)
+
+### Completed
+- Legend trimmed to three results, each labelled with its line by name using the shared line bullets: Frontend −20% sitewide load time, Platform −25% deployment time, AI +15% click-through on AI recommendations.
+- Removed the 590k row: it repeated the one line directly above it, and its hollow key read as an empty checkbox. The `legend__key` styles and the `'system'` result type are gone.
+- Phones: the legend is three compact rows instead of a 2×2 grid (fixes the misaligned stat labels); the reserved hint line under the caption is tighter.
+- Copy deck, DESIGN.md and sidecar updated.
+
+### Verification
+- CTA bottom inside the first viewport at 1280x720, 1366x768, 1440x900, 390x844, 360x740.
+- `npm run check`: 64/64 tests, type-check and build passing; oxlint clean.
+
+## 2026-11-03: Final polish (re-critique P3 and minor items)
+
+### Completed
+- Experience "Case studies:" links are inline text links with the comma kept with its link, so a line can no longer start with ", ai.price.com" on phones.
+- Strip-map interchange stops get extra vertical space so they no longer crowd the station above.
+- Signage panel colours moved to `--sign-bg`, `--sign-fg` and `--sign-border`: solid ink by day (unchanged); on the night map a dark panel with a light 2px outline instead of a bright slab.
+- Career stops at the same company as the role above carry a screen-reader note ("Same company as the role above.").
+- DESIGN.md and sidecar: Projects heading name, night signage panel.
+
+### Verification
+- CTA bottom inside the first viewport at 1280x720 (698), 1366x768, 1440x900, 390x844, 360x740.
+- Console: no errors; no horizontal overflow; CLS effectively zero.
+- `npm run check`: 65/65 tests, type-check and build passing; oxlint and eslint clean.

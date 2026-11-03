@@ -1,67 +1,77 @@
-// ─── Design Tokens ───────────────────────────────────────────────────────────
+// ─── System Map tokens ───────────────────────────────────────────────────────
+// Colour means line identity and nothing else. Four type sizes in total.
 
 :root {
-  --color-bg: oklch(0.97 0.004 286);
-  --color-bg-secondary: oklch(0.985 0.003 286);
-  --color-bg-card: oklch(0.989 0.004 286);
-  --color-text-primary: oklch(0.235 0.008 286);
-  --color-text-secondary: oklch(0.56 0.01 286);
-  --color-accent: oklch(0.58 0.18 254);
-  --color-accent-hover: oklch(0.61 0.19 254);
-  --color-on-accent: oklch(0.985 0.008 250);
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-pill-bg: rgba(0, 113, 227, 0.08);
-  --color-pill-text: oklch(0.58 0.18 254);
-  --color-pill-border: rgba(0, 113, 227, 0.2);
-  --color-hero-overlay: rgba(245, 245, 247, 0.85);
-  --color-toggle-bg: rgba(0, 0, 0, 0.06);
-  --color-toggle-thumb: oklch(0.978 0.005 286);
-  --color-icon-sun: oklch(0.72 0.14 80);
-  --color-icon-moon: oklch(0.62 0.14 278);
-  --color-error: oklch(0.58 0.2 30);
-  --shadow-card: 0 2px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --shadow-card-hover: 0 6px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-hero: 0 8px 40px rgba(0, 0, 0, 0.12);
-  --shadow-accent-hover: 0 4px 16px rgba(0, 113, 227, 0.3);
-  --shadow-modal: 0 16px 52px rgba(0, 0, 0, 0.28);
-  --shadow-toggle-thumb: 0 1px 4px rgba(0, 0, 0, 0.15);
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-accent) 48%, transparent);
-  --radius-card: 16px;
-  --radius-pill: 100px;
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
-  --transition-base: 0.2s ease;
-  --transition-theme: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color-scheme: light;
+  --ground: #ffffff;
+  --ground-2: #f3f4f5;
+  --ink: #16181c;
+  --ink-2: #4a4f57;
+  --rule: #d5d8dc;
+  --rule-strong: #16181c;
+  --on-ink: #ffffff;
+
+  --line-ai: #8f5a00;
+  --line-platform: #c2302a;
+  --line-frontend: #1f5fc7;
+  --line-extensions: #137a46;
+  --line-leadership: #16181c;
+  --on-line: #ffffff;
+  --on-line-ai: #ffffff;
+
+  --focus: #16181c;
+  --target: #fff4d6;
+  --error: #b3261e;
+  --scrim: rgba(22, 24, 28, 0.55);
+
+  // Signage panel: solid ink by day.
+  --sign-bg: #16181c;
+  --sign-fg: #ffffff;
+  --sign-border: #16181c;
+
+  --font: 'Overpass Variable', 'Overpass', system-ui, sans-serif;
+  --fs-display: clamp(2.5rem, 1.6rem + 3.2vw, 4.25rem);
+  --fs-title: 1.375rem;
+  --fs-body: 1.0625rem;
+  --fs-label: 0.8125rem;
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --max: 1320px;
+  --measure: 58ch;
+  --stroke: 10px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-theme='dark'] {
-  --color-bg: oklch(0.16 0.01 264);
-  --color-bg-secondary: oklch(0.24 0.01 286);
-  --color-bg-card: oklch(0.24 0.01 286);
-  --color-text-primary: oklch(0.97 0.004 286);
-  --color-text-secondary: oklch(0.86 0.01 286);
-  --color-accent: oklch(0.68 0.16 250);
-  --color-accent-hover: oklch(0.74 0.14 247);
-  --color-on-accent: oklch(0.2 0.03 250);
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-pill-bg: rgba(9, 28, 48, 0.95);
-  --color-pill-text: oklch(0.96 0.03 250);
-  --color-pill-border: rgba(91, 181, 255, 0.38);
-  --color-hero-overlay: rgba(0, 0, 0, 0.7);
-  --color-toggle-bg: rgba(255, 255, 255, 0.1);
-  --color-toggle-thumb: oklch(0.24 0.01 286);
-  --color-icon-sun: oklch(0.8 0.14 84);
-  --color-icon-moon: oklch(0.76 0.1 286);
-  --color-error: oklch(0.68 0.22 30);
-  --shadow-card: 0 2px 24px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
-  --shadow-card-hover: 0 6px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-hero: 0 8px 40px rgba(0, 0, 0, 0.5);
-  --shadow-accent-hover: 0 4px 16px rgba(56, 159, 255, 0.4);
-  --shadow-modal: 0 14px 48px rgba(0, 0, 0, 0.46);
-  --shadow-toggle-thumb: 0 1px 5px rgba(0, 0, 0, 0.36);
-  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-accent) 52%, transparent);
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ground: #0f1114;
+  --ground-2: #171a1e;
+  --ink: #eceef0;
+  --ink-2: #b4b9c0;
+  --rule: #30343a;
+  --rule-strong: #eceef0;
+  --on-ink: #0f1114;
+
+  --line-ai: #f2b33d;
+  --line-platform: #ff7468;
+  --line-frontend: #74a7ff;
+  --line-extensions: #44c487;
+  --line-leadership: #eceef0;
+  --on-line: #0f1114;
+  --on-line-ai: #0f1114;
+
+  --focus: #eceef0;
+  --target: #2b2615;
+  --error: #ff8a80;
+  --scrim: rgba(0, 0, 0, 0.72);
+
+  // By night the panel stays dark with a light outline, rather than turning into a bright slab.
+  --sign-bg: #171a1e;
+  --sign-fg: #eceef0;
+  --sign-border: #eceef0;
 }
 
-// ─── Reset & Base ─────────────────────────────────────────────────────────────
+// ─── Reset & base ────────────────────────────────────────────────────────────
 
 *,
 *::before,
@@ -74,6 +84,8 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-padding-top: 5rem;
+  scrollbar-color: var(--ink-2) var(--ground-2);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -83,14 +95,24 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  transition:
-    background-color var(--transition-theme),
-    color var(--transition-theme);
-  min-height: 100vh;
+  font-family: var(--font);
+  font-size: var(--fs-body);
   line-height: 1.6;
+  background: var(--ground);
+  color: var(--ink);
+  caret-color: var(--focus);
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+p,
+li,
+dd {
+  text-wrap: pretty;
 }
 
 img {
@@ -99,16 +121,195 @@ img {
 }
 
 a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: color var(--transition-base);
+  color: inherit;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+}
 
-  &:hover {
-    color: var(--color-accent-hover);
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:target {
+  background: var(--target);
+  outline: 0.5rem solid var(--target);
+}
+
+// ─── Shared type roles ───────────────────────────────────────────────────────
+
+.t-display {
+  font-size: var(--fs-display);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.t-title {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.t-label {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+// ─── Section frame ───────────────────────────────────────────────────────────
+
+.section {
+  padding: clamp(4rem, 8vw, 7rem) var(--gutter);
+  scroll-margin-top: 4rem;
+}
+
+.section__inner {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  border-bottom: 2px solid var(--rule-strong);
+}
+
+.section__intro {
+  color: var(--ink-2);
+  max-width: var(--measure);
+}
+
+// ─── Line bullets (shared signage) ───────────────────────────────────────────
+
+.bullet {
+  display: inline-flex;
+  align-items: center;
+  height: 1.6rem;
+  padding: 0.1rem 0.6rem 0;
+  font-size: var(--fs-label);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-line);
+  background: var(--line-color, var(--ink));
+  white-space: nowrap;
+}
+
+.bullet--ai {
+  --line-color: var(--line-ai);
+  color: var(--on-line-ai);
+}
+.bullet--platform {
+  --line-color: var(--line-platform);
+}
+.bullet--frontend {
+  --line-color: var(--line-frontend);
+}
+.bullet--extensions {
+  --line-color: var(--line-extensions);
+}
+.bullet--leadership {
+  --line-color: var(--line-leadership);
+  color: var(--on-ink);
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.15rem 1.4rem 0;
+  font-size: var(--fs-body);
+  font-weight: 800;
+  text-decoration: none;
+  border: 2px solid currentColor;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease-out),
+    color 160ms var(--ease-out);
+
+  &--solid {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--ground);
+
+    &:hover {
+      background: var(--ink-2);
+      border-color: var(--ink-2);
+    }
+  }
+
+  &--outline:hover {
+    background: var(--ground-2);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
   }
 }
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
+// ─── Utility ─────────────────────────────────────────────────────────────────
+
+// ─── Disclosure (details/summary) ───────────────────────────────────────────
+// One drawn chevron for every disclosure; it turns when open.
+
+.disclosure__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2.5px solid currentColor;
+    border-bottom: 2.5px solid currentColor;
+    transform: translateY(-0.15rem) rotate(45deg);
+    transition: transform 160ms var(--ease-out);
+  }
+
+  .disclosure[open] > &::before {
+    transform: translateY(0.1rem) rotate(-135deg);
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disclosure__summary::before {
+    transition: none;
+  }
+}
 
 .visually-hidden {
   position: absolute;
